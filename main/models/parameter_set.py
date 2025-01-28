@@ -137,20 +137,6 @@ class ParameterSet(models.Model):
 
             self.update_player_count()
 
-            #parameter set barriers
-            self.parameter_set_barriers_a.all().delete()
-            new_parameter_set_barriers = new_ps.get("parameter_set_barriers")
-
-            for i in new_parameter_set_barriers:
-                p = main.models.ParameterSetBarrier.objects.create(parameter_set=self)
-                p.from_dict(new_parameter_set_barriers[i])
-
-                groups = []
-                for g in new_parameter_set_barriers[i]["parameter_set_groups"]:
-                    groups.append(new_parameter_set_groups_map[str(g)])
-
-                p.parameter_set_groups.set(groups)
-
             #parameter set notices
             self.parameter_set_notices.all().delete()
             new_parameter_set_notices = new_ps.get("parameter_set_notices")
@@ -260,7 +246,6 @@ class ParameterSet(models.Model):
     
     def update_json_fk(self, update_players=False, 
                              update_notices=False, 
-                             update_barriers=False,
                              update_groups=False):
         '''
         update json model
@@ -268,10 +253,6 @@ class ParameterSet(models.Model):
         if update_players:
             self.json_for_session["parameter_set_players_order"] = list(self.parameter_set_players.all().values_list('id', flat=True))
             self.json_for_session["parameter_set_players"] = {p.id : p.json() for p in self.parameter_set_players.all()}
-
-        if update_barriers:
-            self.json_for_session["parameter_set_barriers_order"] = list(self.parameter_set_barriers_a.all().values_list('id', flat=True))
-            self.json_for_session["parameter_set_barriers"] = {str(p.id) : p.json() for p in self.parameter_set_barriers_a.all()}
 
         if update_notices:
             self.json_for_session["parameter_set_notices_order"] = list(self.parameter_set_notices.all().values_list('id', flat=True))
@@ -293,7 +274,6 @@ class ParameterSet(models.Model):
             self.update_json_local()
             self.update_json_fk(update_players=True, 
                                 update_notices=True,
-                                update_barriers=True,
                                 update_groups=True)
 
         return self.json_for_session

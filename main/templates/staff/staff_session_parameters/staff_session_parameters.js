@@ -30,15 +30,10 @@ let app = Vue.createApp({
                         id:0,
                     },
 
-                    current_parameter_set_barrier : {
-                        id:0,
-                    },
-
                     parameterset_form_ids: {{parameterset_form_ids|safe}},
                     parameter_set_player_form_ids: {{parameter_set_player_form_ids|safe}},
                     parameter_set_notice_form_ids: {{parameter_set_notice_form_ids|safe}},
                     parameter_set_group_form_ids: {{parameter_set_group_form_ids|safe}},
-                    parameter_set_barrier_form_ids: {{parameter_set_barrier_form_ids|safe}},
 
                     upload_file: null,
                     upload_file_name:'Choose File',
@@ -132,8 +127,7 @@ let app = Vue.createApp({
             app.edit_parameterset_notice_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_notice_modal'), {keyboard: false})
            
             app.edit_parameterset_group_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_group_modal'), {keyboard: false})
-            app.edit_parameterset_barrier_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_barrier_modal'), {keyboard: false})
-
+           
             document.getElementById('import_parameters_modal').addEventListener('hidden.bs.modal', app.hide_import_parameters);
             document.getElementById('edit_parameterset_modal').addEventListener('hidden.bs.modal', app.hide_edit_parameter_set);
             document.getElementById('upload_parameter_set_modal').addEventListener('hidden.bs.modal', app.hide_upload_parameters);
@@ -174,7 +168,6 @@ let app = Vue.createApp({
         {%include "staff/staff_session_parameters/players/players.js"%}
         {%include "staff/staff_session_parameters/notices/notices.js"%}
         {%include "staff/staff_session_parameters/groups/groups.js"%}
-        {%include "staff/staff_session_parameters/barriers/barriers.js"%}
 
         {%include "js/help_doc.js"%}
     
@@ -210,13 +203,6 @@ let app = Vue.createApp({
             }
 
             s = app.parameter_set_group_form_ids;
-            for(let i in s)
-            {
-                let e = document.getElementById("id_errors_" + s[i]);
-                if(e) e.remove();
-            }
-
-            s = app.parameter_set_barrier_form_ids;
             for(let i in s)
             {
                 let e = document.getElementById("id_errors_" + s[i]);

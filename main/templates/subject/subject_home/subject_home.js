@@ -269,7 +269,6 @@ let app = Vue.createApp({
         {
             app.setup_pixi_tokens_for_current_period();
             app.setup_pixi_subjects();
-            app.setup_pixi_barrier();
             app.update_subject_status_overlay();
             app.setup_pixi_minimap();
         },
@@ -460,9 +459,6 @@ let app = Vue.createApp({
 
             //update any notices on screen
             app.update_notices();
-
-            //update barriers
-            app.update_barriers();
         },
 
         /**
@@ -558,7 +554,6 @@ let app = Vue.createApp({
         {%include "subject/subject_home/the_stage/transfer_beam.js"%}
         {%include "subject/subject_home/the_stage/notices.js"%}
         {%include "subject/subject_home/the_stage/move_objects.js"%}
-        {%include "subject/subject_home/the_stage/barriers.js"%}
         {%include "subject/subject_home/help_doc_subject.js"%}
 
         /** clear form error messages

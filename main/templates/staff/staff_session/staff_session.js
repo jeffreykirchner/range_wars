@@ -455,7 +455,6 @@ let app = Vue.createApp({
         {%include "subject/subject_home/the_stage/transfer_beam.js"%}
         {%include "subject/subject_home/the_stage/move_objects.js"%}
         {%include "subject/subject_home/the_stage/barriers.js"%}
-        {%include "subject/subject_home/the_stage/ground.js"%}
         {%include "js/help_doc.js"%}
     
         /** clear form error messages

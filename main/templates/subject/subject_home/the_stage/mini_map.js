@@ -34,18 +34,6 @@ setup_pixi_minimap: function setup_pixi_minimap()
     
     pixi_mini_map.container.addChild(pixi_mini_map_bg);
 
-    //grounds
-    for(const i in app.session.parameter_set.parameter_set_grounds){
-        const ground = app.session.parameter_set.parameter_set_grounds[i];
-
-        let temp_ground = new PIXI.Graphics();
-        
-        temp_ground.rect(ground.x * scale, ground.y * scale, ground.width * scale, ground.height * scale);
-        temp_ground.fill(ground.tint);
-
-        pixi_mini_map.container.addChild(temp_ground);
-    }
-
     //mini map tokens
     const current_period_id = app.session.session_periods_order[app.session.world_state.current_period-1];
 

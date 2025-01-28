@@ -268,7 +268,6 @@ let app = Vue.createApp({
         do_reload: function do_reload()
         {
             app.setup_pixi_tokens_for_current_period();
-            app.setup_pixi_ground();
             app.setup_pixi_subjects();
             app.setup_pixi_barrier();
             app.update_subject_status_overlay();
@@ -560,7 +559,6 @@ let app = Vue.createApp({
         {%include "subject/subject_home/the_stage/notices.js"%}
         {%include "subject/subject_home/the_stage/move_objects.js"%}
         {%include "subject/subject_home/the_stage/barriers.js"%}
-        {%include "subject/subject_home/the_stage/ground.js"%}
         {%include "subject/subject_home/help_doc_subject.js"%}
 
         /** clear form error messages

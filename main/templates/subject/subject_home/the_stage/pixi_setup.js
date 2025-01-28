@@ -18,7 +18,6 @@ setup_pixi: function setup_pixi(){
 
     textures_promise.then((textures) => {
         app.setup_pixi_sheets(textures);
-        app.setup_pixi_ground();
         app.setup_pixi_tokens_for_current_period();
         app.setup_pixi_subjects();
         app.setup_pixi_barrier();

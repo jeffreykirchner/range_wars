@@ -453,7 +453,6 @@ let app = Vue.createApp({
         {%include "subject/subject_home/the_stage/staff.js"%}
         {%include "subject/subject_home/the_stage/text_emitter.js"%}
         {%include "subject/subject_home/the_stage/transfer_beam.js"%}
-        {%include "subject/subject_home/the_stage/wall.js"%}
         {%include "subject/subject_home/the_stage/move_objects.js"%}
         {%include "subject/subject_home/the_stage/barriers.js"%}
         {%include "subject/subject_home/the_stage/ground.js"%}

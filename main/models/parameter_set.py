@@ -151,14 +151,6 @@ class ParameterSet(models.Model):
 
                 p.parameter_set_groups.set(groups)
 
-            #parameter set walls
-            self.parameter_set_walls.all().delete()
-            new_parameter_set_walls = new_ps.get("parameter_set_walls")
-
-            for i in new_parameter_set_walls:
-                p = main.models.ParameterSetWall.objects.create(parameter_set=self)
-                p.from_dict(new_parameter_set_walls[i])
-
             #parameter set notices
             self.parameter_set_notices.all().delete()
             new_parameter_set_notices = new_ps.get("parameter_set_notices")
@@ -276,7 +268,6 @@ class ParameterSet(models.Model):
     
     def update_json_fk(self, update_players=False, 
                              update_notices=False, 
-                             update_walls=False,
                              update_barriers=False,
                              update_grounds=False,
                              update_groups=False):
@@ -286,10 +277,6 @@ class ParameterSet(models.Model):
         if update_players:
             self.json_for_session["parameter_set_players_order"] = list(self.parameter_set_players.all().values_list('id', flat=True))
             self.json_for_session["parameter_set_players"] = {p.id : p.json() for p in self.parameter_set_players.all()}
-
-        if update_walls:
-            self.json_for_session["parameter_set_walls_order"] = list(self.parameter_set_walls.all().values_list('id', flat=True))
-            self.json_for_session["parameter_set_walls"] = {str(p.id) : p.json() for p in self.parameter_set_walls.all()}
 
         if update_barriers:
             self.json_for_session["parameter_set_barriers_order"] = list(self.parameter_set_barriers_a.all().values_list('id', flat=True))
@@ -319,7 +306,6 @@ class ParameterSet(models.Model):
             self.update_json_local()
             self.update_json_fk(update_players=True, 
                                 update_notices=True,
-                                update_walls=True,
                                 update_barriers=True,
                                 update_grounds=True,
                                 update_groups=True)

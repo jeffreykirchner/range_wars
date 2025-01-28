@@ -46,20 +46,6 @@ setup_pixi_minimap: function setup_pixi_minimap()
         pixi_mini_map.container.addChild(temp_ground);
     }
 
-    //walls
-    for(const i in app.session.parameter_set.parameter_set_walls)
-    { 
-
-        const wall = app.session.parameter_set.parameter_set_walls[i];
-
-        let temp_wall = new PIXI.Graphics();
-        
-        temp_wall.rect(wall.start_x * scale, wall.start_y * scale, wall.width * scale, wall.height * scale);
-        temp_wall.fill('DEB887');
-
-        pixi_mini_map.container.addChild(temp_wall);
-    }
-
     //mini map tokens
     const current_period_id = app.session.session_periods_order[app.session.world_state.current_period-1];
 

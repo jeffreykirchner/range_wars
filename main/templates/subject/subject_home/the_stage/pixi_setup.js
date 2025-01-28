@@ -10,19 +10,17 @@ setup_pixi: function setup_pixi(){
     PIXI.Assets.add({alias:'sprite_sheet_2', src:'{% static "sprite_sheet.json" %}'});
     PIXI.Assets.add({alias:'bg_tex', src:'{% static "background_tile_low.jpg"%}'});
     PIXI.Assets.add({alias:'cherry_token', src:'{% static "cherry_1_animated.json"%}'});
-    PIXI.Assets.add({alias:'wall_tex', src:'{% static "wall.png"%}'});
     PIXI.Assets.add({alias:'barrier_tex', src:'{% static "barrier.png"%}'});
     PIXI.Assets.add({alias:'bridge_tex', src:'{% static "bridge.jpg"%}'});
 
     const textures_promise = PIXI.Assets.load(['sprite_sheet', 'bg_tex', 'sprite_sheet_2', 
-                                               'cherry_token', 'wall_tex', 'barrier_tex', 'bridge_tex']);
+                                               'cherry_token', 'barrier_tex', 'bridge_tex']);
 
     textures_promise.then((textures) => {
         app.setup_pixi_sheets(textures);
         app.setup_pixi_ground();
         app.setup_pixi_tokens_for_current_period();
         app.setup_pixi_subjects();
-        app.setup_pixi_wall();
         app.setup_pixi_barrier();
         
         if(app.pixi_mode!="subject")

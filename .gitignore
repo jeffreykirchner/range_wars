@@ -1,5 +1,5 @@
 logs/*
-_multi_user_socket_template_env/*
+_range_wars_env/*
 .vscode/*
 *.pyc
 local_settings.py

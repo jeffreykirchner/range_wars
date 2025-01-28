@@ -23,7 +23,7 @@ ALLOWED_HOSTS = ['localhost',
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'multi_user_socket_template',
+        'NAME': 'range_wars',
         'USER': 'username',
         'PASSWORD': 'password',
         'HOST': 'localhost',
@@ -37,7 +37,7 @@ CHANNEL_LAYERS = {
         'CONFIG': {
             #'hosts': [('rediss://:password=@host_name:6380/0')], #remote server
             'hosts': [('localhost', 6379)], #local server
-            'prefix' : 'multi_user_socket_template',
+            'prefix' : 'range_wars',
         },
     },
 }

@@ -138,22 +138,6 @@ subject_pointer_right_click: function subject_pointer_right_click(event)
 },
 
 /**
- * update the amount of shift needed to center the player
- */
-update_offsets_player: function update_offsets_player(delta)
-{
-    let offset = app.get_offset();
-
-    pixi_container_main.x = -offset.x;
-    pixi_container_main.y = -offset.y;   
-    
-    let obj = app.session.world_state.session_players[app.session_player.id];
-
-    pixi_target.x = obj.target_location.x;
-    pixi_target.y = obj.target_location.y;
-},
-
-/**
  * take rescue subject
  */
 take_rescue_subject: function take_rescue_subject(message_data)

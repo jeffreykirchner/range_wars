@@ -267,8 +267,6 @@ let app = Vue.createApp({
          */
         do_reload: function do_reload()
         {
-            app.setup_pixi_tokens_for_current_period();
-            app.setup_pixi_subjects();
             app.update_subject_status_overlay();
             app.setup_pixi_minimap();
         },
@@ -283,9 +281,7 @@ let app = Vue.createApp({
         *    @param message_data {json} session day in json format
         */
         take_get_session: function take_get_session(message_data){
-            app.destroy_pixi_tokens_for_all_periods();
-            app.destory_setup_pixi_subjects();
-            
+    
             app.session = message_data.session;
             app.session_player = message_data.session_player;
 
@@ -406,7 +402,6 @@ let app = Vue.createApp({
                             null)                    
                 });          
                 
-                app.setup_pixi_tokens_for_current_period();
                 app.setup_pixi_minimap();
                 app.update_player_inventory();
 
@@ -522,7 +517,6 @@ let app = Vue.createApp({
             {
                 app.session.world_state = message_data.world_state;
                 
-                app.destory_setup_pixi_subjects();
                 app.do_reload();
                 app.remove_all_notices();
             }
@@ -544,16 +538,10 @@ let app = Vue.createApp({
         {%include "subject/subject_home/test_mode/test_mode.js"%}
         {%include "subject/subject_home/instructions/instructions_card.js"%}
         {%include "subject/subject_home/the_stage/pixi_setup.js"%}
-        {%include "subject/subject_home/the_stage/token.js"%}
-        {%include "subject/subject_home/the_stage/avatar.js"%}
         {%include "subject/subject_home/the_stage/helpers.js"%}
         {%include "subject/subject_home/the_stage/subject.js"%}
-        {%include "subject/subject_home/the_stage/mini_map.js"%}
-        {%include "subject/subject_home/the_stage/subject_overlay.js"%}
         {%include "subject/subject_home/the_stage/text_emitter.js"%}
-        {%include "subject/subject_home/the_stage/transfer_beam.js"%}
         {%include "subject/subject_home/the_stage/notices.js"%}
-        {%include "subject/subject_home/the_stage/move_objects.js"%}
         {%include "subject/subject_home/help_doc_subject.js"%}
 
         /** clear form error messages

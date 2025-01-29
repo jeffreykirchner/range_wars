@@ -32,20 +32,8 @@ class ParameterSet(models.Model):
     prolific_mode = models.BooleanField(default=False, verbose_name="Prolific Mode")                          #put study into prolific mode
     prolific_completion_link = models.CharField(max_length = 1000, default = '', verbose_name = 'Forward to Prolific after sesison', blank=True, null=True) #at the completion of the study forward subjects to link
 
-    tokens_per_period = models.IntegerField(verbose_name='Number of tokens each period', default=100)         #number of tokens each period
-    token_cents_value = models.DecimalField(verbose_name='Token Cents Value', decimal_places=2, max_digits=6, default=1.0) #value of each token in cents
-
     world_width = models.IntegerField(verbose_name='Width of world in pixels', default=10000)                 #world width in pixels
     world_height = models.IntegerField(verbose_name='Height of world in pixels', default=10000)               #world height in pixels
-
-    interaction_length = models.IntegerField(verbose_name='Interaction Length', default=10)                   #interaction length in seconds
-    cool_down_length = models.IntegerField(verbose_name='Cool Down Length', default=10)                       #cool down length in seconds
-    interaction_range = models.IntegerField(verbose_name='Interaction Range', default=300)                    #interaction range in pixels
-
-    avatar_scale = models.DecimalField(verbose_name='Avatar Scale', decimal_places=2, max_digits=3, default=1) #avatar scale
-    avatar_bound_box_percent = models.DecimalField(verbose_name='Avatar Bound Box Percent', decimal_places=2, max_digits=3, default=0.75) #avatar bound box percent for interaction
-    avatar_move_speed = models.DecimalField(verbose_name='Move Speed', decimal_places=1, max_digits=3, default=5.0)            #move speed
-    avatar_animation_speed = models.DecimalField(verbose_name='Animation Speed', decimal_places=2, max_digits=3, default=1.0)  #animation speed
 
     reconnection_limit = models.IntegerField(verbose_name='Limit Subject Screen Reconnection Trys', default=25)       #limit subject screen reconnection trys
 
@@ -86,20 +74,8 @@ class ParameterSet(models.Model):
             self.prolific_mode = True if new_ps.get("prolific_mode", False) else False
             self.prolific_completion_link = new_ps.get("prolific_completion_link", None)
 
-            self.tokens_per_period = new_ps.get("tokens_per_period", 100)
-            self.token_cents_value = new_ps.get("token_cents_value", 1.0)
-
             self.world_width = new_ps.get("world_width", 1000)
             self.world_height = new_ps.get("world_height", 1000)
-
-            self.interaction_length = new_ps.get("interaction_length", 10)
-            self.cool_down_length = new_ps.get("cool_down_length", 10)
-            self.interaction_range = new_ps.get("interaction_range", 300)
-
-            self.avatar_scale = new_ps.get("avatar_scale", 1)
-            self.avatar_bound_box_percent = new_ps.get("avatar_bound_box_percent", 0.75)
-            self.avatar_move_speed = new_ps.get("avatar_move_speed", 5.0)
-            self.avatar_animation_speed = new_ps.get("avatar_animation_speed", 1.0)
 
             self.reconnection_limit = new_ps.get("reconnection_limit", None)
 
@@ -222,21 +198,9 @@ class ParameterSet(models.Model):
 
         self.json_for_session["prolific_mode"] = 1 if self.prolific_mode else 0
         self.json_for_session["prolific_completion_link"] = self.prolific_completion_link
-
-        self.json_for_session["tokens_per_period"] = self.tokens_per_period
-        self.json_for_session["token_cents_value"] = self.token_cents_value
         
         self.json_for_session["world_width"] = self.world_width
         self.json_for_session["world_height"] = self.world_height
-
-        self.json_for_session["interaction_length"] = self.interaction_length
-        self.json_for_session["cool_down_length"] = self.cool_down_length
-        self.json_for_session["interaction_range"] = self.interaction_range
-        
-        self.json_for_session["avatar_scale"] = self.avatar_scale
-        self.json_for_session["avatar_bound_box_percent"] = self.avatar_bound_box_percent
-        self.json_for_session["avatar_move_speed"] = self.avatar_move_speed
-        self.json_for_session["avatar_animation_speed"] = self.avatar_animation_speed
 
         self.json_for_session["reconnection_limit"] = self.reconnection_limit
 

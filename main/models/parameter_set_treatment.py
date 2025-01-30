@@ -13,22 +13,22 @@ class ParameterSetTreatment(models.Model):
     session treatment parameters 
     '''
 
-    parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE, related_name="parameter_set_treatment")
+    parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE, related_name="parameter_set_treatments")
     
-    id_label = models.CharField(verbose_name='ID Label', max_length=2, default="1")      #id label shown on screen to subjects
+    id_label_pst = models.CharField(verbose_name='ID Label', max_length=30, default="Name Here")      #id label shown on screen to subjects
 
-    left_x = models.IntegerField(verbose_name='Left Verticy X', default=0)               #left verticy x
-    left_y = models.IntegerField(verbose_name='Left Verticy Y', default=0)               #left verticy y
-    middle_x = models.IntegerField(verbose_name='Middle Verticy X', default=1)           #middle verticy x
-    middle_y = models.IntegerField(verbose_name='Middle Verticy Y', default=2)           #middle verticy y
-    right_x = models.IntegerField(verbose_name='Right Verticy X', default=0)             #right verticy x
-    right_y = models.IntegerField(verbose_name='Right Verticy Y', default=2)             #right verticy y
+    left_x = models.IntegerField(verbose_name='Left Vertex X', default=0)               #left Vertex x
+    left_y = models.IntegerField(verbose_name='Left Vertex Y', default=0)               #left Vertex y
+    middle_x = models.IntegerField(verbose_name='Middle Vertex X', default=1)           #middle Vertex x
+    middle_y = models.IntegerField(verbose_name='Middle Vertex Y', default=2)           #middle Vertex y
+    right_x = models.IntegerField(verbose_name='Right Vertex X', default=0)             #right Vertex x
+    right_y = models.IntegerField(verbose_name='Right Vertex Y', default=2)             #right Vertex y
 
     range_width = models.IntegerField(verbose_name='Range Width', default=2)             #range width
     range_height = models.IntegerField(verbose_name='Range Height', default=2)           #range height
 
-    costs = models.CharField(verbose_name='Costs', max_length=100, default="0,0,0,0")    #costs for each verticy
-    revenues = models.CharField(verbose_name='Revenues', max_length=100, default="0.25,0.25,0.25,0.25") #revenues for each verticy
+    costs = models.CharField(verbose_name='Costs', max_length=100, default="0,0,0,0")    #costs for each Vertex
+    revenues = models.CharField(verbose_name='Revenues', max_length=100, default="0.25,0.25,0.25,0.25") #revenues for each Vertex
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
@@ -47,7 +47,7 @@ class ParameterSetTreatment(models.Model):
         source : dict object of parameterset treatment
         '''
 
-        self.id_label = new_ps.get("id_label")
+        self.id_label_pst = new_ps.get("id_label")
 
         self.left_x = new_ps.get("left_x")
         self.left_y = new_ps.get("left_y")
@@ -92,6 +92,8 @@ class ParameterSetTreatment(models.Model):
         return{
 
             "id" : self.id,
+
+            "id_label_pst" : self.id_label_pst,
             
             "left_x" : self.left_x,
             "left_y" : self.left_y,

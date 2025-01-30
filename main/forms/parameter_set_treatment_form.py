@@ -15,49 +15,49 @@ class ParameterSetTreatmentForm(forms.ModelForm):
                                widget=forms.TextInput(attrs={"v-model":"current_parameter_set_treatment.id_label_pst",
                                                               "autocomplete":"off",}))
     
-    left_x = forms.IntegerField(label='Left X',
+    left_x = forms.DecimalField(label='Left X',
                                 min_value=0,
                                 widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_treatment.left_x",
                                                                 "step":"1",
                                                                 "min":"0"}))
     
-    left_y = forms.IntegerField(label='Left Y',
+    left_y = forms.DecimalField(label='Left Y',
                                 min_value=0,
                                 widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_treatment.left_y",
                                                                 "step":"1",
                                                                 "min":"0"}))
     
-    middle_x = forms.IntegerField(label='Middle X',
+    middle_x = forms.DecimalField(label='Middle X',
                                   min_value=0,
                                   widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_treatment.middle_x",
                                                                   "step":"1",
                                                                   "min":"0"}))
     
-    middle_y = forms.IntegerField(label='Middle Y',
+    middle_y = forms.DecimalField(label='Middle Y',
                                   min_value=0,
                                   widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_treatment.middle_y",
                                                                   "step":"1",
                                                                   "min":"0"}))    
     
-    right_x = forms.IntegerField(label='Right X',
+    right_x = forms.DecimalField(label='Right X',
                                  min_value=0,
                                  widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_treatment.right_x",
                                                                  "step":"1",
                                                                  "min":"0"}))
     
-    right_y = forms.IntegerField(label='Right Y',
+    right_y = forms.DecimalField(label='Right Y',
                                  min_value=0,
                                  widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_treatment.right_y",
                                                                  "step":"1",
                                                                  "min":"0"}))
     
-    range_width = forms.IntegerField(label='Range Width',
+    range_width = forms.DecimalField(label='Range Width',
                                      min_value=0,
                                      widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_treatment.range_width",
                                                                      "step":"1",
                                                                      "min":"0"}))
     
-    range_height = forms.IntegerField(label='Range Height',
+    range_height = forms.DecimalField(label='Range Height',
                                       min_value=0,
                                       widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_treatment.range_height",
                                                                       "step":"1",

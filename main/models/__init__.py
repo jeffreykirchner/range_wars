@@ -17,6 +17,7 @@ from .parameter_set_group import ParameterSetGroup
 from .parameter_set_player import ParameterSetPlayer
 from .parameter_set_notice import ParameterSetNotice
 from .parameter_set_treatment import ParameterSetTreatment
+from .parameter_set_periodblock import ParameterSetPeriodblock
 
 from .session import Session
 from .session_period import SessionPeriod

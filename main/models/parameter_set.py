@@ -124,10 +124,27 @@ class ParameterSet(models.Model):
             #parameter set treatments
             self.parameter_set_treatments.all().delete()
             new_parameter_set_treatments = new_ps.get("parameter_set_treatments")
+            new_parameter_set_treatments_map = {}
 
             for i in new_parameter_set_treatments:
                 p = main.models.ParameterSetTreatment.objects.create(parameter_set=self)
                 p.from_dict(new_parameter_set_treatments[i])
+
+                new_parameter_set_treatments_map[i] = p.id
+
+            #parameter set periodblocks
+            self.parameter_set_periodblocks.all().delete()
+            new_parameter_set_periodblocks = new_ps.get("parameter_set_periodblocks")
+
+            for i in new_parameter_set_periodblocks:
+                p = main.models.ParameterSetPeriodblock.objects.create(parameter_set=self)
+                v = new_parameter_set_periodblocks[i]
+                p.from_dict(v)
+
+                if v.get("parameter_set_treatment", None) != None:
+                    p.parameter_set_treatment_id=new_parameter_set_treatments_map[str(v["parameter_set_treatment"])]
+
+                p.save()
 
             self.json_for_session = None
             self.save()
@@ -219,7 +236,8 @@ class ParameterSet(models.Model):
     def update_json_fk(self, update_players=False, 
                              update_notices=False, 
                              update_groups=False,
-                             update_treatments=False):
+                             update_treatments=False,
+                             update_periodblocks=False):
         '''
         update json model
         '''
@@ -238,6 +256,10 @@ class ParameterSet(models.Model):
         if update_treatments:
             self.json_for_session["parameter_set_treatments_order"] = list(self.parameter_set_treatments.all().values_list('id', flat=True))
             self.json_for_session["parameter_set_treatments"] = {str(p.id) : p.json() for p in self.parameter_set_treatments.all()}
+
+        if update_periodblocks:
+            self.json_for_session["parameter_set_periodblocks_order"] = list(self.parameter_set_periodblocks_a.all().values_list('id', flat=True))
+            self.json_for_session["parameter_set_periodblocks"] = {str(p.id) : p.json() for p in self.parameter_set_periodblocks_a.all()}
         self.save()
 
     def json(self, update_required=False):
@@ -251,7 +273,8 @@ class ParameterSet(models.Model):
             self.update_json_fk(update_players=True, 
                                 update_notices=True,
                                 update_groups=True,
-                                update_treatments=True)
+                                update_treatments=True,
+                                update_periodblocks=True)
 
         return self.json_for_session
     

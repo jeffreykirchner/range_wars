@@ -17,15 +17,15 @@ class ParameterSetTreatment(models.Model):
     
     id_label_pst = models.CharField(verbose_name='ID Label', max_length=30, default="Name Here")      #id label shown on screen to subjects
 
-    left_x = models.IntegerField(verbose_name='Left Vertex X', default=0)               #left Vertex x
-    left_y = models.IntegerField(verbose_name='Left Vertex Y', default=0)               #left Vertex y
-    middle_x = models.IntegerField(verbose_name='Middle Vertex X', default=1)           #middle Vertex x
-    middle_y = models.IntegerField(verbose_name='Middle Vertex Y', default=2)           #middle Vertex y
-    right_x = models.IntegerField(verbose_name='Right Vertex X', default=0)             #right Vertex x
-    right_y = models.IntegerField(verbose_name='Right Vertex Y', default=2)             #right Vertex y
+    left_x = models.DecimalField(verbose_name='Left Vertex X', default=0, max_digits=4, decimal_places=2)               #left Vertex x
+    left_y = models.DecimalField(verbose_name='Left Vertex Y', default=0, max_digits=4, decimal_places=2)               #left Vertex y
+    middle_x = models.DecimalField(verbose_name='Middle Vertex X', default=1, max_digits=4, decimal_places=2)           #middle Vertex x
+    middle_y = models.DecimalField(verbose_name='Middle Vertex Y', default=2, max_digits=4, decimal_places=2)           #middle Vertex y
+    right_x = models.DecimalField(verbose_name='Right Vertex X', default=0, max_digits=4, decimal_places=2)             #right Vertex x
+    right_y = models.DecimalField(verbose_name='Right Vertex Y', default=2, max_digits=4, decimal_places=2)             #right Vertex y
 
-    range_width = models.IntegerField(verbose_name='Range Width', default=2)             #range width
-    range_height = models.IntegerField(verbose_name='Range Height', default=2)           #range height
+    range_width = models.DecimalField(verbose_name='Range Width', default=2, max_digits=4, decimal_places=2)             #range width
+    range_height = models.DecimalField(verbose_name='Range Height', default=2, max_digits=4, decimal_places=2)           #range height
 
     costs = models.CharField(verbose_name='Costs', max_length=100, default="0,0,0,0")    #costs for each Vertex
     revenues = models.CharField(verbose_name='Revenues', max_length=100, default="0.25,0.25,0.25,0.25") #revenues for each Vertex
@@ -34,11 +34,11 @@ class ParameterSetTreatment(models.Model):
     updated= models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.id_label)
+        return str(self.id_label_pst)
     
     class Meta:
         verbose_name = 'Parameter Set Treatment'
-        verbose_name_plural = 'Parameter Set Treatmentss'
+        verbose_name_plural = 'Parameter Set Treatments'
         # ordering=['id_label']
 
     def from_dict(self, new_ps):

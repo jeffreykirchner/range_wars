@@ -50,7 +50,8 @@ class ParameterSetPeriodblock(models.Model):
     def setup(self):
         '''
         default setup
-        '''    
+        '''           
+            
         self.save()
     
     def update_json_local(self):

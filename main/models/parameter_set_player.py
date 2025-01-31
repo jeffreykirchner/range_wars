@@ -90,6 +90,8 @@ class ParameterSetPlayer(models.Model):
             "start_x" : self.start_x,
             "start_y" : self.start_y,
             "hex_color" : self.hex_color,
+
+            "parameter_set_player_groups" : {str(p.parameter_set_period_block.id) : p.json() for p in self.parameter_set_player_groups_a.all()}
         }
     
     def get_json_for_subject(self, update_required=False):

@@ -11,6 +11,8 @@ from main.forms import ParameterSetPeriodblockForm
 
 from ..session_parameters_consumer_mixins.get_parameter_set import take_get_parameter_set
 
+import main
+
 class ParameterSetPeriodblocksMixin():
     '''
     parameter set plaeyer mixin
@@ -80,7 +82,8 @@ def take_update_parameter_set_periodblock(data):
 
     if form.is_valid():         
         form.save()              
-        session.parameter_set.update_json_fk(update_periodblocks=True)
+        session.parameter_set.update_json_fk(update_periodblocks=True,
+                                             update_players=True)
 
         return {"value" : "success"}                      
                                 
@@ -107,7 +110,8 @@ def take_remove_parameterset_periodblock(data):
         return
     
     parameter_set_periodblock.delete()
-    session.parameter_set.update_json_fk(update_periodblocks=True)
+    session.parameter_set.update_json_fk(update_periodblocks=True,
+                                         update_players=True)
     
     return {"value" : "success"}
 
@@ -128,7 +132,13 @@ def take_add_parameterset_periodblock(data):
         return {"value" : "fail"}
     
     parameter_set_periodblock = ParameterSetPeriodblock.objects.create(parameter_set=session.parameter_set)
-    session.parameter_set.update_json_fk(update_periodblocks=True)
+
+    for p in session.parameter_set.parameter_set_players.all():
+       main.models.ParameterSetPlayerGroup.objects.create(parameter_set_player=p, 
+                                                   parameter_set_period_block=parameter_set_periodblock)
+
+    session.parameter_set.update_json_fk(update_periodblocks=True,
+                                         update_players=True)
 
     return {"value" : "success"}
     

@@ -24,6 +24,7 @@ from main.forms import ParameterSetNoticeForm
 from main.forms import ParameterSetGroupForm
 from main.forms import ParameterSetTreatmentForm
 from main.forms import ParameterSetPeriodblockForm
+from main.forms import ParameterSetPlayerGroupForm
 
 class StaffSessionParametersView(SingleObjectMixin, View):
     '''
@@ -46,6 +47,7 @@ class StaffSessionParametersView(SingleObjectMixin, View):
         parameter_set_group_form = ParameterSetGroupForm()
         parameter_set_treatment_form = ParameterSetTreatmentForm()
         parameter_set_periodblock_form = ParameterSetPeriodblockForm()
+        parameter_set_player_group_form = ParameterSetPlayerGroupForm()
 
         parameter_set_player_form.fields["parameter_set_group"].queryset = session.parameter_set.parameter_set_groups.all()
         parameter_set_periodblock_form.fields["parameter_set_treatment"].queryset = session.parameter_set.parameter_set_treatments.all()
@@ -74,6 +76,10 @@ class StaffSessionParametersView(SingleObjectMixin, View):
         for i in parameter_set_periodblock_form:
             parameter_set_periodblock_form_ids.append(i.html_name)
 
+        parameter_set_player_group_form_ids=[]
+        for i in parameter_set_player_group_form:
+            parameter_set_player_group_form_ids.append(i.html_name)
+
         return render(request=request,
                       template_name=self.template_name,
                       context={"channel_key" : uuid.uuid4(),
@@ -86,6 +92,7 @@ class StaffSessionParametersView(SingleObjectMixin, View):
                                "parameter_set_group_form" : parameter_set_group_form,
                                "parameter_set_treatment_form" : parameter_set_treatment_form,
                                "parameter_set_periodblock_form" : parameter_set_periodblock_form,
+                               "parameter_set_player_group_form" : parameter_set_player_group_form,
                                
                                "import_parameters_form" : ImportParametersForm(user=request.user, session_id=session.id),
 
@@ -95,6 +102,7 @@ class StaffSessionParametersView(SingleObjectMixin, View):
                                "parameter_set_group_form_ids" : parameter_set_group_form_ids,
                                "parameter_set_treatment_form_ids" : parameter_set_treatment_form_ids,
                                "parameter_set_periodblock_form_ids" : parameter_set_periodblock_form_ids,
+                               "parameter_set_player_group_form_ids" : parameter_set_player_group_form_ids,
                  
                                "websocket_path" : self.websocket_path,
                                "page_key" : f'{self.websocket_path}-{session.id}',

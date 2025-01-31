@@ -37,7 +37,17 @@
                                 </th>      
                                 <th scope="col" class = "m-1 p-1">
                                     Instructions
-                                </th>              
+                                </th>  
+                                <th>
+                                    Period Blocks:
+                                </th>  
+                                <th scope="col" class = "m-1 p-1"
+                                    v-for="(pb, index) in parameter_set.parameter_set_periodblocks_order" 
+                                            v-bind:key="pb"
+                                            :set="temp_pb=parameter_set.parameter_set_periodblocks[pb]">
+                                    [[temp_pb.period_start]] - [[temp_pb.period_end]]
+                                    
+                                </th>          
                             </tr>
                         </thead>
                         <tbody id="player_list">
@@ -72,6 +82,17 @@
                                 <td v-on:click="show_edit_parameter_set_player(p)" 
                                     class="player_table_cell">
                                     [[temp_p.instruction_set_label]]
+                                </td>
+                                <td style="background-color: lightgray;">
+
+                                </td>
+                                <td v-for="(pb, index) in parameter_set.parameter_set_periodblocks_order" 
+                                    v-bind:key="pb"
+                                    v-on:click="show_edit_parameter_set_player_group(p, pb)"
+                                    class="player_table_cell">
+                    
+                                    G[[temp_p.parameter_set_player_groups[pb].group_number]] P[[temp_p.parameter_set_player_groups[pb].position]]
+
                                 </td>
                             </tr>
                         </tbody>

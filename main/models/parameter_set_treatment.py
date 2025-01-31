@@ -5,7 +5,6 @@ parameterset treatment
 from django.db import models
 
 from main.models import ParameterSet
-from main.models import ParameterSetGroup
 from main.models import InstructionSet
 
 class ParameterSetTreatment(models.Model):

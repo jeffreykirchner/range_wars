@@ -4,7 +4,6 @@ parameterset player edit form
 
 from django import forms
 
-from main.models import ParameterSetGroup
 from main.models import ParameterSetPlayer
 from main.models import InstructionSet
 
@@ -16,9 +15,6 @@ class ParameterSetPlayerForm(forms.ModelForm):
     id_label = forms.CharField(label='Label Used in Chat',
                                widget=forms.TextInput(attrs={"v-model":"current_parameter_set_player.id_label",}))
     
-    parameter_set_group = forms.ModelChoiceField(label='Group',
-                                                 queryset=ParameterSetGroup.objects.none(),
-                                                 widget=forms.Select(attrs={"v-model":"current_parameter_set_player.parameter_set_group",}))
     
     start_x = forms.IntegerField(label='Starting Location X',
                                  min_value=0,
@@ -42,5 +38,5 @@ class ParameterSetPlayerForm(forms.ModelForm):
 
     class Meta:
         model=ParameterSetPlayer
-        fields =['id_label', 'parameter_set_group', 'start_x', 'start_y', 'hex_color','instruction_set']
+        fields =['id_label', 'start_x', 'start_y', 'hex_color','instruction_set']
     

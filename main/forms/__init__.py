@@ -11,7 +11,6 @@ from .import_parameters_form import ImportParametersForm
 from .parameter_set_form import ParameterSetForm
 from .parameter_set_player_form import ParameterSetPlayerForm
 from .parameter_set_notice_form import ParameterSetNoticeForm
-from .parameter_set_group_form import ParameterSetGroupForm
 from .parameter_set_treatment_form import ParameterSetTreatmentForm
 from .parameter_set_periodblock_form import ParameterSetPeriodblockForm
 from .parameter_set_player_group_form import ParameterSetPlayerGroupForm

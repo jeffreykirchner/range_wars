@@ -38,7 +38,7 @@ class ParameterSetPlayer(models.Model):
         verbose_name_plural = 'Parameter Set Players'
         ordering=['player_number']
 
-    def from_dict(self, new_ps):
+    def from_dict(self, new_ps, new_parameter_set_periodblocks_map):
         '''
         copy source values into this period
         source : dict object of parameterset player
@@ -51,6 +51,21 @@ class ParameterSetPlayer(models.Model):
         self.hex_color = new_ps.get("hex_color")
 
         self.save()
+
+        #add player groups
+        new_parameter_set_player_groups = new_ps.get("parameter_set_player_groups")
+
+        for pg in new_parameter_set_player_groups:
+            parameter_set_player_group = main.models.ParameterSetPlayerGroup()
+            new_parameter_set_player_group = new_parameter_set_player_groups[pg]
+
+            parameter_set_player_group.parameter_set_player = self
+            parameter_set_player_group.parameter_set_period_block_id = int(new_parameter_set_periodblocks_map[str(pg)])
+            parameter_set_player_group.group_number = new_parameter_set_player_group["group_number"]
+            parameter_set_player_group.position = new_parameter_set_player_group["position"]
+
+            parameter_set_player_group.save()
+
         
         message = "Parameters loaded successfully."
 

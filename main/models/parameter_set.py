@@ -93,26 +93,6 @@ class ParameterSet(models.Model):
 
                 new_parameter_set_groups_map[i] = p.id
 
-            #parameter set players
-            self.parameter_set_players.all().delete()
-
-            new_parameter_set_players = new_ps.get("parameter_set_players")
-
-            for i in new_parameter_set_players:
-                p = main.models.ParameterSetPlayer.objects.create(parameter_set=self)
-                v = new_parameter_set_players[i]
-                p.from_dict(new_parameter_set_players[i])
-
-                if v.get("parameter_set_group", None) != None:
-                    p.parameter_set_group_id=new_parameter_set_groups_map[str(v["parameter_set_group"])]
-
-                if v.get("instruction_set", None) != None:
-                    p.instruction_set = InstructionSet.objects.filter(label=v.get("instruction_set_label",None)).first()
-                
-                p.save()
-
-            self.update_player_count()
-
             #parameter set notices
             self.parameter_set_notices.all().delete()
             new_parameter_set_notices = new_ps.get("parameter_set_notices")
@@ -133,18 +113,41 @@ class ParameterSet(models.Model):
                 new_parameter_set_treatments_map[i] = p.id
 
             #parameter set periodblocks
-            self.parameter_set_periodblocks.all().delete()
+            self.parameter_set_periodblocks_a.all().delete()
             new_parameter_set_periodblocks = new_ps.get("parameter_set_periodblocks")
+            new_parameter_set_periodblocks_map = {}
 
             for i in new_parameter_set_periodblocks:
                 p = main.models.ParameterSetPeriodblock.objects.create(parameter_set=self)
                 v = new_parameter_set_periodblocks[i]
                 p.from_dict(v)
 
+                new_parameter_set_periodblocks_map[i] = p.id
+
                 if v.get("parameter_set_treatment", None) != None:
                     p.parameter_set_treatment_id=new_parameter_set_treatments_map[str(v["parameter_set_treatment"])]
 
                 p.save()
+
+            #parameter set players
+            self.parameter_set_players.all().delete()
+
+            new_parameter_set_players = new_ps.get("parameter_set_players")
+
+            for i in new_parameter_set_players:
+                p = main.models.ParameterSetPlayer.objects.create(parameter_set=self)
+                v = new_parameter_set_players[i]
+                p.from_dict(new_parameter_set_players[i], new_parameter_set_periodblocks_map)
+
+                if v.get("parameter_set_group", None) != None:
+                    p.parameter_set_group_id=new_parameter_set_groups_map[str(v["parameter_set_group"])]
+
+                if v.get("instruction_set", None) != None:
+                    p.instruction_set = InstructionSet.objects.filter(label=v.get("instruction_set_label",None)).first()
+                
+                p.save()
+
+            self.update_player_count()
 
             self.json_for_session = None
             self.save()
@@ -167,18 +170,18 @@ class ParameterSet(models.Model):
         for i in self.parameter_set_players.all():
             i.setup()
 
-    def add_player(self):
-        '''
-        add a parameterset player
-        '''
+    # def add_player(self):
+    #     '''
+    #     add a parameterset player
+    #     '''
 
-        player = main.models.ParameterSetPlayer()
-        player.parameter_set = self
-        player.player_number = self.parameter_set_players.count() + 1
-        player.id_label = player.player_number
-        player.save()
+    #     player = main.models.ParameterSetPlayer()
+    #     player.parameter_set = self
+    #     player.player_number = self.parameter_set_players.count() + 1
+    #     player.id_label = player.player_number
+    #     player.save()
 
-        self.update_json_fk(update_players=True)
+    #     self.update_json_fk(update_players=True)
     
     def remove_player(self, parameterset_player_id):
         '''

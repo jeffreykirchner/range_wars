@@ -39,7 +39,7 @@ class ParameterSetTreatment(models.Model):
     class Meta:
         verbose_name = 'Parameter Set Treatment'
         verbose_name_plural = 'Parameter Set Treatments'
-        # ordering=['id_label']
+        ordering=['id_label_pst']
 
     def from_dict(self, new_ps):
         '''
@@ -47,7 +47,7 @@ class ParameterSetTreatment(models.Model):
         source : dict object of parameterset treatment
         '''
 
-        self.id_label_pst = new_ps.get("id_label")
+        self.id_label_pst = new_ps.get("id_label_pst")
 
         self.left_x = new_ps.get("left_x")
         self.left_y = new_ps.get("left_y")

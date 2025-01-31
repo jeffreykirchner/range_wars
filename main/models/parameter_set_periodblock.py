@@ -40,6 +40,9 @@ class ParameterSetPeriodblock(models.Model):
 
         self.id_label = new_ps.get("id_label")
         self.periodblock_number = new_ps.get("periodblock_number")
+
+        self.period_start = new_ps.get("period_start")
+        self.period_end = new_ps.get("period_end")
        
         self.save()
         

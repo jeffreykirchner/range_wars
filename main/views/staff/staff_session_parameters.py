@@ -20,7 +20,6 @@ from main.models import Session
 from main.forms import ImportParametersForm
 from main.forms import ParameterSetForm
 from main.forms import ParameterSetPlayerForm
-from main.forms import ParameterSetNoticeForm
 from main.forms import ParameterSetTreatmentForm
 from main.forms import ParameterSetPeriodblockForm
 from main.forms import ParameterSetPlayerGroupForm
@@ -42,7 +41,6 @@ class StaffSessionParametersView(SingleObjectMixin, View):
         session = Session.objects.only("id", "parameter_set").get(id=self.kwargs['pk'])
         
         parameter_set_player_form = ParameterSetPlayerForm()
-        parameter_set_notice_form = ParameterSetNoticeForm()
         parameter_set_treatment_form = ParameterSetTreatmentForm()
         parameter_set_periodblock_form = ParameterSetPeriodblockForm()
         parameter_set_player_group_form = ParameterSetPlayerGroupForm()
@@ -56,10 +54,6 @@ class StaffSessionParametersView(SingleObjectMixin, View):
         parameter_set_player_form_ids=[]
         for i in parameter_set_player_form:
             parameter_set_player_form_ids.append(i.html_name)
-
-        parameter_set_notice_form_ids=[]
-        for i in parameter_set_notice_form:
-            parameter_set_notice_form_ids.append(i.html_name)
 
         parameter_set_treatment_form_ids=[]
         for i in parameter_set_treatment_form:
@@ -81,7 +75,6 @@ class StaffSessionParametersView(SingleObjectMixin, View):
 
                                "parameter_set_form" : ParameterSetForm(),
                                "parameter_set_player_form" : parameter_set_player_form,
-                               "parameter_set_notice_form" : parameter_set_notice_form,
                                "parameter_set_treatment_form" : parameter_set_treatment_form,
                                "parameter_set_periodblock_form" : parameter_set_periodblock_form,
                                "parameter_set_player_group_form" : parameter_set_player_group_form,
@@ -90,7 +83,6 @@ class StaffSessionParametersView(SingleObjectMixin, View):
 
                                "parameterset_form_ids" : parameterset_form_ids,
                                "parameter_set_player_form_ids" : parameter_set_player_form_ids,
-                               "parameter_set_notice_form_ids" : parameter_set_notice_form_ids,
                                "parameter_set_treatment_form_ids" : parameter_set_treatment_form_ids,
                                "parameter_set_periodblock_form_ids" : parameter_set_periodblock_form_ids,
                                "parameter_set_player_group_form_ids" : parameter_set_player_group_form_ids,

@@ -81,14 +81,6 @@ class ParameterSet(models.Model):
 
             self.save()
 
-            #parameter set notices
-            self.parameter_set_notices.all().delete()
-            new_parameter_set_notices = new_ps.get("parameter_set_notices")
-
-            for i in new_parameter_set_notices:
-                p = main.models.ParameterSetNotice.objects.create(parameter_set=self)
-                p.from_dict(new_parameter_set_notices[i])
-
             #parameter set treatments
             self.parameter_set_treatments.all().delete()
             new_parameter_set_treatments = new_ps.get("parameter_set_treatments")
@@ -222,7 +214,6 @@ class ParameterSet(models.Model):
         self.save()
     
     def update_json_fk(self, update_players=False, 
-                             update_notices=False, 
                              update_treatments=False,
                              update_periodblocks=False):
         '''
@@ -231,10 +222,6 @@ class ParameterSet(models.Model):
         if update_players:
             self.json_for_session["parameter_set_players_order"] = list(self.parameter_set_players.all().values_list('id', flat=True))
             self.json_for_session["parameter_set_players"] = {p.id : p.json() for p in self.parameter_set_players.all()}
-
-        if update_notices:
-            self.json_for_session["parameter_set_notices_order"] = list(self.parameter_set_notices.all().values_list('id', flat=True))
-            self.json_for_session["parameter_set_notices"] = {str(p.id) : p.json() for p in self.parameter_set_notices.all()}    
 
         if update_treatments:
             self.json_for_session["parameter_set_treatments_order"] = list(self.parameter_set_treatments.all().values_list('id', flat=True))

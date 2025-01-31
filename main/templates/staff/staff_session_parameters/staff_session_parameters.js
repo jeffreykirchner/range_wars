@@ -21,10 +21,6 @@ let app = Vue.createApp({
                     current_parameter_set_player : {
                         id:0,
                     },        
-                    
-                    current_parameter_set_notice : {
-                        id:0,
-                    },
 
                     current_parameter_set_treatment : {
                         id:0,
@@ -40,7 +36,6 @@ let app = Vue.createApp({
 
                     parameterset_form_ids: {{parameterset_form_ids|safe}},
                     parameter_set_player_form_ids: {{parameter_set_player_form_ids|safe}},
-                    parameter_set_notice_form_ids: {{parameter_set_notice_form_ids|safe}},
                     parameter_set_treatment_form_ids: {{parameter_set_treatment_form_ids|safe}},
                     parameter_set_periodblock_form_ids: {{parameter_set_periodblock_form_ids|safe}},
                     parameter_set_player_group_form_ids: {{parameter_set_player_group_form_ids|safe}},
@@ -55,7 +50,6 @@ let app = Vue.createApp({
                     import_parameters_modal : null,
                     edit_parameterset_modal : null,
                     edit_parameterset_player_modal : null,
-                    edit_parameterset_notice_modal : null,
                     edit_parameterset_treatment_modal : null,
                     edit_parameterset_periodblock_modal : null,                    
                     edit_parameterset_player_group_modal : null,
@@ -136,7 +130,6 @@ let app = Vue.createApp({
             app.edit_parameterset_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_modal'), {keyboard: false})            
             app.edit_parameterset_player_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_player_modal'), {keyboard: false})
             app.upload_parameter_set_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('upload_parameter_set_modal'), {keyboard: false})   
-            app.edit_parameterset_notice_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_notice_modal'), {keyboard: false})
             app.edit_parameterset_treatment_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_treatment_modal'), {keyboard: false})
             app.edit_parameterset_periodblock_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_periodblock_modal'), {keyboard: false})
             app.edit_parameterset_player_group_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('edit_parameterset_player_group_modal'), {keyboard: false})
@@ -179,7 +172,6 @@ let app = Vue.createApp({
         {%include "staff/staff_session_parameters/general_settings/general_settings.js"%}
         {%include "staff/staff_session_parameters/control/control.js"%}
         {%include "staff/staff_session_parameters/players/players.js"%}
-        {%include "staff/staff_session_parameters/notices/notices.js"%}
         {%include "staff/staff_session_parameters/treatments/treatments.js"%}
         {%include "staff/staff_session_parameters/periodblocks/periodblocks.js"%}
         {%include "staff/staff_session_parameters/players/player_groups.js"%}
@@ -204,13 +196,6 @@ let app = Vue.createApp({
             }
 
             s = app.parameter_set_player_form_ids;
-            for(let i in s)
-            {
-                let e = document.getElementById("id_errors_" + s[i]);
-                if(e) e.remove();
-            }
-
-            s = app.parameter_set_notice_form_ids;
             for(let i in s)
             {
                 let e = document.getElementById("id_errors_" + s[i]);

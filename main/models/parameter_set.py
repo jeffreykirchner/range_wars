@@ -241,7 +241,6 @@ class ParameterSet(models.Model):
             self.json_for_session = {}
             self.update_json_local()
             self.update_json_fk(update_players=True, 
-                                update_notices=True,
                                 update_treatments=True,
                                 update_periodblocks=True)
 

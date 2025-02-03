@@ -525,6 +525,7 @@ let app = Vue.createApp({
         {%include "subject/subject_home/instructions/instructions_card.js"%}
         {%include "subject/subject_home/the_stage/pixi_setup.js"%}
         {%include "subject/subject_home/the_stage/helpers.js"%}
+        {%include "subject/subject_home/the_stage/axis.js"%}
         {%include "subject/subject_home/the_stage/subject.js"%}
         {%include "subject/subject_home/the_stage/text_emitter.js"%}
         {%include "subject/subject_home/the_stage/notices.js"%}

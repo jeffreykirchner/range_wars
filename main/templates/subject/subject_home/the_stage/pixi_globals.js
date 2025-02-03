@@ -3,3 +3,15 @@ let pixi_container_main = null;                //main container for pixi
 let pixi_text_emitter = {};                    //text emitter json
 let pixi_text_emitter_key = 0;
 let pixi_fps_label = null;                     //fps label
+let pixi_axis = null;                          //axis
+
+let x_axis_margin = 50;             //margin between x axis and canvas edge
+let y_axis_margin = 50;             //margin between y axis and canvas edge
+let other_margin = 10;              //margin between graph and canvas edge on right and top
+
+let axis_width = 0;
+let axis_height = 0;
+let axis_style = {fontFamily : 'Arial', fontSize: 16, fill : 0x000000, align : 'center'}
+
+let origin_x = 0;
+let origin_y = 0;

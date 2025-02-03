@@ -51,8 +51,6 @@ take_update_parameter_set: function take_update_parameter_set(message_data){
 
         app.edit_parameterset_modal.hide();            
         app.edit_parameterset_player_modal.hide();
-        app.edit_parameterset_notice_modal.hide();
-        app.edit_parameterset_group_modal.hide();
         app.edit_parameterset_treatment_modal.hide();
         app.edit_parameterset_periodblock_modal.hide();
         app.edit_parameterset_player_group_modal.hide();

@@ -437,9 +437,11 @@ let app = Vue.createApp({
         {%include "staff/staff_session/data/data_card.js"%}
         {%include "staff/staff_session/interface/interface_card.js"%}
         {%include "staff/staff_session/replay/replay_card.js"%}
-        {%include "staff/staff_session/the_feed/the_feed_card.js"%}
+        {%include "staff/staff_session/the_feed/the_feed_card.js"%}        
         {%include "subject/subject_home/the_stage/pixi_setup.js"%}
+        {%include "subject/subject_home/the_stage/axis.js"%}
         {%include "subject/subject_home/the_stage/helpers.js"%}
+       
         {%include "subject/subject_home/the_stage/staff.js"%}
         {%include "subject/subject_home/the_stage/text_emitter.js"%}
         {%include "js/help_doc.js"%}

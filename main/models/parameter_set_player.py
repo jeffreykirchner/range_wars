@@ -18,8 +18,8 @@ class ParameterSetPlayer(models.Model):
     parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE, related_name="parameter_set_players")
     instruction_set = models.ForeignKey(InstructionSet, on_delete=models.SET_NULL, related_name="parameter_set_players_c", blank=True, null=True)
 
-    id_label = models.CharField(verbose_name='ID Label', max_length=2, default="1")      #id label shown on screen to subjects
-    player_number = models.IntegerField(verbose_name='Player number', default=0)         #player number, from 1 to N 
+    id_label = models.CharField(verbose_name='ID Label', max_length=20, default="1")      #id label shown on screen to subjects
+    player_number = models.IntegerField(verbose_name='Player number', default=0)          #player number, from 1 to N 
 
     start_x = models.IntegerField(verbose_name='Start Location X', default=50)                #starting location x and y
     start_y = models.IntegerField(verbose_name='Start Location Y', default=50)

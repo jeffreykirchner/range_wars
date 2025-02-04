@@ -192,23 +192,24 @@ class Session(models.Model):
                                                                                             'parameter_set_player__id' ):
             v = {}
 
-            v['current_location'] = {'x':i['parameter_set_player__start_x'], 'y':i['parameter_set_player__start_y']}
-            v['target_location'] = v['current_location']
-            v['inventory'] = inventory
-            v['tractor_beam_target'] = None
-            v['frozen'] = False
-            v['cool_down'] = 0
-            v['interaction'] = 0
+            v['range_start'] = 1
+            v['range_end'] = 1
             v['earnings'] = 0
             v['parameter_set_player_id'] = i['parameter_set_player__id']
             
             self.world_state["session_players"][str(i['id'])] = v
             self.world_state["session_players_order"].append(i['id'])
         
-        #tokens
-        tokens = {}
+        #test code
+        range_start = 0
+        range_end = 20
+        for i in self.world_state["session_players"]:
+            self.world_state["session_players"][i]["range_start"] = range_start
+            self.world_state["session_players"][i]["range_end"] = range_end
 
-        self.world_state["tokens"] = tokens
+            range_start += 10
+            range_end += 10
+
 
         self.save()
 

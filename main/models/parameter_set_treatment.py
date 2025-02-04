@@ -26,6 +26,8 @@ class ParameterSetTreatment(models.Model):
     range_width = models.DecimalField(verbose_name='Range Width', default=2, max_digits=4, decimal_places=2)             #range width
     range_height = models.DecimalField(verbose_name='Range Height', default=2, max_digits=4, decimal_places=2)           #range height
 
+    range_height_ticks = models.IntegerField(verbose_name='Range Height Ticks', default=10)                              #range height ticks
+
     costs = models.CharField(verbose_name='Costs', max_length=100, default="0,0,0,0")    #costs for each Vertex
     revenues = models.CharField(verbose_name='Revenues', max_length=100, default="0.25,0.25,0.25,0.25") #revenues for each Vertex
 
@@ -57,6 +59,8 @@ class ParameterSetTreatment(models.Model):
 
         self.range_width = new_ps.get("range_width")
         self.range_height = new_ps.get("range_height")
+
+        self.range_height_ticks = new_ps.get("range_height_ticks")
 
         self.costs = new_ps.get("costs")
         self.revenues = new_ps.get("revenues")
@@ -103,6 +107,8 @@ class ParameterSetTreatment(models.Model):
 
             "range_width" : self.range_width,
             "range_height" : self.range_height,
+
+            "range_height_ticks" : self.range_height_ticks,
 
             "costs" : self.costs,
             "revenues" : self.revenues,

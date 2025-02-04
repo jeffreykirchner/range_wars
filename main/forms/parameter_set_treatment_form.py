@@ -63,6 +63,12 @@ class ParameterSetTreatmentForm(forms.ModelForm):
                                                                       "step":"1",
                                                                       "min":"0"}))
     
+    range_height_ticks = forms.IntegerField(label='Range Height Ticks',
+                                            min_value=1,
+                                            widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_treatment.range_height_ticks",
+                                                                            "step":"1",
+                                                                            "min":"1"}))
+    
     costs = forms.CharField(label='Costs',
                             widget=forms.TextInput(attrs={"v-model":"current_parameter_set_treatment.costs",
                                                           "autocomplete":"off",}))
@@ -76,5 +82,5 @@ class ParameterSetTreatmentForm(forms.ModelForm):
     class Meta:
         model=ParameterSetTreatment
         fields =['id_label_pst', 'left_x', 'left_y', 'middle_x', 'middle_y', 'right_x', 'right_y', 
-                 'range_width', 'range_height', 'costs', 'revenues']
+                 'range_width', 'range_height', 'range_height_ticks', 'costs', 'revenues']
     

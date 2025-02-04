@@ -4,6 +4,7 @@ let pixi_text_emitter = {};                    //text emitter json
 let pixi_text_emitter_key = 0;
 let pixi_fps_label = null;                     //fps label
 let pixi_axis = null;                          //axis
+let pixi_boxes = [];                            //boxes
 
 let x_axis_margin = 50;             //margin between x axis and canvas edge
 let y_axis_margin = 50;             //margin between y axis and canvas edge
@@ -15,3 +16,6 @@ let axis_style = {fontFamily : 'Arial', fontSize: 16, fill : 0x000000, align : '
 
 let origin_x = 0;
 let origin_y = 0;
+
+let current_treatment = null;       //current treatment
+let box_width = 0;                  //width of a single box

@@ -36,6 +36,9 @@
                                     Range
                                 </th>   
                                 <th scope="col" class = "m-1 p-1">
+                                    Values
+                                </th>
+                                <th scope="col" class = "m-1 p-1">
                                     Costs
                                 </th>
                                 <th scope="col" class = "m-1 p-1">
@@ -67,6 +70,10 @@
                                 <td v-on:click="show_edit_parameter_set_treatment(p)" 
                                     class="player_table_cell">
                                     [[temp_p.range_width]] x [[temp_p.range_height]]
+                                </td>
+                                <td v-on:click="show_edit_parameter_set_treatment(p)" 
+                                    class="player_table_cell">
+                                    [[(temp_p.values.length > 20) ? temp_p.values.substring(0, 20) + '...' : temp_p.values]]
                                 </td>
                                 <td v-on:click="show_edit_parameter_set_treatment(p)" 
                                     class="player_table_cell">

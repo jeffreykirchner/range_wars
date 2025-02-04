@@ -69,6 +69,10 @@ class ParameterSetTreatmentForm(forms.ModelForm):
                                                                             "step":"1",
                                                                             "min":"1"}))
     
+    values = forms.CharField(label='Values',
+                            widget=forms.TextInput(attrs={"v-model":"current_parameter_set_treatment.values",
+                                                          "autocomplete":"off",}))
+    
     costs = forms.CharField(label='Costs',
                             widget=forms.TextInput(attrs={"v-model":"current_parameter_set_treatment.costs",
                                                           "autocomplete":"off",}))
@@ -82,5 +86,5 @@ class ParameterSetTreatmentForm(forms.ModelForm):
     class Meta:
         model=ParameterSetTreatment
         fields =['id_label_pst', 'left_x', 'left_y', 'middle_x', 'middle_y', 'right_x', 'right_y', 
-                 'range_width', 'range_height', 'range_height_ticks', 'costs', 'revenues']
+                 'range_width', 'range_height', 'range_height_ticks', 'values', 'costs', 'revenues']
     

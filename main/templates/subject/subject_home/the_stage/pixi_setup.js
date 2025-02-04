@@ -83,6 +83,9 @@ setup_pixi_sheets: function setup_pixi_sheets(){
     //axis
     app.setup_axis();
 
+    //treatment
+    app.setup_treatment();
+
     {%if DEBUG or session.parameter_set.test_mode%}
     //fps counter
     let text_style = {

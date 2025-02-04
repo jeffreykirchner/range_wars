@@ -306,7 +306,7 @@ let app = Vue.createApp({
             }
             else
             {
-                
+                current_treatment = app.session.parameter_set.parameter_set_treatments_order[0];
             }
 
             if(!app.first_load_done)
@@ -440,6 +440,7 @@ let app = Vue.createApp({
         {%include "staff/staff_session/the_feed/the_feed_card.js"%}        
         {%include "subject/subject_home/the_stage/pixi_setup.js"%}
         {%include "subject/subject_home/the_stage/axis.js"%}
+        {%include "subject/subject_home/the_stage/treatments.js"%}
         {%include "subject/subject_home/the_stage/helpers.js"%}
        
         {%include "subject/subject_home/the_stage/staff.js"%}

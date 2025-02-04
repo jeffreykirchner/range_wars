@@ -23,8 +23,10 @@ class ParameterSetTreatment(models.Model):
     right_x = models.DecimalField(verbose_name='Right Vertex X', default=0, max_digits=4, decimal_places=2)             #right Vertex x
     right_y = models.DecimalField(verbose_name='Right Vertex Y', default=2, max_digits=4, decimal_places=2)             #right Vertex y
 
-    range_width = models.DecimalField(verbose_name='Range Width', default=2, max_digits=4, decimal_places=2)             #range width
-    range_height = models.DecimalField(verbose_name='Range Height', default=2, max_digits=4, decimal_places=2)           #range height
+    range_width = models.DecimalField(verbose_name='Range Width', default=2, max_digits=5, decimal_places=2)             #range width
+    range_height = models.DecimalField(verbose_name='Range Height', default=2, max_digits=5, decimal_places=2)           #range height
+
+    values = models.CharField(verbose_name='Values', max_length=1000, default="10,9,8,7,6,5,4,3,2,1")                     #Values for each box
 
     range_height_ticks = models.IntegerField(verbose_name='Range Height Ticks', default=10)                              #range height ticks
 
@@ -59,6 +61,8 @@ class ParameterSetTreatment(models.Model):
 
         self.range_width = new_ps.get("range_width")
         self.range_height = new_ps.get("range_height")
+
+        self.values = new_ps.get("values")
 
         self.range_height_ticks = new_ps.get("range_height_ticks")
 
@@ -107,6 +111,8 @@ class ParameterSetTreatment(models.Model):
 
             "range_width" : self.range_width,
             "range_height" : self.range_height,
+
+            "values" : self.values,
 
             "range_height_ticks" : self.range_height_ticks,
 

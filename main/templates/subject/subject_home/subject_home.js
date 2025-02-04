@@ -268,7 +268,6 @@ let app = Vue.createApp({
         do_reload: function do_reload()
         {
             app.update_subject_status_overlay();
-            app.setup_pixi_minimap();
         },
 
         /** send winsock request to get session info
@@ -340,7 +339,6 @@ let app = Vue.createApp({
             app.interaction_start_modal.hide();
             app.help_modal.hide();
 
-            app.setup_pixi_minimap();
             app.remove_all_notices();
 
             app.notices_seen = [];
@@ -402,7 +400,6 @@ let app = Vue.createApp({
                             null)                    
                 });          
                 
-                app.setup_pixi_minimap();
                 app.update_player_inventory();
 
                 //add break notice
@@ -526,6 +523,7 @@ let app = Vue.createApp({
         {%include "subject/subject_home/the_stage/pixi_setup.js"%}
         {%include "subject/subject_home/the_stage/helpers.js"%}
         {%include "subject/subject_home/the_stage/axis.js"%}
+        {%include "subject/subject_home/the_stage/treatments.js"%}
         {%include "subject/subject_home/the_stage/subject.js"%}
         {%include "subject/subject_home/the_stage/text_emitter.js"%}
         {%include "subject/subject_home/the_stage/notices.js"%}

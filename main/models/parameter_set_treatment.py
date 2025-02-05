@@ -31,7 +31,6 @@ class ParameterSetTreatment(models.Model):
     range_height_ticks = models.IntegerField(verbose_name='Range Height Ticks', default=10)                              #range height ticks
 
     costs = models.CharField(verbose_name='Costs', max_length=100, default="0,0,0,0")    #costs for each Vertex
-    revenues = models.CharField(verbose_name='Revenues', max_length=100, default="0.25,0.25,0.25,0.25") #revenues for each Vertex
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
@@ -67,7 +66,6 @@ class ParameterSetTreatment(models.Model):
         self.range_height_ticks = new_ps.get("range_height_ticks")
 
         self.costs = new_ps.get("costs")
-        self.revenues = new_ps.get("revenues")
 
         self.save()
         
@@ -117,7 +115,6 @@ class ParameterSetTreatment(models.Model):
             "range_height_ticks" : self.range_height_ticks,
 
             "costs" : self.costs,
-            "revenues" : self.revenues,
         }
     
     def get_json_for_subject(self, update_required=False):

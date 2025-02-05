@@ -164,12 +164,16 @@ class Session(models.Model):
         '''
         setup world state
         '''
+        parameter_set = self.parameter_set.json()
+
         self.world_state = {"last_update":str(datetime.now()), 
                             "last_store":str(datetime.now()),
                             "session_players":{},
                             "session_players_order":[],
                             "current_period":1,
+                            "groups":{},
                             "current_experiment_phase":ExperimentPhase.INSTRUCTIONS if self.parameter_set.show_instructions else ExperimentPhase.RUN,
+                            "current_period_block":parameter_set["parameter_set_periodblocks_order"][0],
                             "time_remaining":self.parameter_set.period_length,
                             "timer_running":False,
                             "timer_history":[],
@@ -194,7 +198,9 @@ class Session(models.Model):
 
             v['range_start'] = 1
             v['range_end'] = 1
+            v['revenues'] = []
             v['earnings'] = 0
+            v['cost'] = 0
             v['parameter_set_player_id'] = i['parameter_set_player__id']
             
             self.world_state["session_players"][str(i['id'])] = v
@@ -212,6 +218,44 @@ class Session(models.Model):
 
 
         self.save()
+
+        #test code
+        self.update_treatment()
+        self.update_revenues()
+
+    def update_treatment(self):
+        '''
+        update treatment
+        '''
+        
+        world_state = self.world_state
+        parameter_set = self.parameter_set.json()
+        period_block = parameter_set["parameter_set_periodblocks"][str(world_state["current_period_block"])]
+        treatment = parameter_set["parameter_set_treatments"][str(period_block["parameter_set_treatment"])]
+        costs = treatment["costs"].split(",")
+        world_state["groups"] = {}
+
+        
+        for i in world_state["session_players"]:
+            session_player = world_state["session_players"][i]
+            parameter_set_player = parameter_set["parameter_set_players"][str(session_player["parameter_set_player_id"])]
+            parameter_set_player_group = parameter_set_player["parameter_set_player_groups"][str(period_block["id"])]
+
+            session_player["cost"] = costs[parameter_set_player_group["position"]-1]
+
+            #setup groups
+            if parameter_set_player_group["group_number"] not in world_state["groups"]:
+                world_state["groups"][parameter_set_player_group["group_number"]] = []
+            
+            world_state["groups"][parameter_set_player_group["group_number"]].append(i)
+
+        self.save()
+
+    def update_revenues(self):
+        '''
+        update revenues
+        '''
+        pass
 
     def reset_experiment(self):
         '''

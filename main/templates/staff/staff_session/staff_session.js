@@ -302,11 +302,13 @@ let app = Vue.createApp({
 
             if(app.session.started)
             {
-                
+                current_treatment = app.session.parameter_set.parameter_set_treatments_order[0];
+                current_group = 1;
             }
             else
             {
                 current_treatment = app.session.parameter_set.parameter_set_treatments_order[0];
+                current_group = 1;
             }
 
             if(!app.first_load_done)

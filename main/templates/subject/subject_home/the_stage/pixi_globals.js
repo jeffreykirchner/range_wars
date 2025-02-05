@@ -16,6 +16,7 @@ let axis_style = {fontFamily : 'Arial', fontSize: 16, fill : 0x000000, align : '
 
 let origin_x = 0;
 let origin_y = 0;
+let box_width = 0;                  //width of a single box
 
 let current_treatment = null;       //current treatment
-let box_width = 0;                  //width of a single box
+let current_group = 1;              //current group

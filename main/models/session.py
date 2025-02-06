@@ -262,6 +262,11 @@ class Session(models.Model):
         treatment = parameter_set["parameter_set_treatments"][str(period_block["parameter_set_treatment"])]
         values = treatment["values"].split(",")
 
+        #reset revenues to zero for all values
+        for i in world_state["session_players"]:
+            world_state["session_players"][i]["revenues"] = {str(i): 0 for i in values}
+
+        #update revenues for each group at each value
         for g in world_state["groups"]:
             group = world_state["groups"][g]
 
@@ -271,7 +276,7 @@ class Session(models.Model):
                 for p in group:
                     session_player = world_state["session_players"][p]
 
-                    if session_player["range_start"] <= int(values[t]) <= session_player["range_end"]:
+                    if session_player["range_start"] <= t <= session_player["range_end"]:
                         players_in_range.append(p)
 
                 for p in players_in_range:

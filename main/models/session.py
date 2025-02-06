@@ -242,6 +242,7 @@ class Session(models.Model):
             parameter_set_player_group = parameter_set_player["parameter_set_player_groups"][str(period_block["id"])]
 
             session_player["cost"] = costs[parameter_set_player_group["position"]-1]
+            session_player["revenues"] = {str(i): 0 for i in treatment["values"].split(",")}
 
             #setup groups
             if parameter_set_player_group["group_number"] not in world_state["groups"]:
@@ -255,7 +256,29 @@ class Session(models.Model):
         '''
         update revenues
         '''
-        pass
+        world_state = self.world_state
+        parameter_set = self.parameter_set.json()
+        period_block = parameter_set["parameter_set_periodblocks"][str(world_state["current_period_block"])]
+        treatment = parameter_set["parameter_set_treatments"][str(period_block["parameter_set_treatment"])]
+        values = treatment["values"].split(",")
+
+        for g in world_state["groups"]:
+            group = world_state["groups"][g]
+
+            for t in range(len(values)):
+                players_in_range = []
+
+                for p in group:
+                    session_player = world_state["session_players"][p]
+
+                    if session_player["range_start"] <= int(values[t]) <= session_player["range_end"]:
+                        players_in_range.append(p)
+
+                for p in players_in_range:
+                    session_player = world_state["session_players"][p]
+                    session_player["revenues"][values[t]] = 1/len(players_in_range)
+
+        self.save()
 
     def reset_experiment(self):
         '''

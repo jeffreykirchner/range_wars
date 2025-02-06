@@ -208,14 +208,13 @@ class Session(models.Model):
         
         #test code
         range_start = 0
-        range_end = 20
+        range_end = 25
         for i in self.world_state["session_players"]:
             self.world_state["session_players"][i]["range_start"] = range_start
             self.world_state["session_players"][i]["range_end"] = range_end
 
-            range_start += 10
-            range_end += 10
-
+            range_start += -5
+            range_end += 30
 
         self.save()
 

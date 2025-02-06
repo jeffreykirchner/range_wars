@@ -35,7 +35,15 @@
         
         <!-- the pixi stage -->
         <div class="row">
-            <div class="col">           
+            <div class="col">         
+                <div id="chat_overlay">
+                    <div class="text-center fw-bold">
+                        Chat
+                    </div>
+                    
+                    {%include "subject/subject_home/the_stage/chat_overlay.html"%}
+                </div>
+
                 <canvas class="field" 
                         key="sd_graph" 
                         id="sd_graph_id" 

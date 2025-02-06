@@ -52,8 +52,6 @@ let app = Vue.createApp({
 
                     // modals
                     end_game_modal : null,
-                    interaction_modal : null,
-                    insteration_start_modal : null,
                     help_modal : null,
                     test_mode : {%if session.parameter_set.test_mode%}true{%else%}false{%endif%},
 
@@ -209,14 +207,10 @@ let app = Vue.createApp({
         */
         do_first_load: function do_first_load()
         {           
-            app.end_game_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('end_game_modal'), {keyboard: false})   
-            app.interaction_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('interaction_modal'), {keyboard: false})
-            app.interaction_start_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('interaction_start_modal'), {keyboard: false})          
+            app.end_game_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('end_game_modal'), {keyboard: false})               
             app.help_modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('help_modal'), {keyboard: false})
             
             document.getElementById('end_game_modal').addEventListener('hidden.bs.modal', app.hide_end_game_modal);
-            document.getElementById('interaction_modal').addEventListener('hidden.bs.modal', app.hide_interaction_modal);
-            document.getElementById('interaction_start_modal').addEventListener('hidden.bs.modal', app.hide_interaction_start_modal);
 
             {%if session.parameter_set.test_mode%} setTimeout(app.do_test_mode, app.random_number(1000 , 1500)); {%endif%}
 
@@ -267,7 +261,7 @@ let app = Vue.createApp({
          */
         do_reload: function do_reload()
         {
-            app.update_subject_status_overlay();
+ 
         },
 
         /** send winsock request to get session info
@@ -286,11 +280,13 @@ let app = Vue.createApp({
 
             if(app.session.started)
             {
-               
+                current_treatment = app.session.parameter_set.parameter_set_treatments_order[0];
+                current_group = 1;
             }
             else
             {
-               
+                current_treatment = app.session.parameter_set.parameter_set_treatments_order[0];
+                current_group = 1;
             }            
             
             if(app.session.world_state.current_experiment_phase != 'Done')
@@ -334,9 +330,6 @@ let app = Vue.createApp({
             app.take_get_session(message_data);
 
             app.end_game_modal.hide();        
-            
-            app.interaction_modal.hide();
-            app.interaction_start_modal.hide();
             app.help_modal.hide();
 
             app.remove_all_notices();
@@ -380,7 +373,7 @@ let app = Vue.createApp({
             }            
 
             Vue.nextTick(() => {
-                app.update_subject_status_overlay();
+               
             });
 
 
@@ -445,7 +438,6 @@ let app = Vue.createApp({
         show_end_game_modal: function show_end_game_modal(){
             if(app.end_game_modal_visible) return;
    
-            app.interaction_modal.hide();
             app.help_modal.hide();
 
             app.end_game_modal.toggle();
@@ -565,7 +557,7 @@ let app = Vue.createApp({
          * handle window resize event
          */
         handleResize: function handleResize(){
-            app.update_subject_status_overlay();
+            
         },
 
     },

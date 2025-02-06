@@ -85,6 +85,7 @@ setup_pixi_sheets: function setup_pixi_sheets(){
 
     //treatment
     app.setup_treatment();
+    app.update_treatment();
 
     {%if DEBUG or session.parameter_set.test_mode%}
     //fps counter

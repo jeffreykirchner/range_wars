@@ -1,10 +1,12 @@
+//pixi globals
 let pixi_app = null;                           //pixi app   
 let pixi_container_main = null;                //main container for pixi
 let pixi_text_emitter = {};                    //text emitter json
 let pixi_text_emitter_key = 0;
 let pixi_fps_label = null;                     //fps label
 let pixi_axis = null;                          //axis
-let pixi_boxes = [];                            //boxes
+let pixi_boxes = [];                           //boxes
+let pixi_group_summary = null;                 //group summary graph
 
 let x_axis_margin = 50;             //margin between x axis and canvas edge
 let y_axis_margin = 50;             //margin between y axis and canvas edge

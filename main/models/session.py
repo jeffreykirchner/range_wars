@@ -198,9 +198,12 @@ class Session(models.Model):
 
             v['range_start'] = 1
             v['range_end'] = 1
-            v['revenues'] = []
-            v['earnings'] = 0
-            v['cost'] = 0
+            v['revenues'] = []             #revenue share for each value
+            v['earnings'] = 0              #total earnings
+            v['cost'] = 0                  #cost for each location in range 
+            v['total_cost'] = 0            #total cost
+            v['total_revenue'] = 0         #total revenue 
+            v['total_profit'] = 0          #total profit
             v['parameter_set_player_id'] = i['parameter_set_player__id']
             
             self.world_state["session_players"][str(i['id'])] = v
@@ -209,12 +212,23 @@ class Session(models.Model):
         #test code
         range_start = 0
         range_end = 25
+        min_range = 0
+        max_range = 90
         for i in self.world_state["session_players"]:
             self.world_state["session_players"][i]["range_start"] = range_start
             self.world_state["session_players"][i]["range_end"] = range_end
 
             range_start += -5
             range_end += 30
+
+            if range_start < min_range:
+                range_start = min_range
+            if range_start > max_range:
+                range_start = max_range
+            if range_end > max_range:
+                range_end = max_range
+            if range_end < min_range:
+                range_end = min_range
 
         self.save()
 
@@ -255,6 +269,8 @@ class Session(models.Model):
         '''
         update revenues
         '''
+        logger = logging.getLogger(__name__)
+
         world_state = self.world_state
         parameter_set = self.parameter_set.json()
         period_block = parameter_set["parameter_set_periodblocks"][str(world_state["current_period_block"])]
@@ -281,6 +297,27 @@ class Session(models.Model):
                 for p in players_in_range:
                     session_player = world_state["session_players"][p]
                     session_player["revenues"][values[t]] = 1/len(players_in_range)
+        
+        #update total revenue for each player
+        for i in world_state["session_players"]:
+            session_player = world_state["session_players"][i]
+            session_player["total_revenue"] = 0
+            session_player["total_cost"] = (session_player["range_end"] - session_player["range_start"] + 1) * float(session_player["cost"])
+            session_player["total_cost"] = round_up(Decimal(session_player["total_cost"]), 2)
+
+            for r in range(session_player["range_start"], session_player["range_end"]+1):
+                value = values[r]
+
+                # try:
+                #     value = values[r]
+                # except:
+                #     logger.info(f"Error: {r} {values}")
+                #     continue
+                revenue = session_player["revenues"][values[r]]
+                session_player["total_revenue"] += (float(value) * float(revenue))
+
+            session_player["total_revenue"] = round_up(Decimal(session_player["total_revenue"]), 2)
+            session_player["total_profit"] = round_up(session_player["total_revenue"] - session_player["total_cost"], 2)
 
         self.save()
 

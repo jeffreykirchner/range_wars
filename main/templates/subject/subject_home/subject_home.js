@@ -56,9 +56,6 @@ let app = Vue.createApp({
                     help_modal : null,
                     test_mode : {%if session.parameter_set.test_mode%}true{%else%}false{%endif%},
 
-                    //last time screen was tapped
-                    last_subject_pointer_tap : Date.now(),
-
                     //pixi
                     canvas_width  : null,
                     canvas_height : null,
@@ -71,13 +68,6 @@ let app = Vue.createApp({
                     stage_height : 10000,
                     scroll_direction : {x:0, y:0},
                     draw_bounding_boxes: false,
-
-                    //selected avatar
-                    selected_player : {
-                        session_player:null,
-                        parameter_set_player:null,
-                        interaction_amount:null,
-                    },
 
                     //forms
                     interaction_form : {direction:null, amount:null},
@@ -526,6 +516,7 @@ let app = Vue.createApp({
         {%include "subject/subject_home/the_stage/helpers.js"%}
         {%include "subject/subject_home/the_stage/axis.js"%}
         {%include "subject/subject_home/the_stage/treatments.js"%}
+        {%include "subject/subject_home/the_stage/group_summary.js"%}
         {%include "subject/subject_home/the_stage/subject.js"%}
         {%include "subject/subject_home/the_stage/text_emitter.js"%}
         {%include "subject/subject_home/the_stage/notices.js"%}

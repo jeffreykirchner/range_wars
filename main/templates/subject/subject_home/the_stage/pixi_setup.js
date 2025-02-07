@@ -87,6 +87,11 @@ setup_pixi_sheets: function setup_pixi_sheets(){
     app.setup_treatment();
     app.update_treatment();
 
+    if(app.pixi_mode=="subject")
+    {
+        app.setup_group_summary();
+    }
+
     {%if DEBUG or session.parameter_set.test_mode%}
     //fps counter
     let text_style = {

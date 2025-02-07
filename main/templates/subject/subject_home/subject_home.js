@@ -42,6 +42,7 @@ let app = Vue.createApp({
 
                     chat_text : "",
                     chat_button_label : "Chat",
+                    chat_history : [],
 
                     end_game_modal_visible : false,
 
@@ -313,6 +314,15 @@ let app = Vue.createApp({
                 Vue.nextTick(() => {
                     app.do_reload();
                 });
+            }
+
+            //test code
+            let my_group = 1;
+            for(let i=0; i<20; i++)
+            {
+                let random_number = app.random_number(0, app.session.world_state.groups[1].length-1);
+                let chat = {session_player:app.session.world_state.groups[1][random_number], message:"talk " + i};
+                app.chat_history.unshift(chat);
             }
         },
 

@@ -516,6 +516,7 @@ let app = Vue.createApp({
         {%include "subject/subject_home/the_stage/helpers.js"%}
         {%include "subject/subject_home/the_stage/axis.js"%}
         {%include "subject/subject_home/the_stage/treatments.js"%}
+        {%include "subject/subject_home/the_stage/selection_range.js"%}
         {%include "subject/subject_home/the_stage/group_summary.js"%}
         {%include "subject/subject_home/the_stage/subject.js"%}
         {%include "subject/subject_home/the_stage/text_emitter.js"%}

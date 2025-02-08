@@ -443,6 +443,7 @@ let app = Vue.createApp({
         {%include "subject/subject_home/the_stage/pixi_setup.js"%}
         {%include "subject/subject_home/the_stage/axis.js"%}
         {%include "subject/subject_home/the_stage/treatments.js"%}
+        {%include "subject/subject_home/the_stage/selection_range.js"%}
         {%include "subject/subject_home/the_stage/helpers.js"%}
        
         {%include "subject/subject_home/the_stage/staff.js"%}

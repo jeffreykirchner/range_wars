@@ -7,8 +7,9 @@ let pixi_fps_label = null;                     //fps label
 let pixi_axis = null;                          //axis
 let pixi_boxes = [];                           //boxes
 let pixi_group_summary = null;                 //group summary graph
+let pixi_selection_ranges = [];                //selection range graph
 
-let x_axis_margin = 50;             //margin between x axis and canvas edge
+let x_axis_margin = 100;             //margin between x axis and canvas edge
 let y_axis_margin = 50;             //margin between y axis and canvas edge
 let other_margin = 10;              //margin between graph and canvas edge on right and top
 

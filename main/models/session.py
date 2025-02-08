@@ -229,6 +229,10 @@ class Session(models.Model):
                 range_end = max_range
             if range_end < min_range:
                 range_end = min_range
+        
+        for i in self.world_state["session_players"]:
+            self.world_state["session_players"][i]["range_start"] = 3
+            break
 
         self.save()
 

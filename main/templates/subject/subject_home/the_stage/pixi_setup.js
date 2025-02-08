@@ -86,6 +86,7 @@ setup_pixi_sheets: function setup_pixi_sheets(){
     //treatment
     app.setup_treatment();
     app.update_treatment();
+    app.setup_selection_range();
 
     if(app.pixi_mode=="subject")
     {

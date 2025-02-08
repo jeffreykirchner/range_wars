@@ -13,7 +13,7 @@ setup_group_summary : function setup_group_summary(){
     let small_margin = 5;
 
     let world_state = app.session.world_state;
-    let current_group_memebers = world_state["groups"][current_group];
+    let current_group_memebers = world_state.groups[current_group];
 
     //border
     let box = new PIXI.Graphics();
@@ -72,7 +72,7 @@ setup_group_summary : function setup_group_summary(){
     pixi_group_summary.addChild(center_line);
 
     //draw bars
-    for(let i in current_group_memebers)
+    for(let i=current_group_memebers.length-1;i>=0;i--)
     {
         let player_id = current_group_memebers[i];
         let player = world_state.session_players[player_id];      

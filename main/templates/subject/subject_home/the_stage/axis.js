@@ -27,9 +27,9 @@ setup_axis : function setup_axis(){
     pixi_axis = axis;
 
     //axis labels
-    let x_label = new PIXI.Text({text:"Range",style:axis_style});
-    x_label.position.set(y_axis_margin + axis_width/2, app.canvas_height - 23);
-    pixi_container_main.addChild(x_label);
+    // let x_label = new PIXI.Text({text:"Range",style:axis_style});
+    // x_label.position.set(y_axis_margin + axis_width/2, app.canvas_height - 23);
+    // pixi_container_main.addChild(x_label);
 
     let y_label = new PIXI.Text({text:"Value",style:axis_style});
     y_label.position.set(3, other_margin + axis_height/2);

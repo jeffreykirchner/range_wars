@@ -111,3 +111,11 @@ value_to_y : function value_to_y(value){
     return value * unit_rate;
 
 },
+
+/**
+ * convert range selection to x coordinate
+ */
+range_to_x : function range_to_x(range)
+{
+    return (box_width * range) + y_axis_margin;
+},

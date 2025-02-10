@@ -91,6 +91,7 @@ setup_pixi_sheets: function setup_pixi_sheets(textures){
     if(app.pixi_mode=="subject")
     {
         app.setup_group_summary();
+        app.setup_control_handles();
     }
 
     {%if DEBUG or session.parameter_set.test_mode%}
@@ -106,7 +107,7 @@ setup_pixi_sheets: function setup_pixi_sheets(textures){
 
     pixi_fps_label = fps_label;
     pixi_fps_label.position.set(10, app.canvas_height-25);
-    pixi_app.stage.addChild(pixi_fps_label);   
+    // pixi_app.stage.addChild(pixi_fps_label);   
     {%endif%}
 
     //start game loop

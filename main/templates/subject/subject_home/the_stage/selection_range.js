@@ -14,7 +14,7 @@ setup_selection_range : function setup_selection_range(){
 
     let margin = 5;
     let box_height = 5;
-    let start_y = origin_y + margin;
+    let start_y = origin_y + margin*2;
     
     //draw bars
     for(let i=current_group_memebers.length-1;i>=0;i--)
@@ -34,7 +34,7 @@ setup_selection_range : function setup_selection_range(){
                     2);
 
         range_bar.fill({color: parameter_set_player.hex_color});
-        range_bar.stroke({color: "lightgrey", width: 1});
+        range_bar.stroke({color: "lightgrey", width: 1,alignment: 0});
         pixi_selection_ranges.push(range_bar);
 
         pixi_container_main.addChild(range_bar);

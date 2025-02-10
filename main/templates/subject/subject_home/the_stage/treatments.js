@@ -23,9 +23,11 @@ setup_treatment : function setup_treatment(){
 
         outline.rect(0,0, box_width, y);
         outline.stroke({color: "lightgray",
-                        width: 2,
+                        width: 0.5,
                         lineJoin: "round",
+                        alignment: 1,
                         cap: "round"});
+        outline.zIndex = 999;
 
         box.x = start_location_x;
         box.y = origin_y - y;

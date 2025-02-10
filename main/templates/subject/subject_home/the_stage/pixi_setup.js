@@ -6,12 +6,13 @@
 setup_pixi: function setup_pixi(){    
     app.reset_pixi_app();
 
-    const textures_promise = PIXI.Assets.load([]);
+    PIXI.Assets.add({alias:'dash_tex', src:'{% static "dash_1.png"%}'});
+
+    const textures_promise = PIXI.Assets.load(['dash_tex']);
 
     textures_promise.then((textures) => {
         app.setup_pixi_sheets(textures);
        
-        
         if(app.pixi_mode!="subject")
         {
           
@@ -55,8 +56,9 @@ reset_pixi_app: async function reset_pixi_app(){
 
 /** load pixi sprite sheets
 */
-setup_pixi_sheets: function setup_pixi_sheets(){
+setup_pixi_sheets: function setup_pixi_sheets(textures){
 
+    app.pixi_textures = textures;
 
     pixi_container_main = new PIXI.Container();
     pixi_container_main.sortableChildren = true;
@@ -75,8 +77,6 @@ setup_pixi_sheets: function setup_pixi_sheets(){
 
     // staff controls
     if(app.pixi_mode=="staff"){
-
-       
         
     }
 

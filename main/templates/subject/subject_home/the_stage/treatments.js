@@ -76,7 +76,7 @@ update_treatment : function update_treatment(){
 
         let total_height = pixi_boxes[i].box.height;
         let height_per_player = total_height / group_members_in_box.length;
-        let start_y = total_height;
+        let start_y = total_height-height_per_player;
 
         //destory old boxes
         for(let p in pixi_boxes[i].revenue_boxes)
@@ -86,17 +86,40 @@ update_treatment : function update_treatment(){
 
         for(let p in group_members_in_box)
         {
-            let parameter_set_player_id = parameter_set_players_order[group_members_in_box[p]];
-            let parameter_set_player = parameter_set_players[parameter_set_player_id];
+            let session_player_id = current_group_memebers[group_members_in_box[p]];
+            let session_player = app.session.world_state.session_players[session_player_id];
+            let parameter_set_player = parameter_set_players[session_player.parameter_set_player_id];
 
-            let revenue_box = new PIXI.Graphics();
-            revenue_box.rect(0,start_y-height_per_player, box_width, height_per_player)
-            revenue_box.fill({color: parameter_set_player.hex_color});
+            let revenue_box = new PIXI.Container();
+
+            let revenue_box_fill = new PIXI.Graphics();
+            revenue_box_fill.rect(0, 0, box_width, height_per_player)
+            revenue_box_fill.fill({color: parameter_set_player.hex_color});
+
+            revenue_box.addChild(revenue_box_fill);
+
+            //draw cost line for local player
+            if(session_player_id == app.session_player.id)
+            {
+                let cost_box = new PIXI.Graphics();
+                let cost_y = app.value_to_y(session_player.cost);
+                cost_box.rect(0, height_per_player-cost_y, box_width, cost_y);
+                cost_box.fill({color: "white", alpha: 0.5});
+                revenue_box.addChild(cost_box);
+
+                cost_box = new PIXI.Graphics();
+                cost_box.rect(0, height_per_player-cost_y, box_width, 1);
+                cost_box.fill({color: parameter_set_player.hex_color, alpha: 0.5});
+                revenue_box.addChild(cost_box);
+            }
+
+            revenue_box.x = 0;
+            revenue_box.y = start_y;
+
+            pixi_boxes[i].revenue_boxes[p] = revenue_box;
+            box.addChild(revenue_box);
 
             start_y -= height_per_player;
-
-            box.addChild(revenue_box);
-            pixi_boxes[i].revenue_boxes[p] = revenue_box;
         }
     }
 },

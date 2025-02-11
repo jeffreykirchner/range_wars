@@ -2,7 +2,7 @@ setup_axis : function setup_axis(){
     let treatment = app.session.parameter_set.parameter_set_treatments[current_treatment];
 
     //setup sizes
-    axis_width = app.canvas_width - y_axis_margin - other_margin;
+    axis_width = app.canvas_width - y_axis_margin - right_margin;
     axis_height = app.canvas_height - x_axis_margin - other_margin;
 
     //setup origin
@@ -14,7 +14,7 @@ setup_axis : function setup_axis(){
 
     axis.moveTo(origin_x, other_margin);
     axis.lineTo(origin_x, origin_y);
-    axis.lineTo(app.canvas_width - other_margin, origin_y);
+    axis.lineTo(axis_width + origin_x, origin_y);
     
     axis.stroke({color: "black", 
                  width: 4, 

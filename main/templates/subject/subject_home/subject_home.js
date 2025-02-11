@@ -272,13 +272,13 @@ let app = Vue.createApp({
             if(app.session.started)
             {
                 current_treatment = app.session.parameter_set.parameter_set_treatments_order[0];
-                current_group = 1;
             }
             else
             {
                 current_treatment = app.session.parameter_set.parameter_set_treatments_order[0];
-                current_group = 1;
-            }            
+            } 
+            
+            app.update_group_order();
             
             if(app.session.world_state.current_experiment_phase != 'Done')
             {
@@ -314,6 +314,29 @@ let app = Vue.createApp({
                 let chat = {session_player:app.session.world_state.groups[1][random_number], message:"talk " + i};
                 app.chat_history.unshift(chat);
             }
+        },
+
+        /**
+         * put local player at the beginning of the group order
+         */
+        update_group_order: function update_group_order(){
+            let current_period_block = app.session.world_state.current_period_block;
+            let session_player = app.session.world_state.session_players[app.session_player.id];
+            let parameter_set_player = app.session.parameter_set.parameter_set_players[session_player.parameter_set_player_id]; 
+
+            current_group = parameter_set_player.parameter_set_player_groups[current_period_block].group_number;
+
+            //move local player to front of group list  
+            let group = app.session.world_state.groups[current_group];
+            let index = group.indexOf(app.session_player.id.toString());
+            if(index != -1)
+            {                    
+                group.splice(index, 1);
+                group.unshift(app.session_player.id);
+            }
+            
+
+            
         },
 
         /** update start status

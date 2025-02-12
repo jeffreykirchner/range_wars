@@ -87,17 +87,32 @@ setup_control_handles : function setup_control_handles(){
 
     app.update_left_handle_position();
     app.update_right_handle_position();
+},
 
-    //add interactivity
-    pixi_left_handle.eventMode = 'dynamic';
-    pixi_right_handle.eventMode = 'static';
+/**
+ * check if the pointer is over the left handle
+ */
+is_over_left_handle: function is_over_left_handle(pt){
+   if(pt.x >= pixi_left_handle.x && pt.x <= pixi_left_handle.x + pixi_left_handle.width &&
+      pt.y >= pixi_left_handle.y && pt.y <= pixi_left_handle.y + pixi_left_handle.height)
+   {
+        return true;
+   }
 
-    pixi_left_handle.on("pointerdown", app.pixi_left_handle_pointerdown);
-    pixi_left_handle.on('pointermove', app.pixi_left_handle_pointermove);
+    return false;
+},
 
-    pixi_right_handle.on("pointerdown", app.pixi_right_handle_drag_start);
-    // pixi_right_handle.on('pointermove', app.pixi_container_main_move);
+/**
+ * check if the pointer is over the right handle
+ */
+is_over_right_handle: function is_over_right_handle(pt){
+    if(pt.x >= pixi_right_handle.x && pt.x <= pixi_right_handle.x + pixi_right_handle.width &&
+       pt.y >= pixi_right_handle.y && pt.y <= pixi_right_handle.y + pixi_right_handle.height)
+    {
+         return true;
+    }
 
+     return false;
 },
 
 /**
@@ -129,22 +144,18 @@ pixi_left_handle_pointerdown: function pixi_left_handle_pointerdown(event){
 },
 
 /**
- * pointer move on left handle
+ * pointer down on right handle
  */
-pixi_left_handle_pointermove: function pixi_left_handle_pointermove(event){
-    if(app.selection_handle == "left")
-    {
-        let local_pos = event.data.getLocalPosition(event.currentTarget);
-        app.pixi_left_handle_drag(local_pos.x + pixi_left_handle.x);
-    }
-    
+pixi_right_handle_pointerdown: function pixi_right_handle_pointerdown(event){
+    pixi_right_handle.alpha = 0.5;
+    app.selection_handle = "right";
 },
 
 /**
  * drag the left handle action
  */
 pixi_left_handle_drag: function pixi_left_handle_drag(x){
-    let r = app.x_to_range(x);
+    let r = app.x_to_range(x + pixi_left_handle.width/2);
 
     let session_player = app.session.world_state.session_players[app.session_player.id];
 
@@ -155,25 +166,57 @@ pixi_left_handle_drag: function pixi_left_handle_drag(x){
     }
 },
 
-pixi_right_handle_drag_start: function pixi_right_handle_drag_start(event){
-    pixi_right_handle.alpha = 0.5;
-    app.selection_handle = "right";
+/**
+ * drag the right handle action
+ */
+pixi_right_handle_drag: function pixi_right_handle_drag(x){
+    let r = app.x_to_range(x - pixi_right_handle.width/2);
+
+    let session_player = app.session.world_state.session_players[app.session_player.id];
+
+    if(r != session_player.range_end)
+    {
+        session_player.range_end = r;
+        app.update_right_handle_position();
+    }
 },
 
-pixi_container_pointerup: function pixi_container_pointerup(event){
+/**
+ * pointer up on the main container
+ */
+pixi_container_main_pointerup: function pixi_container_main_pointerup(event){
     pixi_left_handle.alpha = 1;
     pixi_right_handle.alpha = 1;
     app.selection_handle = null;
 },
 
-pixi_container_main_move: function pixi_container_main_move(event){
+/**
+ * handle pointer down on the main container
+ */
+pixi_container_main_pointerdown: function pixi_container_main_pointerdown(event){
+    let local_pos = event.data.getLocalPosition(event.currentTarget);
+    let pt = {x:local_pos.x, y:local_pos.y};
+
+    if(app.is_over_left_handle(local_pos))
+    {
+        app.pixi_left_handle_pointerdown(event);
+    }
+    else if(app.is_over_right_handle(local_pos))
+    {
+        app.pixi_right_handle_pointerdown(event);
+    }
+},
+
+pixi_container_main_pointermove: function pixi_container_main_pointermove(event){
     if(app.selection_handle == "left")
     {
-        let local_pos = event.data.getLocalPosition(event.currentTarget);
-        app.pixi_left_handle_drag(local_pos.x);
+        // let local_pos = event.data.getLocalPosition(event.currentTarget);
+        app.pixi_left_handle_drag(event.data.getLocalPosition(event.currentTarget).x);
     }
     else if(app.selection_handle == "right")
     {
-        
+        // let local_pos = event.data.getLocalPosition(event.currentTarget);
+        app.pixi_right_handle_drag(event.data.getLocalPosition(event.currentTarget).x);
     }
 },
+

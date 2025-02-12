@@ -6,9 +6,10 @@ setup_axis : function setup_axis(){
     pixi_container_main.addChild(background);
 
     background.eventMode = 'static';
-    background.on('pointerup', app.pixi_container_pointerup);    
-    // background.on('pointerout', app.pixi_container_pointerup);
-    background.on('pointermove', app.pixi_container_main_move);
+    background.on('pointerup', app.pixi_container_main_pointerup);    
+    background.on('pointerout', app.pixi_container_main_pointerup);
+    background.on('pointerdown', app.pixi_container_main_pointerdown);
+    background.on('pointermove', app.pixi_container_main_pointermove);
 
     let treatment = app.session.parameter_set.parameter_set_treatments[current_treatment];
 

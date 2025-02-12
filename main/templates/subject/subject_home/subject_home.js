@@ -13,6 +13,8 @@ let pixi_mini_map = {container:null};               //mini map container
 let pixi_notices = {container:null, notices:{}};                         //notices
 let pixi_notices_key = 0;
 
+let selection_handle = null;                    //the currently selected handle
+
 let last_location_update = Date.now();          //last time location was updated
 
 //prevent right click
@@ -307,13 +309,13 @@ let app = Vue.createApp({
             }
 
             //test code
-            let my_group = 1;
-            for(let i=0; i<20; i++)
-            {
-                let random_number = app.random_number(0, app.session.world_state.groups[1].length-1);
-                let chat = {session_player:app.session.world_state.groups[1][random_number], message:"talk " + i};
-                app.chat_history.unshift(chat);
-            }
+            // let my_group = 1;
+            // for(let i=0; i<20; i++)
+            // {
+            //     let random_number = app.random_number(0, app.session.world_state.groups[1].length-1);
+            //     let chat = {session_player:app.session.world_state.groups[1][random_number], message:"talk " + i};
+            //     app.chat_history.unshift(chat);
+            // }
         },
 
         /**
@@ -324,11 +326,11 @@ let app = Vue.createApp({
             let session_player = app.session.world_state.session_players[app.session_player.id];
             let parameter_set_player = app.session.parameter_set.parameter_set_players[session_player.parameter_set_player_id]; 
 
-            current_group = parameter_set_player.parameter_set_player_groups[current_period_block].group_number;
+            current_group = session_player.group_number;
 
             //move local player to front of group list  
             let group = app.session.world_state.groups[current_group];
-            let index = group.indexOf(app.session_player.id.toString());
+            let index = group.indexOf(app.session_player.id);
             if(index != -1)
             {                    
                 group.splice(index, 1);

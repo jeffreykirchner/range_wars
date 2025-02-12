@@ -1,4 +1,15 @@
 setup_axis : function setup_axis(){
+    //add white background
+    let background = new PIXI.Graphics();    
+    background.rect(0, 0, app.canvas_width, app.canvas_height);
+    background.fill(0xFFFFFF);
+    pixi_container_main.addChild(background);
+
+    background.eventMode = 'static';
+    background.on('pointerup', app.pixi_container_pointerup);    
+    // background.on('pointerout', app.pixi_container_pointerup);
+    background.on('pointermove', app.pixi_container_main_move);
+
     let treatment = app.session.parameter_set.parameter_set_treatments[current_treatment];
 
     //setup sizes

@@ -62,6 +62,7 @@ setup_pixi_sheets: function setup_pixi_sheets(textures){
 
     pixi_container_main = new PIXI.Container();
     pixi_container_main.sortableChildren = true;
+    // pixi_container_main.eventMode = 'static';
 
     pixi_app.stage.addChild(pixi_container_main);
    

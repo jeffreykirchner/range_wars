@@ -144,3 +144,14 @@ range_to_x : function range_to_x(range)
 {
     return (box_width * range) + y_axis_margin;
 },
+
+/**
+ * convert x value to range
+ */
+x_to_range : function x_to_range(x)
+{
+    if(x < y_axis_margin) return 0;
+    if(x > (axis_width + y_axis_margin)) return app.session.parameter_set.parameter_set_treatments[current_treatment].values.length - 1;
+
+    return Math.floor((x - y_axis_margin) / box_width);
+},

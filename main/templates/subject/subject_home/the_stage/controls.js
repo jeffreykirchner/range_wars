@@ -15,8 +15,8 @@ setup_control_handles : function setup_control_handles(){
     let handle_width = 50;
     let handle_height = 40;
 
-    let left_handle_x = app.range_to_x(session_player.range_start);
-    let right_handle_x = app.range_to_x(session_player.range_end) + box_width + 3;
+    // let left_handle_x = app.range_to_x(session_player.range_start);
+    // let right_handle_x = app.range_to_x(session_player.range_end) + box_width + 3;
     let y = origin_y + x_axis_margin/2;
 
     //left handle
@@ -48,7 +48,7 @@ setup_control_handles : function setup_control_handles(){
     left_triangle.fill({color: "black"});
     pixi_left_handle.addChild(left_triangle);
 
-    pixi_left_handle.position.set(left_handle_x - pixi_left_handle.width, origin_y);
+    // pixi_left_handle.position.set(left_handle_x - pixi_left_handle.width, origin_y);
 
     pixi_container_main.addChild(pixi_left_handle);
     
@@ -81,8 +81,99 @@ setup_control_handles : function setup_control_handles(){
     right_triangle.fill({color: "black"});
     pixi_right_handle.addChild(right_triangle);
 
-    pixi_right_handle.position.set(right_handle_x, origin_y);
+    // pixi_right_handle.position.set(right_handle_x, origin_y);
 
     pixi_container_main.addChild(pixi_right_handle);
 
+    app.update_left_handle_position();
+    app.update_right_handle_position();
+
+    //add interactivity
+    pixi_left_handle.eventMode = 'dynamic';
+    pixi_right_handle.eventMode = 'static';
+
+    pixi_left_handle.on("pointerdown", app.pixi_left_handle_pointerdown);
+    pixi_left_handle.on('pointermove', app.pixi_left_handle_pointermove);
+
+    pixi_right_handle.on("pointerdown", app.pixi_right_handle_drag_start);
+    // pixi_right_handle.on('pointermove', app.pixi_container_main_move);
+
+},
+
+/**
+ * upldate left handle position
+ */
+update_left_handle_position : function update_left_handle_position(){
+    let session_player = app.session.world_state.session_players[app.session_player.id];
+    let left_handle_x = app.range_to_x(session_player.range_start);
+
+    pixi_left_handle.position.set(left_handle_x - pixi_left_handle.width, origin_y);
+},
+
+/**
+ * update right handle position
+ */
+update_right_handle_position : function update_right_handle_position(){
+    let session_player = app.session.world_state.session_players[app.session_player.id];
+    let right_handle_x = app.range_to_x(session_player.range_end) + box_width + 3;
+
+    pixi_right_handle.position.set(right_handle_x, origin_y);
+},
+
+/**
+ * pointer down on left handle
+ */
+pixi_left_handle_pointerdown: function pixi_left_handle_pointerdown(event){
+    pixi_left_handle.alpha = 0.5;
+    app.selection_handle = "left";
+},
+
+/**
+ * pointer move on left handle
+ */
+pixi_left_handle_pointermove: function pixi_left_handle_pointermove(event){
+    if(app.selection_handle == "left")
+    {
+        let local_pos = event.data.getLocalPosition(event.currentTarget);
+        app.pixi_left_handle_drag(local_pos.x + pixi_left_handle.x);
+    }
+    
+},
+
+/**
+ * drag the left handle action
+ */
+pixi_left_handle_drag: function pixi_left_handle_drag(x){
+    let r = app.x_to_range(x);
+
+    let session_player = app.session.world_state.session_players[app.session_player.id];
+
+    if(r != session_player.range_start)
+    {
+        session_player.range_start = r;
+        app.update_left_handle_position();
+    }
+},
+
+pixi_right_handle_drag_start: function pixi_right_handle_drag_start(event){
+    pixi_right_handle.alpha = 0.5;
+    app.selection_handle = "right";
+},
+
+pixi_container_pointerup: function pixi_container_pointerup(event){
+    pixi_left_handle.alpha = 1;
+    pixi_right_handle.alpha = 1;
+    app.selection_handle = null;
+},
+
+pixi_container_main_move: function pixi_container_main_move(event){
+    if(app.selection_handle == "left")
+    {
+        let local_pos = event.data.getLocalPosition(event.currentTarget);
+        app.pixi_left_handle_drag(local_pos.x);
+    }
+    else if(app.selection_handle == "right")
+    {
+        
+    }
 },

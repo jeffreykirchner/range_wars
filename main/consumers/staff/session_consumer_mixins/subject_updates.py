@@ -38,7 +38,6 @@ class SubjectUpdatesMixin():
             try:
                 player_id = self.session_players_local[event["player_key"]]["id"]
                 event_data = event["message_text"]
-                current_location = event_data["current_location"]
             except:
                 logger.warning(f"chat: invalid data, {event['message_text']}")
                 status = "fail"
@@ -59,25 +58,9 @@ class SubjectUpdatesMixin():
 
         if status == "success":
             session_player = self.world_state_local["session_players"][str(player_id)]
-            session_player["current_location"] = current_location
             
             result["text"] = strip_tags(event_data["text"])
-            result["nearby_players"] = []
-
-            #format text for chat bubbles
-            # wrapper = TextWrapper(width=13, max_lines=6)
-            # result['text'] = wrapper.fill(text=result['text'])
-
-            #find nearby players
-            session_players = self.world_state_local["session_players"]
-            for i in session_players:
-                if i != str(result["sender_id"]):
-                    source_pt = [session_players[str(result["sender_id"])]["current_location"]["x"], session_players[str(result["sender_id"])]["current_location"]["y"]]
-                    target_pt = [session_players[i]["current_location"]["x"], session_players[i]["current_location"]["y"]]
-                    
-                    if math.dist(source_pt, target_pt) <= 1000:
-                        result["nearby_players"].append(i)
-
+            
             self.session_events.append(SessionEvent(session_id=self.session_id, 
                                                     session_player_id=result["sender_id"],
                                                     type="chat",
@@ -85,7 +68,7 @@ class SubjectUpdatesMixin():
                                                     time_remaining=self.world_state_local["time_remaining"],
                                                     data=result))
             
-            target_list = self.world_state_local["session_players_order"]
+            target_list = self.world_state_local["groups"][str(session_player["group_number"])]
 
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False, 

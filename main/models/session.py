@@ -204,6 +204,7 @@ class Session(models.Model):
             v['total_cost'] = 0            #total cost
             v['total_revenue'] = 0         #total revenue 
             v['total_profit'] = 0          #total profit
+            v['group_number'] = 0          #current group number
             v['parameter_set_player_id'] = i['parameter_set_player__id']
             
             self.world_state["session_players"][str(i['id'])] = v
@@ -265,7 +266,8 @@ class Session(models.Model):
             if parameter_set_player_group["group_number"] not in world_state["groups"]:
                 world_state["groups"][parameter_set_player_group["group_number"]] = []
             
-            world_state["groups"][parameter_set_player_group["group_number"]].append(i)
+            world_state["groups"][parameter_set_player_group["group_number"]].append(int(i))
+            session_player["group_number"] = parameter_set_player_group["group_number"]
 
         self.save()
 
@@ -293,13 +295,13 @@ class Session(models.Model):
                 players_in_range = []
 
                 for p in group:
-                    session_player = world_state["session_players"][p]
+                    session_player = world_state["session_players"][str(p)]
 
                     if session_player["range_start"] <= t <= session_player["range_end"]:
                         players_in_range.append(p)
 
                 for p in players_in_range:
-                    session_player = world_state["session_players"][p]
+                    session_player = world_state["session_players"][str(p)]
                     session_player["revenues"][values[t]] = 1/len(players_in_range)
         
         #update total revenue for each player

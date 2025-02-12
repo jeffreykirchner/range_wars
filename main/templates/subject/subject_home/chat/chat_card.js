@@ -7,14 +7,13 @@ send_chat: function send_chat(){
    
     if(app.session.world_state.current_experiment_phase == 'Instructions')
     {
-        app.send_chat_instructions(chat_text_processed);
+        app.send_chat_instructions(app.chat_text);
     }
     else
     {
         app.working = true;
         app.send_message("chat", 
-                        {"text" : chat_text_processed,
-                        "current_location" : app.session.world_state.session_players[app.session_player.id].current_location,},
+                        {"text" : app.chat_text,},
                         "group");
     }
     
@@ -30,24 +29,15 @@ take_update_chat: function take_update_chat(message_data){
     if(message_data.status == "success")
     {
         let text = message_data.text;
+        let session_player_id = message_data.sender_id;
 
-        app.session.world_state.session_players[message_data.sender_id].show_chat = true;    
-        app.session.world_state.session_players[message_data.sender_id].chat_time = Date.now();
-
-
-        pixi_avatars[message_data.sender_id].chat.bubble_text.text = text;
-
-        if(message_data.sender_id == app.session_player.id)
-        {
-            app.working = false;
-        }
+        let chat = {session_player:session_player_id, message: text};
+        app.chat_history.unshift(chat);
     }
-    else
+
+    if(message_data.sender_id == app.session_player.id)
     {
-        if(app.is_subject && message_data.sender_id == app.session_player.id)
-        {
-            app.working = false;
-        }
+        app.working = false;
     }
 
 },

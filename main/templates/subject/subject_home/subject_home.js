@@ -393,8 +393,20 @@ let app = Vue.createApp({
             app.session.world_state.started = message_data.started;
             app.session.world_state.finished = message_data.finished;
             app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
+            app.session.world_state.session_players = message_data.session_players
 
-            // app.session.world_state.finished = message_data.finished;
+            //update ranges
+            // for(let p in message_data.session_player_status)
+            // {
+            //     let sp = message_data.session_player_status[p];
+            //     app.session.world_state.session_players[p].range_start = sp.range_start;
+            //     app.session.world_state.session_players[p].range_end = sp.range_end;
+            // }
+
+            //pixi updates
+            app.update_treatment();
+            app.setup_selection_range();
+            app.setup_group_summary();
         
             //collect names
             if(app.session.world_state.current_experiment_phase == 'Names')
@@ -406,49 +418,6 @@ let app = Vue.createApp({
                
             });
 
-
-            //period has changed
-            if(message_data.period_is_over)
-            {
-                Vue.nextTick(() => {
-                    let current_location = app.session.world_state.session_players[app.session_player.id].current_location;
-
-                    app.add_text_emitters("+" + period_earnings + "¢", 
-                            current_location.x, 
-                            current_location.y,
-                            current_location.x,
-                            current_location.y-100,
-                            0xFFFFFF,
-                            28,
-                            null)                    
-                });          
-                
-                app.update_player_inventory();
-            }
-
-            //update player states
-            for(let p in message_data.session_player_status)
-            {
-                let session_player = message_data.session_player_status[p];
-                app.session.world_state.session_players[p].interaction = session_player.interaction;
-                app.session.world_state.session_players[p].frozen = session_player.frozen;
-                app.session.world_state.session_players[p].cool_down = session_player.cool_down;
-                app.session.world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
-            }
-
-            //update player location
-            for(let p in message_data.current_locations)
-            {
-                if(p != app.session_player.id)
-                {
-                    let server_location = message_data.current_locations[p];
-
-                    if(app.get_distance(server_location, app.session.world_state.session_players[p].current_location) > 1000)
-                    {
-                        app.session.world_state.session_players[p].current_location = server_location;
-                    }
-                }
-            }
 
             //update any notices on screen
             app.update_notices();

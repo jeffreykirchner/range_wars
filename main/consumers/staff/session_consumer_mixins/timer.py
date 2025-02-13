@@ -5,6 +5,8 @@ import json
 from datetime import datetime
 from decimal import Decimal
 
+from asgiref.sync import sync_to_async
+
 from main.models import Session
 from main.models import SessionEvent
 
@@ -126,6 +128,11 @@ class TimerMixin():
 
                 
         if send_update:
+            session = await Session.objects.aget(id=self.session_id)
+
+            self.world_state_local = await sync_to_async(session.update_treatment)(self.world_state_local, self.parameter_set_local)
+            self.world_state_local = await sync_to_async(session.update_revenues)(self.world_state_local, self.parameter_set_local)
+
             #session status
             result["value"] = "success"
             result["stop_timer"] = stop_timer
@@ -135,13 +142,11 @@ class TimerMixin():
             result["started"] = self.world_state_local["started"]
             result["finished"] = self.world_state_local["finished"]
             result["current_experiment_phase"] = self.world_state_local["current_experiment_phase"]
+            result["session_players"] = self.world_state_local["session_players"]
 
             session_player_status = {}
 
-            #decrement waiting and interaction time
-            for p in self.world_state_local["session_players"]:
-                session_player = self.world_state_local["session_players"][p]             
-            
+          
             result["session_player_status"] = session_player_status
 
             self.session_events.append(SessionEvent(session_id=self.session_id, 

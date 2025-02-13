@@ -240,25 +240,22 @@ class Session(models.Model):
             self.world_state["session_players"][i]["range_start"] = 3
             break
 
+        self.world_state = self.update_treatment(self.world_state, self.parameter_set.json())
+        self.world_state = self.update_revenues(self.world_state, self.parameter_set.json())
         self.save()
 
-        #test code
-        self.update_treatment()
-        self.update_revenues()
-
-    def update_treatment(self):
+    def update_treatment(self, world_state, parameter_set):
         '''
         update treatment
         '''
         
-        world_state = self.world_state
-        parameter_set = self.parameter_set.json()
+        # world_state = self.world_state
+        # parameter_set = self.parameter_set.json()
         period_block = parameter_set["parameter_set_periodblocks"][str(world_state["current_period_block"])]
         treatment = parameter_set["parameter_set_treatments"][str(period_block["parameter_set_treatment"])]
         costs = treatment["costs"].split(",")
         world_state["groups"] = {}
 
-        
         for i in world_state["session_players"]:
             session_player = world_state["session_players"][i]
             parameter_set_player = parameter_set["parameter_set_players"][str(session_player["parameter_set_player_id"])]
@@ -274,16 +271,16 @@ class Session(models.Model):
             world_state["groups"][parameter_set_player_group["group_number"]].append(int(i))
             session_player["group_number"] = parameter_set_player_group["group_number"]
 
-        self.save()
+        return world_state
 
-    def update_revenues(self):
+    def update_revenues(self, world_state, parameter_set):
         '''
         update revenues
         '''
         logger = logging.getLogger(__name__)
 
-        world_state = self.world_state
-        parameter_set = self.parameter_set.json()
+        # world_state = self.world_state
+        # parameter_set = self.parameter_set.json()
         period_block = parameter_set["parameter_set_periodblocks"][str(world_state["current_period_block"])]
         treatment = parameter_set["parameter_set_treatments"][str(period_block["parameter_set_treatment"])]
         values = treatment["values"].split(",")
@@ -329,8 +326,8 @@ class Session(models.Model):
 
             session_player["total_revenue"] = round_up(Decimal(session_player["total_revenue"]), 2)
             session_player["total_profit"] = round_up(session_player["total_revenue"] - session_player["total_cost"], 2)
-
-        self.save()
+        
+        return world_state
 
     def reset_experiment(self):
         '''

@@ -102,27 +102,27 @@ class TimerMixin():
                     total_time += i["count"]
 
                 #find current period
-                current_period = 1
-                temp_time = 0          #total of period lengths through current period.
-                for i in range(1, self.world_state_local["number_of_periods"]+1):
-                    temp_time += self.parameter_set_local["period_length"]
+                # current_period = 1
+                # temp_time = 0          #total of period lengths through current period.
+                # for i in range(1, self.world_state_local["number_of_periods"]+1):
+                #     temp_time += self.parameter_set_local["period_length"]
 
-                    current_period += 1
+                # current_period += 1
 
                 #time remaining in period
-                time_remaining = temp_time - total_time
+                # time_remaining = temp_time - total_time
 
                 # if current_period == 2 and time_remaining ==10:
                 #     '''test code'''
                 #     pass
 
-                self.world_state_local["time_remaining"] = time_remaining
-                self.world_state_local["current_period"] = current_period
+                self.world_state_local["time_remaining"] = 1
+                self.world_state_local["current_period"] +=1
                 
-                if current_period > 1:
-                    last_period_id = self.world_state_local["session_periods_order"][current_period - 2]
-                    last_period_id_s = str(last_period_id)
-                    last_period = self.world_state_local["session_periods"][last_period_id_s]
+                # if current_period > 1:
+                #     last_period_id = self.world_state_local["session_periods_order"][current_period - 2]
+                #     last_period_id_s = str(last_period_id)
+                #     last_period = self.world_state_local["session_periods"][last_period_id_s]
 
                 
         if send_update:

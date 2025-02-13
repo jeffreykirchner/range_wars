@@ -16,6 +16,7 @@ class SessionPeriod(models.Model):
     session period model
     '''
     session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name="session_periods")
+    parameter_set_periodblock = models.ForeignKey('ParameterSetPeriodBlock', on_delete=models.CASCADE, related_name="session_periods_b", null=True, blank=True) #period block for session period
 
     period_number = models.IntegerField()                       #period number from 1 to N
 
@@ -43,5 +44,6 @@ class SessionPeriod(models.Model):
         return{
             "id" : self.id,
             "period_number" : self.period_number,
+            "parameter_set_periodblock_id" : self.parameter_set_periodblock.id if self.parameter_set_periodblock else None,
         }
         

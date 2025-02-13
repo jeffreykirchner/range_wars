@@ -120,7 +120,7 @@ is_over_right_handle: function is_over_right_handle(pt){
  */
 update_left_handle_position : function update_left_handle_position(){
     let session_player = app.session.world_state.session_players[app.session_player.id];
-    let left_handle_x = app.range_to_x(session_player.range_start);
+    let left_handle_x = app.range_to_x(app.current_selection_range.start);
 
     pixi_left_handle.position.set(left_handle_x - pixi_left_handle.width, origin_y);
 },
@@ -130,7 +130,7 @@ update_left_handle_position : function update_left_handle_position(){
  */
 update_right_handle_position : function update_right_handle_position(){
     let session_player = app.session.world_state.session_players[app.session_player.id];
-    let right_handle_x = app.range_to_x(session_player.range_end) + box_width + 3;
+    let right_handle_x = app.range_to_x(app.current_selection_range.end) + box_width + 3;
 
     pixi_right_handle.position.set(right_handle_x, origin_y);
 },
@@ -159,9 +159,9 @@ pixi_left_handle_drag: function pixi_left_handle_drag(x){
 
     let session_player = app.session.world_state.session_players[app.session_player.id];
 
-    if(r != session_player.range_start)
+    if(r <= session_player.range_end)
     {
-        session_player.range_start = r;
+        app.current_selection_range.start = r;
         app.update_left_handle_position();
     }
 },
@@ -174,9 +174,9 @@ pixi_right_handle_drag: function pixi_right_handle_drag(x){
 
     let session_player = app.session.world_state.session_players[app.session_player.id];
 
-    if(r != session_player.range_end)
+    if(r >= session_player.range_start)
     {
-        session_player.range_end = r;
+        app.current_selection_range.end = r;
         app.update_right_handle_position();
     }
 },

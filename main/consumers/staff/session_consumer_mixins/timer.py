@@ -78,43 +78,12 @@ class TimerMixin():
 
         stop_timer = False
         send_update = True
-        period_is_over = False
 
         result = {"earnings":{}}
 
         #check session over
-        if self.world_state_local["current_period"] > self.parameter_set_local["period_count"] or \
-            (self.world_state_local["current_period"] == self.parameter_set_local["period_count"] and
-             self.world_state_local["time_remaining"] <= 1):
 
-            self.world_state_local["current_period"] = self.parameter_set_local["period_count"]
-            self.world_state_local["time_remaining"] = 0
-            self.world_state_local["timer_running"] = False
-            
-            self.world_state_local["current_experiment_phase"] = ExperimentPhase.NAMES
-            stop_timer = True
-
-            period_is_over = True
-
-            #store final period earnings    
-            last_period_id = self.world_state_local["session_periods_order"][self.world_state_local["current_period"] - 1]
-            last_period_id_s = str(last_period_id)
-            last_period = self.world_state_local["session_periods"][last_period_id_s]
-
-            last_period["consumption_completed"] = True
-            
-            for i in self.world_state_local["session_players"]:
-                period_earnings = (self.world_state_local["session_players"][i]["inventory"][last_period_id_s] * 
-                                           Decimal(self.parameter_set_local["token_cents_value"]))
-                
-                self.world_state_local["session_players"][i]["earnings"] += period_earnings
-
-                result["earnings"][i] = {}
-                result["earnings"][i]["total_earnings"] = self.world_state_local["session_players"][i]["earnings"]/100
-                result["earnings"][i]["period_earnings"] = period_earnings
-            
-            await self.store_world_state(force_store=True)
-           
+        #if session is not over check if a full second has passed
         if self.world_state_local["current_experiment_phase"] != ExperimentPhase.NAMES:
 
             ts = datetime.now() - datetime.strptime(self.world_state_local["timer_history"][-1]["time"],"%Y-%m-%dT%H:%M:%S.%f")
@@ -162,31 +131,7 @@ class TimerMixin():
                     last_period_id_s = str(last_period_id)
                     last_period = self.world_state_local["session_periods"][last_period_id_s]
 
-                    period_is_over = not last_period["consumption_completed"]
-
-                #check if period over
-                if period_is_over:
-
-                    session = await Session.objects.aget(id=self.session_id)
-                    current_period = await session.aget_current_session_period()
-
-                    last_period["consumption_completed"] = True
-                    
-                    for i in self.world_state_local["session_players"]:
-
-                        period_earnings = (self.world_state_local["session_players"][i]["inventory"][last_period_id_s] * 
-                                           Decimal(self.parameter_set_local["token_cents_value"]))
-
-                        self.world_state_local["session_players"][i]["earnings"] += period_earnings
-
-                        result["earnings"][i] = {}
-                        result["earnings"][i]["total_earnings"] = self.world_state_local["session_players"][i]["earnings"]
-                        result["earnings"][i]["period_earnings"] = period_earnings
-                        
-                        current_period.summary_data[i]["earnings"] = result["earnings"][i]["period_earnings"]
-
-                    await current_period.asave()
-
+                
         if send_update:
             #session status
             result["value"] = "success"
@@ -197,38 +142,12 @@ class TimerMixin():
             result["started"] = self.world_state_local["started"]
             result["finished"] = self.world_state_local["finished"]
             result["current_experiment_phase"] = self.world_state_local["current_experiment_phase"]
-            result["period_is_over"] = period_is_over
-
-            #locations
-            result["current_locations"] = {}
-            result["target_locations"] = {}
-            for i in self.world_state_local["session_players"]:
-                result["current_locations"][i] = self.world_state_local["session_players"][i]["current_location"]
-                result["target_locations"][i] = self.world_state_local["session_players"][i]["target_location"]
 
             session_player_status = {}
 
             #decrement waiting and interaction time
             for p in self.world_state_local["session_players"]:
-                session_player = self.world_state_local["session_players"][p]
-
-                if session_player["cool_down"] > 0:
-                    session_player["cool_down"] -= 1
-
-                if session_player["interaction"] > 0:
-                    session_player["interaction"] -= 1
-
-                    if session_player["interaction"] == 0:
-                        session_player["cool_down"] = self.parameter_set_local["cool_down_length"]
-                
-                if session_player["interaction"] == 0:
-                    session_player["frozen"] = False
-                    session_player["tractor_beam_target"] = None
-
-                session_player_status[p] = {"interaction": session_player["interaction"], 
-                                            "frozen": session_player["frozen"], 
-                                            "cool_down": session_player["cool_down"],
-                                            "tractor_beam_target" : session_player["tractor_beam_target"]}                
+                session_player = self.world_state_local["session_players"][p]             
             
             result["session_player_status"] = session_player_status
 

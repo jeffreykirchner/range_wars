@@ -13,7 +13,7 @@ let pixi_mini_map = {container:null};               //mini map container
 let pixi_notices = {container:null, notices:{}};                         //notices
 let pixi_notices_key = 0;
 
-let selection_handle = null;                    //the currently selected handle
+let selection_handle = null;                             //the currently selected handle
 
 let last_location_update = Date.now();          //last time location was updated
 
@@ -50,6 +50,8 @@ let app = Vue.createApp({
 
                     instructions : {{instructions|safe}},
                     instruction_pages_show_scroll : false,
+
+                    current_selection_range : {start:null, end:null},    //the current selection range
 
                     notices_seen: [],
 
@@ -177,8 +179,6 @@ let app = Vue.createApp({
                     break;
             }
 
-            app.first_load_done = true;
-
             app.working = false;
         },
 
@@ -234,6 +234,7 @@ let app = Vue.createApp({
 
             app.setup_pixi();            
             app.auto_update_avatar_location();
+            app.first_load_done = true;
         },
 
         /**
@@ -254,7 +255,7 @@ let app = Vue.createApp({
          */
         do_reload: function do_reload()
         {
- 
+            
         },
 
         /** send winsock request to get session info
@@ -274,13 +275,17 @@ let app = Vue.createApp({
             if(app.session.started)
             {
                 current_treatment = app.session.parameter_set.parameter_set_treatments_order[0];
+                app.current_selection_range.start = app.session.world_state.session_players[app.session_player.id].range_start;
+                app.current_selection_range.end = app.session.world_state.session_players[app.session_player.id].range_end;
+                
+                app.update_group_order();
             }
             else
             {
-                current_treatment = app.session.parameter_set.parameter_set_treatments_order[0];
+                return;
             } 
             
-            app.update_group_order();
+            
             
             if(app.session.world_state.current_experiment_phase != 'Done')
             {

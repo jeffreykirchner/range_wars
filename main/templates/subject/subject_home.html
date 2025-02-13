@@ -69,7 +69,7 @@
     </div>
 
     <!-- the stage -->
-    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.world_state.current_experiment_phase != 'Done'">
+    <div class="row justify-content-lg-center mt-4" v-cloak v-show="session.started && session.world_state.current_experiment_phase != 'Done'">
         <div class="col-md">
             {%include "subject/subject_home/the_stage/the_stage_card.html"%}                
         </div>

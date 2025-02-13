@@ -101,7 +101,7 @@ update_treatment : function update_treatment(){
             revenue_box.addChild(revenue_box_fill);
 
             //draw cost line for local player
-            if(session_player_id == app.session_player.id)
+            if(app.is_subject && session_player_id == app.session_player.id)
             {
                 let cost_box = new PIXI.Graphics();
                 let cost_y = app.value_to_y(session_player.cost);
@@ -150,8 +150,8 @@ range_to_x : function range_to_x(range)
  */
 x_to_range : function x_to_range(x)
 {
-    if(x < y_axis_margin) return 0;
-    if(x > (axis_width + y_axis_margin)) return app.session.parameter_set.parameter_set_treatments[current_treatment].values.length - 1;
+    if(x <= y_axis_margin) return 0;
+    if(x >= (axis_width + y_axis_margin)) return app.session.parameter_set.parameter_set_treatments[current_treatment].values.split(',').length - 1;
 
     return Math.floor((x - y_axis_margin) / box_width);
 },

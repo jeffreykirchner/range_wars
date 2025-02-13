@@ -1,6 +1,9 @@
 <div class="card" id="graph_card" style="width: 1885px;">                  
-    <div class="card-header fw-bold">                
-        <span class="align-middle"></span>
+    <div class="card-header fw-bold text-center">                
+        <span class="align-middle" v-if="is_subject">
+            Current Period [[session.world_state.current_period]] | 
+            Total Profit (¢): [[session_player.earnings]]
+        </span>
 
         <span class="float-end">
             <span v-show="reconnecting" class="me-1">
@@ -8,7 +11,7 @@
             </span>
         </span>
 
-        <span class="float-end">
+        <span class="float-end" v-if="is_subject">
             <button type="button" class="btn btn-link" title="Show Help" v-on:click="send_load_help_doc_subject('subject_stage')">
                 <i class="far fa-question-circle"></i> 
             </button>

@@ -23,9 +23,9 @@ setup_treatment : function setup_treatment(){
 
         outline.rect(0,0, box_width, y);
         outline.stroke({color: "lightgray",
-                        width: 0.5,
+                        width: 1,
                         lineJoin: "round",
-                        alignment: 1,
+                        alignment: 0.5,
                         cap: "round"});
         outline.zIndex = 999;
 
@@ -51,7 +51,7 @@ update_treatment : function update_treatment(){
     let parameter_set_players = app.session.parameter_set.parameter_set_players;
     let parameter_set_players_order = app.session.parameter_set.parameter_set_players_order;
     let world_state = app.session.world_state;
-    let current_group_memebers = world_state["groups"][current_group];
+    let current_group_memebers = app.session.started ? world_state["groups"][current_group] : [];
     let session_players = world_state["session_players"];
 
     for(let i=0;i<pixi_boxes.length;i++)

@@ -424,14 +424,6 @@ let app = Vue.createApp({
                 });          
                 
                 app.update_player_inventory();
-
-                //add break notice
-                if(app.session.world_state.current_period % app.session.parameter_set.break_frequency == 0)
-                {
-                    app.add_notice("Break Time: Interactions are disabled. Chat is enabled.", 
-                                    app.session.world_state.current_period,
-                                    app.session.parameter_set.period_length);
-                }
             }
 
             //update player states

@@ -75,9 +75,8 @@
                                          working || 
                                          session.started===false || 
                                          session.locked || 
-                                         session.world_state.current_period===session.parameter_set.period_count"
-                    >
-                        <span v-if="session.world_state.current_period!=session.parameter_set.period_count">End Early <i class="far fa-hand-paper"></i></span>
+                                         session.world_state.current_period===session.world_state.number_of_periods">
+                        <span v-if="session.world_state.current_period!=session.world_state.number_of_periods">End Early <i class="far fa-hand-paper"></i></span>
                         <span v-else>***Final Period***</span>
                 </button>
             </div>

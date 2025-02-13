@@ -19,18 +19,6 @@ class ParameterSetForm(forms.ModelForm):
                                                                        "step":"1",
                                                                        "min":"250"}))
     
-    break_frequency = forms.IntegerField(label='Break Frequency (periods)',
-                                         min_value=1,
-                                         widget=forms.NumberInput(attrs={"v-model":"parameter_set.break_frequency",
-                                                                         "step":"1",
-                                                                         "min":"1"}))
-    
-    break_length = forms.IntegerField(label='Break Length (seconds)',
-                                      min_value=1,
-                                      widget=forms.NumberInput(attrs={"v-model":"parameter_set.break_length",
-                                                                      "step":"1",
-                                                                      "min":"1"}))
-
     show_instructions = forms.ChoiceField(label='Show Instructions',
                                           choices=((1, 'Yes'), (0,'No' )),
                                           widget=forms.Select(attrs={"v-model":"parameter_set.show_instructions",}))
@@ -63,7 +51,7 @@ class ParameterSetForm(forms.ModelForm):
 
     class Meta:
         model=ParameterSet
-        fields =['period_length', 'break_frequency', 'break_length',
+        fields =['period_length',
                  'show_instructions', 
                  'survey_required', 'survey_link', 'prolific_mode', 'prolific_completion_link', 'reconnection_limit',
                  'test_mode']

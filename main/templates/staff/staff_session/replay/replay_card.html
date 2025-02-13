@@ -48,7 +48,7 @@
                 <button type="button" 
                     class="btn btn-outline-primary ms-2" 
                     title="Next Period" 
-                    v-bind:disabled="working || replay_current_period==session.parameter_set.period_count"
+                    v-bind:disabled="working || replay_current_period==session.world_state.number_of_periods"
                     v-on:click="advance_period('1')">
                     Next <i class="fas fa-step-forward"></i>
                 </button>

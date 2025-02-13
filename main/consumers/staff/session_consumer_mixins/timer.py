@@ -104,17 +104,10 @@ class TimerMixin():
                 #find current period
                 current_period = 1
                 temp_time = 0          #total of period lengths through current period.
-                for i in range(1, self.parameter_set_local["period_count"]+1):
+                for i in range(1, self.world_state_local["number_of_periods"]+1):
                     temp_time += self.parameter_set_local["period_length"]
 
-                    #add break times
-                    if i % self.parameter_set_local["break_frequency"] == 0:
-                        temp_time += self.parameter_set_local["break_length"]
-                    
-                    if temp_time > total_time:
-                        break
-                    else:
-                        current_period += 1
+                    current_period += 1
 
                 #time remaining in period
                 time_remaining = temp_time - total_time

@@ -282,7 +282,9 @@ let app = Vue.createApp({
          */
         do_reload: function do_reload()
         {
-
+            app.setup_treatment();
+            app.update_treatment();
+            app.setup_selection_range();
         },
 
         /** send winsock request to get session info

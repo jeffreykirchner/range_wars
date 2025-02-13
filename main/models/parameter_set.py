@@ -18,11 +18,8 @@ import main
 class ParameterSet(models.Model):
     '''
     parameter set
-    '''    
-    period_count = models.IntegerField(verbose_name='Number of periods', default=20)                          #number of periods in the experiment
-    period_length = models.IntegerField(verbose_name='Period Length, Production', default=60           )      #period length in seconds
-    break_frequency = models.IntegerField(verbose_name='Break Frequency', default=7)                          #frequency of breaks
-    break_length = models.IntegerField(verbose_name='Break Length', default=100)                              #length of breaks in seconds
+    '''       
+    period_length = models.IntegerField(verbose_name='Period Length, Production', default=60)                 #period length in seconds
 
     show_instructions = models.BooleanField(default=True, verbose_name='Show Instructions')                   #if true show instructions
 
@@ -61,10 +58,7 @@ class ParameterSet(models.Model):
         status = "success"
 
         try:
-            self.period_count = new_ps.get("period_count")
             self.period_length = new_ps.get("period_length")
-            self.break_frequency = new_ps.get("break_frequency", 7)
-            self.break_length = new_ps.get("break_length", 100)
 
             self.show_instructions = True if new_ps.get("show_instructions") else False
 
@@ -191,10 +185,7 @@ class ParameterSet(models.Model):
         '''
         self.json_for_session["id"] = self.id
                 
-        self.json_for_session["period_count"] = self.period_count
         self.json_for_session["period_length"] = self.period_length
-        self.json_for_session["break_frequency"] = self.break_frequency
-        self.json_for_session["break_length"] = self.break_length
 
         self.json_for_session["show_instructions"] = 1 if self.show_instructions else 0
 

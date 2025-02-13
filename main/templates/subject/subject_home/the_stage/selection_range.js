@@ -3,6 +3,8 @@
  */
 setup_selection_range : function setup_selection_range(){
 
+    if(!app.session.started) return;
+    
     for(let i=0;i<pixi_selection_ranges.length;i++)
     {
         pixi_selection_ranges[i].destroy();

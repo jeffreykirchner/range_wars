@@ -159,7 +159,7 @@ pixi_left_handle_drag: function pixi_left_handle_drag(x){
 
     let session_player = app.session.world_state.session_players[app.session_player.id];
 
-    if(r <= session_player.range_end)
+    if(r <= app.current_selection_range.end)
     {
         app.current_selection_range.start = r;
         app.update_left_handle_position();
@@ -174,7 +174,7 @@ pixi_right_handle_drag: function pixi_right_handle_drag(x){
 
     let session_player = app.session.world_state.session_players[app.session_player.id];
 
-    if(r >= session_player.range_start)
+    if(r >= app.current_selection_range.start)
     {
         app.current_selection_range.end = r;
         app.update_right_handle_position();

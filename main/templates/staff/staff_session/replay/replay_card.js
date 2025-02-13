@@ -75,7 +75,7 @@ replay_mode_play: function replay_mode_play()
     {
         app.replay_time_remaining--;
     }
-    else if(app.replay_current_period == app.session.parameter_set.period_count)
+    else if(app.replay_current_period == session.world_state.number_of_periods)
     {
         //end of the session
         return;
@@ -85,11 +85,6 @@ replay_mode_play: function replay_mode_play()
         app.replay_current_period++;
 
         app.replay_time_remaining = app.session.parameter_set.period_length;
-
-        if(app.replay_current_period % app.session.parameter_set.break_frequency == 0)
-        {
-            app.replay_time_remaining += app.session.parameter_set.break_length;
-        }
     }
 
     app.replay_timeout = setTimeout(app.replay_mode_play, 1000);
@@ -173,7 +168,7 @@ advance_period: function advance_period(direction)
 {
     if(direction == 1)
     {
-        if(app.replay_current_period < app.session.parameter_set.period_count)
+        if(app.replay_current_period < app.session.world_state.number_of_periods)
         {
             app.replay_current_period++;
         }
@@ -187,11 +182,6 @@ advance_period: function advance_period(direction)
     }
 
     app.replay_time_remaining = app.session.parameter_set.period_length;
-
-    if(app.replay_current_period % app.session.parameter_set.break_frequency == 0)
-    {
-        app.replay_time_remaining += app.session.parameter_set.break_length;
-    }
 
     app.process_replay_events(true);
 },

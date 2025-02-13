@@ -143,12 +143,9 @@ class ExperimentControlsMixin():
         end experiment early
         '''
 
-        self.parameter_set_local["period_count"] = self.world_state_local["current_period"]
-        
-        await ParameterSet.objects.filter(id=self.parameter_set_local["id"]).aupdate(period_count=self.parameter_set_local["period_count"], 
-                                                                                     json_for_session=self.parameter_set_local)
-        
-        result = {"value" : "success", "result" : self.parameter_set_local["period_count"]}
+        self.world_state_local["number_of_periods"] = self.world_state_local["current_period"]
+
+        result = {"value" : "success", "result" : self.world_state_local["number_of_periods"]}
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)

@@ -26,9 +26,6 @@ class InterfaceMixin():
 
             total_period_length = self.parameter_set_local["period_length"]
 
-            if i.period_number % self.parameter_set_local["break_frequency"] == 0:
-                total_period_length += self.parameter_set_local["break_length"]
-
             for j in range(total_period_length+1):
                 session_events_local[str(i.period_number)][str(j)] = []
 

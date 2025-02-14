@@ -178,7 +178,7 @@ class Session(models.Model):
                             "number_of_periods":self.session_periods.all().count(),
                             "groups":{},
                             "current_experiment_phase":ExperimentPhase.INSTRUCTIONS if self.parameter_set.show_instructions else ExperimentPhase.RUN,
-                            "current_period_block":parameter_set["parameter_set_periodblocks_order"][0],
+                            "current_period_block":parameter_set["parameter_set_periodblocks_order"][0] if parameter_set["parameter_set_periodblocks_order"] else None,
                             "time_remaining":self.parameter_set.period_length,
                             "timer_running":False,
                             "timer_history":[],
@@ -215,6 +215,10 @@ class Session(models.Model):
             self.world_state["session_players"][str(i['id'])] = v
             self.world_state["session_players_order"].append(i['id'])
         
+        if not self.started:
+            self.save()
+            return
+        
         #test code
         range_start = 0
         range_end = 25
@@ -242,6 +246,7 @@ class Session(models.Model):
 
         self.world_state = self.update_treatment(self.world_state, self.parameter_set.json())
         self.world_state = self.update_revenues(self.world_state, self.parameter_set.json())
+
         self.save()
 
     def update_treatment(self, world_state, parameter_set):

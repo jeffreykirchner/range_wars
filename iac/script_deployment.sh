@@ -1,4 +1,6 @@
 #!/bin/bash
+# sudo apt-get update
+# sudo apt-get install jq
 # az login
 
 webapp_name=$(jq . "secrets.json" |  jq -r '.webapp_name')

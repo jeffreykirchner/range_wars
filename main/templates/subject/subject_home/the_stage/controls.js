@@ -46,7 +46,10 @@ setup_control_handles : function setup_control_handles(){
     left_triangle.lineTo(handle_width-10, 10);
     left_triangle.lineTo(handle_width, 0);
     left_triangle.fill({color: "black"});
+    
     pixi_left_handle.addChild(left_triangle);
+
+    pixi_left_handle.zIndex = 997;
 
     // pixi_left_handle.position.set(left_handle_x - pixi_left_handle.width, origin_y);
 
@@ -80,6 +83,8 @@ setup_control_handles : function setup_control_handles(){
     right_triangle.lineTo(0, 0);
     right_triangle.fill({color: "black"});
     pixi_right_handle.addChild(right_triangle);
+
+    pixi_right_handle.zIndex = 998;
 
     // pixi_right_handle.position.set(right_handle_x, origin_y);
 
@@ -163,6 +168,7 @@ pixi_left_handle_drag: function pixi_left_handle_drag(x){
     {
         app.current_selection_range.start = r;
         app.update_left_handle_position();
+        app.range_update_success = false;
     }
 },
 
@@ -178,6 +184,7 @@ pixi_right_handle_drag: function pixi_right_handle_drag(x){
     {
         app.current_selection_range.end = r;
         app.update_right_handle_position();
+        app.range_update_success = false;
     }
 },
 
@@ -217,6 +224,39 @@ pixi_container_main_pointermove: function pixi_container_main_pointermove(event)
     {
         // let local_pos = event.data.getLocalPosition(event.currentTarget);
         app.pixi_right_handle_drag(event.data.getLocalPosition(event.currentTarget).x);
+    }
+},
+
+/**
+ * submit new range to the server
+ */
+send_range: function send_range(){
+    let session_player = app.session.world_state.session_players[app.session_player.id];
+
+    let data = {       
+        range_start: app.current_selection_range.start,
+        range_end: app.current_selection_range.end
+    };
+
+    app.working = true;
+    app.send_message("range", data, "group");
+                    
+},
+
+/**
+ * take result from send_range
+ */
+take_update_range: function take_update_range(message_data){
+    app.working = false;
+    
+    if(message_data.status == "success")
+    {
+        //display success message
+        app.range_update_success = true;
+    }
+    else
+    {
+        //display error message
     }
 },
 

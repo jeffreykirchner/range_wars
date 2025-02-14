@@ -68,7 +68,7 @@ class SubjectUpdatesMixin():
                                                     time_remaining=self.world_state_local["time_remaining"],
                                                     data=result))
             
-            target_list = self.world_state_local["groups"][str(session_player["group_number"])]
+            target_list = self.world_state_local["groups"][session_player["group_number"]]
 
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False, 
@@ -170,7 +170,7 @@ class SubjectUpdatesMixin():
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
     
-    async def take_range(self, event):
+    async def range(self, event):
         '''
         take range from client
         '''
@@ -181,6 +181,7 @@ class SubjectUpdatesMixin():
         logger = logging.getLogger(__name__) 
 
         status = "success"
+        error_message = ""
         player_id = None
         
         try:
@@ -198,6 +199,7 @@ class SubjectUpdatesMixin():
 
             if range_start < 0 or range_end < 0 or range_start > range_end:
                 status = "fail"
+                error_message = "Invalid range."
                 logger.warning(f"take_range: invalid range, {event_data}")
 
             #check if range is valid given the currrent treatment
@@ -208,18 +210,20 @@ class SubjectUpdatesMixin():
 
                 self.session_events.append(SessionEvent(session_id=self.session_id, 
                                                         session_player_id=player_id,
-                                                        type="take_range",
+                                                        type=event['type'],
                                                         period_number=self.world_state_local["current_period"],                                                   
                                                         data=event_data))
         
-        if status == "fail":
-            result = {"status": status, 
-                      "error_message": "Invalid data.",
-                      "range_start": session_player["range_start"],
-                      "range_end": session_player["range_end"]}
-            
+        result = {"status": status, "error_message": error_message}
 
-            await self.send_message(message_to_self=None, message_to_group=result,
-                                message_type=event['type'], send_to_client=False, send_to_group=True, target_list=[player_id])
+        await self.send_message(message_to_self=None, message_to_group=result,
+                                message_type=event['type'], send_to_client=False, 
+                                send_to_group=True, target_list=[player_id])
             
         # result is returned on next timmer tick
+    
+    async def update_range(self, event):
+        '''
+        update range on client
+        '''
+        pass

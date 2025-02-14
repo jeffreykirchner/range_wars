@@ -13,7 +13,7 @@ class ParameterSetForm(forms.ModelForm):
     Parameterset edit form
     '''
 
-    period_length = forms.IntegerField(label='Period Length (ms)',
+    period_length = forms.IntegerField(label='Period Length (sec)',
                                        min_value=1,
                                        widget=forms.NumberInput(attrs={"v-model":"parameter_set.period_length",
                                                                        "step":"1",

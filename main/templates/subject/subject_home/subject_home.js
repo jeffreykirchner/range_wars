@@ -52,6 +52,7 @@ let app = Vue.createApp({
                     instruction_pages_show_scroll : false,
 
                     current_selection_range : {start:null, end:null},    //the current selection range
+                    range_update_success : false,                        //if true show success check mark
 
                     notices_seen: [],
 
@@ -159,23 +160,11 @@ let app = Vue.createApp({
                 case "update_refresh_screens":
                     app.take_refresh_screens(message_data);
                     break;
-                case "update_target_location_update":
-                    app.take_target_location_update(message_data);
-                    break;
-                case "update_collect_token":
-                    app.take_collect_token(message_data);
-                    break;
-                case "update_tractor_beam":
-                    app.take_tractor_beam(message_data);
-                    break;
-                case "update_interaction":
-                    app.take_interaction(message_data);
-                    break;
-                case "update_cancel_interaction":
-                    app.take_cancel_interaction(message_data);
-                    break;
                 case "update_rescue_subject":
                     app.take_rescue_subject(message_data);
+                    break;
+                case "update_range":
+                    app.take_update_range(message_data);
                     break;
             }
 

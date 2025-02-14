@@ -12,7 +12,8 @@ setup_treatment : function setup_treatment(){
 
     for(let i in values)
     {
-        let box_json = {revenue_boxes: {}};
+        let box_json = {revenue_boxes: {},
+                        height: 0};
                         
         let box = new PIXI.Container();
 
@@ -33,6 +34,7 @@ setup_treatment : function setup_treatment(){
         box.y = origin_y - y;
 
         box_json.box = box;
+        box_json.height = y;
 
         box.addChild(outline);
 
@@ -60,10 +62,10 @@ update_treatment : function update_treatment(){
         let box = pixi_boxes[i].box;
 
         //set box height to zero
-        for(let b in pixi_boxes[i].revenue_boxes)
-        {
-            pixi_boxes[i].revenue_boxes[b].height = 0;
-        }
+        // for(let b in pixi_boxes[i].revenue_boxes)
+        // {
+        //     pixi_boxes[i].revenue_boxes[b].height = 0;
+        // }
 
         //find number if group members in this box
         let group_members_in_box = [];
@@ -76,7 +78,7 @@ update_treatment : function update_treatment(){
             }
         }
 
-        let total_height = pixi_boxes[i].box.height;
+        let total_height = pixi_boxes[i].height;
         let height_per_player = total_height / group_members_in_box.length;
         let start_y = total_height-height_per_player;
 

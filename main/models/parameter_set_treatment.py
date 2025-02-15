@@ -16,15 +16,11 @@ class ParameterSetTreatment(models.Model):
     
     id_label_pst = models.CharField(verbose_name='ID Label', max_length=30, default="Name Here")      #id label shown on screen to subjects
 
-    left_x = models.DecimalField(verbose_name='Left Vertex X', default=0, max_digits=4, decimal_places=2)               #left Vertex x
-    left_y = models.DecimalField(verbose_name='Left Vertex Y', default=0, max_digits=4, decimal_places=2)               #left Vertex y
-    middle_x = models.DecimalField(verbose_name='Middle Vertex X', default=1, max_digits=4, decimal_places=2)           #middle Vertex x
-    middle_y = models.DecimalField(verbose_name='Middle Vertex Y', default=2, max_digits=4, decimal_places=2)           #middle Vertex y
-    right_x = models.DecimalField(verbose_name='Right Vertex X', default=0, max_digits=4, decimal_places=2)             #right Vertex x
-    right_y = models.DecimalField(verbose_name='Right Vertex Y', default=2, max_digits=4, decimal_places=2)             #right Vertex y
-
     range_width = models.DecimalField(verbose_name='Range Width', default=2, max_digits=5, decimal_places=2)             #range width
     range_height = models.DecimalField(verbose_name='Range Height', default=2, max_digits=5, decimal_places=2)           #range height
+    
+    scale_width = models.DecimalField(verbose_name='Scale Width', default=2, max_digits=5, decimal_places=2)           #scale width
+    scale_height = models.DecimalField(verbose_name='Scale Height', default=2, max_digits=5, decimal_places=2)           #scale height
 
     values = models.CharField(verbose_name='Values', max_length=1000, default="10,9,8,7,6,5,4,3,2,1")                     #Values for each box
 
@@ -51,15 +47,11 @@ class ParameterSetTreatment(models.Model):
 
         self.id_label_pst = new_ps.get("id_label_pst")
 
-        self.left_x = new_ps.get("left_x")
-        self.left_y = new_ps.get("left_y")
-        self.middle_x = new_ps.get("middle_x")
-        self.middle_y = new_ps.get("middle_y")
-        self.right_x = new_ps.get("right_x")
-        self.right_y = new_ps.get("right_y")
-
         self.range_width = new_ps.get("range_width")
         self.range_height = new_ps.get("range_height")
+
+        self.scale_width = new_ps.get("scale_width")
+        self.scale_height = new_ps.get("scale_height")
 
         self.values = new_ps.get("values")
 
@@ -99,16 +91,12 @@ class ParameterSetTreatment(models.Model):
             "id" : self.id,
 
             "id_label_pst" : self.id_label_pst,
-            
-            "left_x" : self.left_x,
-            "left_y" : self.left_y,
-            "middle_x" : self.middle_x,
-            "middle_y" : self.middle_y,
-            "right_x" : self.right_x,
-            "right_y" : self.right_y,
 
             "range_width" : self.range_width,
             "range_height" : self.range_height,
+
+            "scale_width" : self.scale_width,
+            "scale_height" : self.scale_height,
 
             "values" : self.values,
 

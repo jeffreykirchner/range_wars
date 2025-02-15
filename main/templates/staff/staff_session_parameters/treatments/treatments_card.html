@@ -22,19 +22,13 @@
                             <tr>
                                 <th scope="col" class = "m-1 p-1">
                                     Name
-                                </th> 
-                                <th scope="col" class = "m-1 p-1">
-                                    Left Vertex
-                                </th>
-                                <th scope="col" class = "m-1 p-1">
-                                    Middle Vertex
-                                </th>
-                                <th scope="col" class = "m-1 p-1">
-                                    Right Vertex
-                                </th>
+                                </th>                                 
                                 <th scope="col" class = "m-1 p-1">
                                     Range
                                 </th>   
+                                <th scope="col" class = "m-1 p-1">
+                                    Scale
+                                </th>
                                 <th scope="col" class = "m-1 p-1">
                                     Values
                                 </th>
@@ -51,22 +45,14 @@
                                 <td v-on:click="show_edit_parameter_set_treatment(p)" 
                                    class="player_table_cell">
                                     [[temp_p.id_label_pst]]
+                                </td>                                
+                                <td v-on:click="show_edit_parameter_set_treatment(p)" 
+                                    class="player_table_cell">
+                                    [[temp_p.range_width]]W x [[temp_p.range_height]]H
                                 </td>
                                 <td v-on:click="show_edit_parameter_set_treatment(p)" 
                                     class="player_table_cell">
-                                    [[temp_p.left_x]], [[temp_p.left_y]]
-                                </td>
-                                <td v-on:click="show_edit_parameter_set_treatment(p)" 
-                                    class="player_table_cell">
-                                    [[temp_p.middle_x]], [[temp_p.middle_y]]
-                                </td>
-                                <td v-on:click="show_edit_parameter_set_treatment(p)" 
-                                    class="player_table_cell">
-                                    [[temp_p.right_x]], [[temp_p.right_y]]
-                                </td>
-                                <td v-on:click="show_edit_parameter_set_treatment(p)" 
-                                    class="player_table_cell">
-                                    [[temp_p.range_width]] x [[temp_p.range_height]]
+                                    [[temp_p.scale_width]]W x [[temp_p.scale_height]]H
                                 </td>
                                 <td v-on:click="show_edit_parameter_set_treatment(p)" 
                                     class="player_table_cell">

@@ -289,6 +289,7 @@ class Session(models.Model):
         period_block = parameter_set["parameter_set_periodblocks"][str(world_state["current_period_block"])]
         treatment = parameter_set["parameter_set_treatments"][str(period_block["parameter_set_treatment"])]
         values = treatment["values"].split(",")
+        box_value = float(treatment["range_width"]) / len(values)
 
         #reset revenues to zero for all values
         for i in world_state["session_players"]:
@@ -309,13 +310,13 @@ class Session(models.Model):
 
                 for p in players_in_range:
                     session_player = world_state["session_players"][str(p)]
-                    session_player["revenues"][values[t]] = 1/len(players_in_range)
+                    session_player["revenues"][values[t]] = 1/len(players_in_range) * box_value
         
         #update total revenue for each player
         for i in world_state["session_players"]:
             session_player = world_state["session_players"][i]
             session_player["total_revenue"] = 0
-            session_player["total_cost"] = (session_player["range_end"] - session_player["range_start"] + 1) * float(session_player["cost"])
+            session_player["total_cost"] = (session_player["range_end"] - session_player["range_start"] + 1) * float(session_player["cost"]) * box_value
             session_player["total_cost"] = round_up(Decimal(session_player["total_cost"]), 2)
 
             for r in range(session_player["range_start"], session_player["range_end"]+1):

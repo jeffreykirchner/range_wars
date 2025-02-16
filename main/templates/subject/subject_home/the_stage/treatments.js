@@ -2,11 +2,12 @@
  * setup boxes for the current treatment
  */
 setup_treatment : function setup_treatment(){
-    let values = app.session.parameter_set.parameter_set_treatments[current_treatment].values.split(",");
+    let treatment = app.session.parameter_set.parameter_set_treatments[current_treatment];
+    let values = treatment.values.split(",");
     let parameter_set_players = app.session.parameter_set.parameter_set_players;
     let parameter_set_players_order = app.session.parameter_set.parameter_set_players_order;
 
-    box_width = axis_width / values.length;
+    box_width = (axis_width * (treatment.range_width/treatment.scale_width))  / values.length;
 
     let start_location_x = y_axis_margin;
 
@@ -152,8 +153,16 @@ range_to_x : function range_to_x(range)
  */
 x_to_range : function x_to_range(x)
 {
+    let values_count = app.session.parameter_set.parameter_set_treatments[current_treatment].values.split(',').length;
     if(x <= y_axis_margin) return 0;
-    if(x >= (axis_width + y_axis_margin)) return app.session.parameter_set.parameter_set_treatments[current_treatment].values.split(',').length - 1;
+    if(x >= (axis_width + y_axis_margin)) return values_count - 1;
 
-    return Math.floor((x - y_axis_margin) / box_width);
+    let r = Math.floor((x - y_axis_margin) / box_width);
+
+    if(r > values_count-1)
+    {
+        r = values_count - 1;
+    }
+
+    return r;
 },

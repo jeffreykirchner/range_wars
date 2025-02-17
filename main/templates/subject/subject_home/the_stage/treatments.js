@@ -106,16 +106,53 @@ update_treatment : function update_treatment(){
             //draw cost line for local player
             if(app.is_subject && session_player_id == app.session_player.id)
             {
+                
                 let cost_box = new PIXI.Graphics();
                 let cost_y = app.value_to_y(session_player.cost);
-                cost_box.rect(0, height_per_player-cost_y, box_width, cost_y);
-                cost_box.fill({color: "white", alpha: 0.5});
-                revenue_box.addChild(cost_box);
 
-                cost_box = new PIXI.Graphics();
-                cost_box.rect(0, height_per_player-cost_y, box_width, 1);
-                cost_box.fill({color: parameter_set_player.hex_color, alpha: 0.5});
+                let cost_y1 = Math.max(0, height_per_player-cost_y);
+                let cost_height1 = Math.min(cost_y, height_per_player);
+
+                cost_box.rect(0, cost_y1, box_width, cost_height1);
+                cost_box.fill({color: "white", alpha: 0.25});
                 revenue_box.addChild(cost_box);
+                
+                //loss
+                if(height_per_player-cost_y < 0)
+                {
+                    //loss pattern fill
+                    let cost_y2 = height_per_player-cost_y;
+
+                    let cost_box2 = new PIXI.Graphics();
+                    cost_box2.rect(0, cost_y2, box_width, cost_y1 - cost_y2);
+                    cost_box2.fill({alpha: 1,
+                                    texture: app.pixi_textures['pattern_1_tex']});
+                    revenue_box.addChild(cost_box2);
+
+                    //loss text
+                    let loss_text = new PIXI.Text({text:"!",
+                                                  style: {fontFamily : 'Arial', 
+                                                         fontSize: 18, 
+                                                         fill : 'black', 
+                                                         align : 'center'}});
+                    loss_text.x = box_width/2;
+                    loss_text.y = height_per_player-5;
+                    loss_text.anchor.set(0.5,1);
+                    revenue_box.addChild(loss_text);
+                }
+
+                // if(min_y != max_y)
+                // {
+                //     let cost_box2 = new PIXI.Graphics();
+                //     cost_box2.rect(0, height_per_player-max_y, box_width, 10);
+                //     cost_box2.fill({color: "grey", alpha: 0.5});
+                //     revenue_box.addChild(cost_box2);
+                // }
+                // let cost_box2 = new PIXI.Graphics();
+                // cost_box2.rect(0, height_per_player-cost_y, box_width, cost_y);
+                // cost_box2.fill({color: parameter_set_player.hex_color, alpha: 0.5});
+                // revenue_box.addChild(cost_box2);
+                revenue_box.zIndex = 998;
             }
 
             revenue_box.x = 0;

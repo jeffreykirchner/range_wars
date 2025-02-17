@@ -22,9 +22,15 @@ class ParameterSetPlayerGroupForm(forms.ModelForm):
                                   widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_player_group.position",
                                                                    "step":"1",
                                                                    "min":"1"}))
+    
+    start_box = forms.IntegerField(label='Start Box',
+                                    min_value=0,
+                                    widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_player_group.start_box",
+                                                                    "step":"1",
+                                                                    "min":"0"}))
 
    
     class Meta:
         model=ParameterSetPlayerGroup
-        fields =['group_number', 'position']
+        fields =['group_number', 'position', 'start_box']
     

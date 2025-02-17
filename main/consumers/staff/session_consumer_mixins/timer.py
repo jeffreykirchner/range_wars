@@ -130,7 +130,7 @@ class TimerMixin():
         if send_update:
             session = await Session.objects.aget(id=self.session_id)
 
-            self.world_state_local = await sync_to_async(session.update_treatment)(self.world_state_local, self.parameter_set_local)
+            # self.world_state_local = await sync_to_async(session.update_treatment)(self.world_state_local, self.parameter_set_local)
             self.world_state_local = await sync_to_async(session.update_revenues)(self.world_state_local, self.parameter_set_local)
 
             #session status

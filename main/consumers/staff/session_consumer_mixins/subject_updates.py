@@ -192,12 +192,19 @@ class SubjectUpdatesMixin():
             status = "fail"
 
         if status == "success":
+            period_block = self.parameter_set_local["parameter_set_periodblocks"][str(self.world_state_local["current_period_block"])] 
+            treatment =  self.parameter_set_local["parameter_set_treatments"][str(period_block["parameter_set_treatment"])]
+            values = treatment["values"].split(",")
             session_player = self.world_state_local["session_players"][str(player_id)]
 
             range_start = event_data["range_start"]
             range_end = event_data["range_end"]
 
-            if range_start < 0 or range_end < 0 or range_start > range_end:
+            if range_start < 0 or \
+               range_end < 0 or \
+               range_start > len(values)-1 or \
+               range_end > len(values)-1 or \
+               range_start > range_end:
                 status = "fail"
                 error_message = "Invalid range."
                 logger.warning(f"take_range: invalid range, {event_data}")

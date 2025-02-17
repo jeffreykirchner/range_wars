@@ -17,25 +17,25 @@ setup_control_handles : function setup_control_handles(){
 
     // let left_handle_x = app.range_to_x(session_player.range_start);
     // let right_handle_x = app.range_to_x(session_player.range_end) + box_width + 3;
-    let y = origin_y + x_axis_margin/2;
+    let y = x_axis_margin - handle_height - 7;
 
     //left handle
     //line
     let left_line = new PIXI.Graphics();
     left_line.moveTo(handle_width, 0);
-    left_line.lineTo(handle_width, x_axis_margin/2 + handle_height-5);
+    left_line.lineTo(handle_width, y + handle_height-5);
     left_line.stroke({color: "black", width: 3,alignment: 1, cap: "round"});
     pixi_left_handle.addChild(left_line);
 
     //box
     let left_box = new PIXI.Graphics();
-    left_box.roundRect(0, x_axis_margin/2, handle_width, handle_height, 6);
+    left_box.roundRect(0, y, handle_width, handle_height, 6);
     left_box.fill({color: parameter_set_player.hex_color});
     left_box.stroke({color: "black", width: 3,alignment: 0, cap: "round"});
     pixi_left_handle.addChild(left_box);
 
     let left_text = new PIXI.Text({text:"Start",style:control_style});
-    left_text.position.set(handle_width/2, x_axis_margin/2+handle_height/2);
+    left_text.position.set(handle_width/2, y+handle_height/2);
     left_text.anchor.set(0.5);
     pixi_left_handle.addChild(left_text);
 
@@ -59,19 +59,19 @@ setup_control_handles : function setup_control_handles(){
     //line
     let right_line = new PIXI.Graphics();
     right_line.moveTo(0, 0);
-    right_line.lineTo(0, x_axis_margin/2 + handle_height-5);
+    right_line.lineTo(0, y + handle_height-5);
     right_line.stroke({color: "black", width: 3,alignment: 0, cap: "round"});
     pixi_right_handle.addChild(right_line);
 
     //box
     let right_box = new PIXI.Graphics();
-    right_box.roundRect(0, x_axis_margin/2, handle_width, handle_height, 6);
+    right_box.roundRect(0, y, handle_width, handle_height, 6);
     right_box.fill({color: parameter_set_player.hex_color});
     right_box.stroke({color: "black", width: 3,alignment: 0, cap: "round"});
     pixi_right_handle.addChild(right_box);
 
     let right_text = new PIXI.Text({text:"End",style:control_style});
-    right_text.position.set(handle_width/2, x_axis_margin/2+handle_height/2);
+    right_text.position.set(handle_width/2, y+handle_height/2);
     right_text.anchor.set(0.5);
     pixi_right_handle.addChild(right_text);
 

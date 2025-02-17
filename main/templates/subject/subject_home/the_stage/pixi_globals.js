@@ -12,7 +12,7 @@ let pixi_selection_ranges = [];                //selection range graph
 let pixi_left_handle = null;                   //left handle
 let pixi_right_handle = null;                  //right handle
 
-let x_axis_margin = 100;            //margin between x axis and canvas edge
+let x_axis_margin = 110;            //margin between x axis and canvas edge
 let y_axis_margin = 60;             //margin between y axis and canvas edge
 let other_margin = 10;              //margin between graph and canvas edge on right and top
 let right_margin = 60;              //margin between graph and canvas edge on right

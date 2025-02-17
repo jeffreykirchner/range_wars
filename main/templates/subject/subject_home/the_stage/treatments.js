@@ -7,7 +7,7 @@ setup_treatment : function setup_treatment(){
     let parameter_set_players = app.session.parameter_set.parameter_set_players;
     let parameter_set_players_order = app.session.parameter_set.parameter_set_players_order;
 
-    box_width = (axis_width * (treatment.range_width/treatment.scale_width))  / values.length;
+    // box_width = (axis_width * (treatment.range_width/treatment.scale_width))  / values.length;
 
     let start_location_x = y_axis_margin;
 
@@ -114,7 +114,7 @@ update_treatment : function update_treatment(){
                 let cost_height1 = Math.min(cost_y, height_per_player);
 
                 cost_box.rect(0, cost_y1, box_width, cost_height1);
-                cost_box.fill({color: "white", alpha: 0.25});
+                cost_box.fill({color: "white", alpha: 0.5});
                 revenue_box.addChild(cost_box);
                 
                 //loss

@@ -1,4 +1,8 @@
 setup_axis : function setup_axis(){
+
+    let treatment = app.session.parameter_set.parameter_set_treatments[current_treatment];
+    let values = treatment.values.split(",");
+
     //add white background
     let background = new PIXI.Graphics();    
     background.rect(0, 0, app.canvas_width, app.canvas_height);
@@ -14,11 +18,11 @@ setup_axis : function setup_axis(){
         background.on('pointermove', app.pixi_container_main_pointermove);
     }
 
-    let treatment = app.session.parameter_set.parameter_set_treatments[current_treatment];
-
+    
     //setup sizes
     axis_width = app.canvas_width - y_axis_margin - right_margin;
     axis_height = app.canvas_height - x_axis_margin - other_margin;
+    box_width = (axis_width * (treatment.range_width/treatment.scale_width))  / values.length;
 
     //setup origin
     origin_x = y_axis_margin;
@@ -69,6 +73,31 @@ setup_axis : function setup_axis(){
         let tick_label = new PIXI.Text({text:i.toString(),style:axis_style});
         tick_label.anchor.set(1, 0.5);
         tick_label.position.set(y_axis_margin-tick_length-2, origin_y-y);
+        pixi_container_main.addChild(tick_label);
+    }
+
+    //x axis ticks
+    let tick_length_x = 5;
+
+    for(let i=1; i<=values.length; i++)
+    {
+        let tick = new PIXI.Graphics();
+        let x = app.range_to_x(i);
+
+        tick.moveTo(x, origin_y);
+        tick.lineTo(x, origin_y+tick_length_x);
+        tick.stroke({color: "black", 
+                     width: 2, });
+
+        pixi_container_main.addChild(tick);
+
+        let tick_label = new PIXI.Text({text:i.toString(),
+                                        style:{fontFamily: 'Arial',
+                                               fontSize: 12,
+                                               fill: {color:'black'},
+                                               align: 'center'}});
+        tick_label.anchor.set(0.5, 0);
+        tick_label.position.set(x, origin_y+tick_length_x);
         pixi_container_main.addChild(tick_label);
     }
 

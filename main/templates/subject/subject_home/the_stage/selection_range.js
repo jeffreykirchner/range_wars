@@ -16,7 +16,7 @@ setup_selection_range : function setup_selection_range(){
 
     let margin = 5;
     let box_height = 5;
-    let start_y = origin_y + margin*2;
+    let start_y = origin_y + margin*4;
     
     //draw bars
     for(let i=current_group_memebers.length-1;i>=0;i--)

@@ -220,29 +220,29 @@ class Session(models.Model):
             return
         
         #test code
-        range_start = 0
-        range_end = 25
-        min_range = 0
-        max_range = 90
-        for i in self.world_state["session_players"]:
-            self.world_state["session_players"][i]["range_start"] = range_start
-            self.world_state["session_players"][i]["range_end"] = range_end
+        # range_start = 0
+        # range_end = 25
+        # min_range = 0
+        # max_range = 90
+        # for i in self.world_state["session_players"]:
+        #     self.world_state["session_players"][i]["range_start"] = range_start
+        #     self.world_state["session_players"][i]["range_end"] = range_end
 
-            range_start += -5
-            range_end += 30
+        #     range_start += -5
+        #     range_end += 30
 
-            if range_start < min_range:
-                range_start = min_range
-            if range_start > max_range:
-                range_start = max_range
-            if range_end > max_range:
-                range_end = max_range
-            if range_end < min_range:
-                range_end = min_range
+        #     if range_start < min_range:
+        #         range_start = min_range
+        #     if range_start > max_range:
+        #         range_start = max_range
+        #     if range_end > max_range:
+        #         range_end = max_range
+        #     if range_end < min_range:
+        #         range_end = min_range
         
-        for i in self.world_state["session_players"]:
-            self.world_state["session_players"][i]["range_start"] = 3
-            break
+        # for i in self.world_state["session_players"]:
+        #     self.world_state["session_players"][i]["range_start"] = 3
+        #     break
 
         self.world_state = self.update_treatment(self.world_state, self.parameter_set.json())
         self.world_state = self.update_revenues(self.world_state, self.parameter_set.json())
@@ -268,6 +268,8 @@ class Session(models.Model):
 
             session_player["cost"] = costs[parameter_set_player_group["position"]-1]
             session_player["revenues"] = {str(i): 0 for i in treatment["values"].split(",")}
+            session_player["range_start"] = parameter_set_player_group["start_box"]
+            session_player["range_end"] = parameter_set_player_group["start_box"]
 
             #setup groups
             if parameter_set_player_group["group_number"] not in world_state["groups"]:

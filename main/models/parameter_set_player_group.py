@@ -20,6 +20,7 @@ class ParameterSetPlayerGroup(models.Model):
 
     group_number = models.IntegerField(verbose_name='Group Number', default=1)         #group during period block
     position = models.IntegerField(verbose_name='Position', default=1)                 #position on graph during period block
+    start_box = models.IntegerField(verbose_name='Start Box', default=0)               #start box at beginning of period block
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
@@ -40,6 +41,7 @@ class ParameterSetPlayerGroup(models.Model):
 
         self.group_number = new_ps.get("group_number")
         self.position = new_ps.get("position")
+        self.start_box = new_ps.get("start_box")
        
         self.save()
         
@@ -76,6 +78,7 @@ class ParameterSetPlayerGroup(models.Model):
 
             "group_number" : self.group_number,
             "position" : self.position,
+            "start_box" : self.start_box,
 
         }
     

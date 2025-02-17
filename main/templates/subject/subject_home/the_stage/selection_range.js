@@ -28,6 +28,7 @@ setup_selection_range : function setup_selection_range(){
         let range_start_x = app.range_to_x(player.range_start);
         let range_end_x = app.range_to_x(player.range_end);
 
+        //bar
         let range_bar = new PIXI.Graphics();
         range_bar.roundRect(range_start_x,
                     start_y, 
@@ -41,6 +42,14 @@ setup_selection_range : function setup_selection_range(){
 
         pixi_container_main.addChild(range_bar);
 
+        //center point
+        let center = new PIXI.Graphics();
+        center.drawCircle(range_start_x + range_bar.width/2, start_y + box_height/2, 4);
+        center.fill({color: "white"});
+        center.stroke({color: parameter_set_player.hex_color, width: 1, alignment:0.5});
+        pixi_selection_ranges.push(center);
+        pixi_container_main.addChild(center);
+        
         start_y += box_height + margin;
     }
 },

@@ -68,7 +68,7 @@ class SubjectUpdatesMixin():
                                                     time_remaining=self.world_state_local["time_remaining"],
                                                     data=result))
             
-            target_list = self.world_state_local["groups"][session_player["group_number"]]
+            target_list = self.world_state_local["groups"][str(session_player["group_number"])]
 
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False, 

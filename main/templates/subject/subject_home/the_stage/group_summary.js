@@ -17,7 +17,7 @@ setup_group_summary : function setup_group_summary(){
 
     //border
     let box = new PIXI.Graphics();
-    box.roundRect(0, 0, axis_width * 0.25, axis_height*0.3, 10);
+    box.roundRect(0, 0, axis_width * 0.25, 50 + 40 * current_group_memebers.length, 10);
     box.stroke({color: "black", width: 1});
     pixi_group_summary.addChild(box);
 
@@ -70,8 +70,8 @@ setup_group_summary : function setup_group_summary(){
 
     //center line
     let center_line = new PIXI.Graphics();
-    center_line.moveTo(center_x, start_y);
-    center_line.lineTo(center_x, box.height-margin);
+    center_line.moveTo(center_x, start_y+3);
+    center_line.lineTo(center_x, box.height-margin-6);
     center_line.stroke({color: "black", width: 1});
     center_line.zIndex = 999;
 

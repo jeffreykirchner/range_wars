@@ -133,6 +133,11 @@ class TimerMixin():
             # self.world_state_local = await sync_to_async(session.update_treatment)(self.world_state_local, self.parameter_set_local)
             self.world_state_local = await sync_to_async(session.update_revenues)(self.world_state_local, self.parameter_set_local)
 
+            #add period earnings to session players
+            for player_id in self.world_state_local["session_players"]:
+                player = self.world_state_local["session_players"][player_id]
+                player["earnings"] = Decimal(player["earnings"]) + Decimal(player["total_profit"])
+
             #session status
             result["value"] = "success"
             result["stop_timer"] = stop_timer
@@ -146,7 +151,6 @@ class TimerMixin():
 
             session_player_status = {}
 
-          
             result["session_player_status"] = session_player_status
 
             self.session_events.append(SessionEvent(session_id=self.session_id, 

@@ -45,6 +45,7 @@ let app = Vue.createApp({
                     chat_text : "",
                     chat_button_label : "Chat",
                     chat_history : [],
+                    chat_header : "Chat",
 
                     end_game_modal_visible : false,
 
@@ -224,6 +225,12 @@ let app = Vue.createApp({
             app.setup_pixi();            
             app.auto_update_avatar_location();
             app.first_load_done = true;
+
+            //chat mode
+            if(!app.session.parameter_set.enable_chat)
+            {
+                app.chat_header = "History";
+            }
         },
 
         /**
@@ -383,14 +390,6 @@ let app = Vue.createApp({
             app.session.world_state.finished = message_data.finished;
             app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
             app.session.world_state.session_players = message_data.session_players
-
-            //update ranges
-            // for(let p in message_data.session_player_status)
-            // {
-            //     let sp = message_data.session_player_status[p];
-            //     app.session.world_state.session_players[p].range_start = sp.range_start;
-            //     app.session.world_state.session_players[p].range_end = sp.range_end;
-            // }
 
             //pixi updates
             app.update_treatment();

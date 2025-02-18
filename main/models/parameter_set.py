@@ -23,14 +23,13 @@ class ParameterSet(models.Model):
 
     show_instructions = models.BooleanField(default=True, verbose_name='Show Instructions')                   #if true show instructions
 
+    enable_chat = models.BooleanField(default=True, verbose_name='Enable Chat')                                  #if true enable chat
+
     survey_required = models.BooleanField(default=False, verbose_name="Survey Required")                      #if true show the survey below
     survey_link = models.CharField(max_length = 1000, default = '', verbose_name = 'Survey Link', blank=True, null=True)
 
     prolific_mode = models.BooleanField(default=False, verbose_name="Prolific Mode")                          #put study into prolific mode
     prolific_completion_link = models.CharField(max_length = 1000, default = '', verbose_name = 'Forward to Prolific after sesison', blank=True, null=True) #at the completion of the study forward subjects to link
-
-    world_width = models.IntegerField(verbose_name='Width of world in pixels', default=10000)                 #world width in pixels
-    world_height = models.IntegerField(verbose_name='Height of world in pixels', default=10000)               #world height in pixels
 
     reconnection_limit = models.IntegerField(verbose_name='Limit Subject Screen Reconnection Trys', default=25)       #limit subject screen reconnection trys
 
@@ -67,9 +66,6 @@ class ParameterSet(models.Model):
 
             self.prolific_mode = True if new_ps.get("prolific_mode", False) else False
             self.prolific_completion_link = new_ps.get("prolific_completion_link", None)
-
-            self.world_width = new_ps.get("world_width", 1000)
-            self.world_height = new_ps.get("world_height", 1000)
 
             self.reconnection_limit = new_ps.get("reconnection_limit", None)
 
@@ -188,6 +184,7 @@ class ParameterSet(models.Model):
         self.json_for_session["period_length"] = self.period_length
 
         self.json_for_session["show_instructions"] = 1 if self.show_instructions else 0
+        self.json_for_session["enable_chat"] = 1 if self.enable_chat else 0
 
         self.json_for_session["survey_required"] = 1 if self.survey_required else 0
         self.json_for_session["survey_link"] = self.survey_link
@@ -195,9 +192,6 @@ class ParameterSet(models.Model):
         self.json_for_session["prolific_mode"] = 1 if self.prolific_mode else 0
         self.json_for_session["prolific_completion_link"] = self.prolific_completion_link
         
-        self.json_for_session["world_width"] = self.world_width
-        self.json_for_session["world_height"] = self.world_height
-
         self.json_for_session["reconnection_limit"] = self.reconnection_limit
 
         self.json_for_session["test_mode"] = 1 if self.test_mode else 0

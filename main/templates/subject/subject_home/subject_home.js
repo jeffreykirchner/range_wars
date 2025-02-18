@@ -47,6 +47,14 @@ let app = Vue.createApp({
                     chat_history : [],
                     chat_header : "Chat",
 
+                    send_cents_amount : null,
+                    send_cents_to : null,
+                    send_cents_to_group : [
+                        { text: 'Option 1', value: 'value1' },
+                        { text: 'Option 2', value: 'value2' },
+                        { text: 'Option 3', value: 'value3' },
+                      ],
+
                     end_game_modal_visible : false,
 
                     instructions : {{instructions|safe}},

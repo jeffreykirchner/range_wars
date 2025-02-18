@@ -60,7 +60,44 @@
     
         </div>
 
-        <div class="row justify-content-end mt-2" v-show="session.started" v-if="pixi_mode=='subject'">
+        <div class="row justify-content-end mt-2 ms-1" 
+            v-show="session.started" 
+            v-if="pixi_mode=='subject'">
+            <div class="col-4 text-center  pb-2"  style="border-style: solid; border-width: 1px;border-color: lightgray;">
+                <div class="row">
+                    <div class="col text-center">
+                        Send cents
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <input type="text" 
+                                class="form-control form-control text-center" 
+                                placeholder="Amount ¢" 
+                                v-model="send_cents_amount"
+                                id="id_send_cents_amount"                                                    
+                                maxlength="3">
+                    </div>
+                    <div class="col">
+                        <select v-model="send_cents_to"
+                                placeholder="Person"
+                                class="form-select form-select text-center"
+                                id="id_send_cents_to">
+                            <option value=null>---</option>
+                            <option v-for="option in send_cents_to_group" :key="option.value" :value="option.value">
+                              [[option.text]]
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        Send
+                    </div>
+                    <div class="col">
+                        Confirm
+                    </div>
+                </div>
+            </div>
+
             <div class="col-4 text-center">
                 <div class="row">
                     <div class="col text-end">
@@ -75,16 +112,14 @@
                         <span v-if="range_update_success"><i class="fas fa-check fa-lg" style="color: #63E6BE;"></i></span>
                     </div>
                 </div>
-                
-                
-                
             </div>
+
             <div class="col-4">
                 <div class="row" v-if="session.parameter_set.enable_chat">
                     <div class="col">
                         <div class="input-group">
                             <input type="text" 
-                                class="form-control form-control-lg" 
+                                class="form-control form-control" 
                                 placeholder="Chat Text" 
                                 v-model="chat_text"
                                 id="id_chat_text"
@@ -92,7 +127,7 @@
                                 v-on:keyup.enter="send_chat()"
                                 maxlength="100"
                                 aria-describedby="send_chat_id">
-                            <button class="btn btn-outline-primary btn-lg"
+                            <button class="btn btn-outline-primary"
                                     type="button" 
                                     id="send_chat_id" 
                                     title="Send your chat message."

@@ -391,14 +391,6 @@ let app = Vue.createApp({
             app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
             app.session.world_state.session_players = message_data.session_players
 
-            //update ranges
-            // for(let p in message_data.session_player_status)
-            // {
-            //     let sp = message_data.session_player_status[p];
-            //     app.session.world_state.session_players[p].range_start = sp.range_start;
-            //     app.session.world_state.session_players[p].range_end = sp.range_end;
-            // }
-
             //pixi updates
             app.update_treatment();
             app.setup_selection_range();

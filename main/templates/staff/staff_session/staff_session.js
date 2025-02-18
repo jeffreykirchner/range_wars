@@ -194,15 +194,6 @@ let app = Vue.createApp({
                 case "update_refresh_screens":
                     app.take_refresh_screens(message_data);
                     break;
-                case "update_target_location_update":
-                    app.take_target_location_update(message_data);
-                    break;
-                case "update_collect_token":
-                    app.take_collect_token(message_data);
-                    break;
-                case "update_tractor_beam":
-                    app.take_tractor_beam(message_data);
-                    break;
                 case "update_interaction":
                     app.take_interaction(message_data);
                     break;
@@ -394,39 +385,10 @@ let app = Vue.createApp({
             app.session.world_state.timer_running = message_data.timer_running;
             app.session.world_state.started = message_data.started;
             app.session.world_state.finished = message_data.finished;
+             app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
+            app.session.world_state.session_players = message_data.session_players
            
-            // app.session.finished = result.finished;
-            app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
-
             app.update_phase_button_text();
-
-            //update player earnings and inventory if period has changed
-            if(message_data.period_is_over)
-            {
-                app.update_player_inventory();              
-                app.take_update_earnings(message_data.earnings);  
-            }
-
-            //update player status
-            for(let p in message_data.session_player_status)
-            {
-                let session_player = message_data.session_player_status[p];
-                app.session.world_state.session_players[p].interaction = session_player.interaction;
-                app.session.world_state.session_players[p].frozen = session_player.frozen;
-                app.session.world_state.session_players[p].cool_down = session_player.cool_down;
-                app.session.world_state.session_players[p].tractor_beam_target = session_player.tractor_beam_target;
-            }
-
-            //update player location
-            for(let p in message_data.current_locations)
-            {
-                let server_location = message_data.current_locations[p];
-
-                if(app.get_distance(server_location, app.session.world_state.session_players[p].current_location) > 1000)
-                {
-                    app.session.world_state.session_players[p].current_location = server_location;
-                }
-            }
         },
        
         //do nothing on when enter pressed for post

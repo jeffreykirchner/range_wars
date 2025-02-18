@@ -1,8 +1,8 @@
 <div class="card" id="graph_card" style="width: 1885px;">                  
     <div class="card-header fw-bold text-center">                
-        <span class="align-middle" v-if="is_subject">
+        <span class="align-middle" v-if="is_subject && session.started">
             Current Period [[session.world_state.current_period]] | 
-            Total Profit (¢): [[session_player.earnings]]
+            Total Profit (¢): [[session.world_state.session_players[session_player.id].earnings]]
         </span>
 
         <span class="float-end">
@@ -16,7 +16,6 @@
                 <i class="far fa-question-circle"></i> 
             </button>
         </span>
-
                     
         {%if session.parameter_set.test_mode%}
         <span class="float-end">

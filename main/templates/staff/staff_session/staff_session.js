@@ -389,6 +389,9 @@ let app = Vue.createApp({
             app.session.world_state.session_players = message_data.session_players
            
             app.update_phase_button_text();
+
+            app.update_treatment();
+            app.setup_selection_range();
         },
        
         //do nothing on when enter pressed for post

@@ -58,6 +58,12 @@ setup_group_summary : function setup_group_summary(){
     scaler = (box.width-margin*2) / (max_cost + max_profit);
     center_x = max_cost * scaler + margin;
 
+    if(center_x > box.width - text_profit.width - margin)
+    {
+        scaler = (box.width - text_profit.width - margin) / center_x * scaler;
+        center_x = max_cost * scaler + margin;
+    }
+
     //move sub captions
     text_cost.x = center_x - small_margin;
     text_profit.x = center_x + small_margin;
@@ -92,8 +98,6 @@ setup_group_summary : function setup_group_summary(){
         bar.fill({color: bar_color});
         bar.stroke({color: "lightgrey", width: 1});
 
-        pixi_group_summary.addChild(bar);
-
         //cost bar
         let bar_cost = new PIXI.Graphics();
         bar_width = (player.total_cost) * scaler;
@@ -107,7 +111,9 @@ setup_group_summary : function setup_group_summary(){
 
         bar_cost.fill({color: bar_color,alpha:0.5});
         bar_cost.stroke({color: "lightgrey", width: 1});
+
         pixi_group_summary.addChild(bar_cost);
+        pixi_group_summary.addChild(bar);
 
         //text cost
         let text_cost = new PIXI.Text({text:player.total_cost, style:text_style_sub});

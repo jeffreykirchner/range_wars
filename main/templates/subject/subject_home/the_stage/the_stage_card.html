@@ -66,11 +66,12 @@
             <div class="col-4 text-center  pb-2"  style="border-style: solid; border-width: 1px;border-color: lightgray;">
                 <div class="row">
                     <div class="col text-center">
-                        Send cents
+                        Transfer Cents
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col">
+                <div class="row justify-content-center">
+                    
+                    <div class="col-auto">
                         <input type="text" 
                                 class="form-control form-control text-center" 
                                 placeholder="Amount ¢" 
@@ -78,7 +79,10 @@
                                 id="id_send_cents_amount"                                                    
                                 maxlength="3">
                     </div>
-                    <div class="col">
+                    <div class="col-auto pt-2">
+                        ¢ to
+                    </div>
+                    <div class="col-auto">
                         <select v-model="send_cents_to"
                                 placeholder="Person"
                                 class="form-select form-select text-center"
@@ -89,12 +93,14 @@
                             </option>
                         </select>
                     </div>
-                    <div class="col">
-                        Send
-                    </div>
-                    <div class="col">
-                        Confirm
-                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-outline-primary"
+                                    type="button" 
+                                    id="id_start_send_cents" 
+                                    title="Send cents to another person."
+                                    v-bind:disabled="reconnecting || working || session.started===false || session.world_state.finished"
+                                    v-on:click="">[[send_cents_button_text]]</button>
+                    </div>                    
                 </div>
             </div>
 

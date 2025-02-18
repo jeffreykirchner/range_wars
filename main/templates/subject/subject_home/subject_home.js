@@ -54,6 +54,7 @@ let app = Vue.createApp({
                         { text: 'Option 2', value: 'value2' },
                         { text: 'Option 3', value: 'value3' },
                       ],
+                    send_cents_button_text : "Transfer",
 
                     end_game_modal_visible : false,
 

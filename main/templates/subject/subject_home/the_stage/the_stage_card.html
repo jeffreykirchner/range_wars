@@ -41,7 +41,7 @@
             <div class="col">         
                 <div id="chat_overlay" v-if="pixi_mode=='subject'">
                     <div class="text-center fw-bold">
-                        Chat
+                        [[chat_header]]
                     </div>
                     
                     {%include "subject/subject_home/the_stage/chat_overlay.html"%}
@@ -57,7 +57,6 @@
 
         <!-- staff controls -->
         <div class="row" v-if="pixi_mode=='staff' && session">
-            
             
     
         </div>
@@ -82,7 +81,7 @@
                 
             </div>
             <div class="col-4">
-                <div class="row">
+                <div class="row" v-if="session.parameter_set.enable_chat">
                     <div class="col">
                         <div class="input-group">
                             <input type="text" 
@@ -104,7 +103,7 @@
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row" v-if="session.parameter_set.enable_chat">
                     <div class="col text-end pe-4 text-secondary">
                         [[chat_text.length]]/100
                     </div>

@@ -45,6 +45,7 @@ let app = Vue.createApp({
                     chat_text : "",
                     chat_button_label : "Chat",
                     chat_history : [],
+                    chat_header : "Chat",
 
                     end_game_modal_visible : false,
 
@@ -224,6 +225,12 @@ let app = Vue.createApp({
             app.setup_pixi();            
             app.auto_update_avatar_location();
             app.first_load_done = true;
+
+            //chat mode
+            if(!app.session.parameter_set.enable_chat)
+            {
+                app.chat_header = "History";
+            }
         },
 
         /**

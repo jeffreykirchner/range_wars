@@ -260,3 +260,31 @@ take_update_range: function take_update_range(message_data){
     }
 },
 
+/**
+ * send cents to another person
+ */
+send_cents: function send_cents(){
+    let data = {}
+
+
+
+    app.working = true;
+    app.send_message("cents", data, "group");
+},
+
+/**
+ * take result from send_cents
+ */
+take_update_cents: function take_update_cents(message_data){
+    app.working = false;
+    
+    if(message_data.status == "success")
+    {
+        //display success message
+    }
+    else
+    {
+        //display error message
+    }
+},
+

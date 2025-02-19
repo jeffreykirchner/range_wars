@@ -63,6 +63,7 @@
         <div class="row justify-content-end mt-2 ms-1" 
             v-show="session.started" 
             v-if="pixi_mode=='subject'">
+            <!-- transfer money -->
             <div class="col-4 text-center  pb-2"  style="border-style: solid; border-width: 1px;border-color: lightgray;">
                 <div class="row">
                     <div class="col text-center">
@@ -74,7 +75,7 @@
                     <div class="col-auto">
                         <input type="text" 
                                 class="form-control form-control text-center" 
-                                placeholder="Amount ¢" 
+                                placeholder="Amount (¢)" 
                                 v-model="send_cents_amount"
                                 id="id_send_cents_amount"                                                    
                                 maxlength="3">
@@ -86,9 +87,13 @@
                         <select v-model="send_cents_to"
                                 placeholder="Person"
                                 class="form-select form-select text-center"
-                                id="id_send_cents_to">
+                                id="id_send_cents_to"
+                                :style="'color:' + get_parameter_set_player_from_player_id(send_cents_to).hex_color">
                             <option value=null>---</option>
-                            <option v-for="option in send_cents_to_group" :key="option.value" :value="option.value">
+                            <option v-for="option in send_cents_to_group" 
+                                :key="option.value"
+                                :value="option.value" 
+                                :style="'color:' + get_parameter_set_player_from_player_id(option.value).hex_color">
                               [[option.text]]
                             </option>
                         </select>
@@ -99,11 +104,12 @@
                                     id="id_start_send_cents" 
                                     title="Send cents to another person."
                                     v-bind:disabled="reconnecting || working || session.started===false || session.world_state.finished"
-                                    v-on:click="">[[send_cents_button_text]]</button>
+                                    v-on:click="send_cents()">[[send_cents_button_text]]</button>
                     </div>                    
                 </div>
             </div>
 
+            <!-- send updated range -->
             <div class="col-4 text-center">
                 <div class="row">
                     <div class="col text-end">
@@ -120,6 +126,7 @@
                 </div>
             </div>
 
+            <!-- send chat -->
             <div class="col-4">
                 <div class="row" v-if="session.parameter_set.enable_chat">
                     <div class="col">

@@ -47,10 +47,11 @@ let app = Vue.createApp({
                     chat_history : [],
                     chat_header : "Chat",
 
-                    send_cents_amount : null,
+                    send_cents_amount : 1,
                     send_cents_to : null,
                     send_cents_to_group : [],
                     send_cents_button_text : "Transfer",
+                    send_cents_error : null,
 
                     end_game_modal_visible : false,
 

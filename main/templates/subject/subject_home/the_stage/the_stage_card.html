@@ -73,8 +73,10 @@
                 <div class="row justify-content-center">
                     
                     <div class="col-auto">
-                        <input type="text" 
-                                class="form-control form-control text-center" 
+                        <input  class="form-control text-center" 
+                                type="number"
+                                min="1"
+                                max="200"
                                 placeholder="Amount (¢)" 
                                 v-model="send_cents_amount"
                                 id="id_send_cents_amount"                                                    
@@ -106,6 +108,12 @@
                                     v-bind:disabled="reconnecting || working || session.started===false || session.world_state.finished"
                                     v-on:click="send_cents()">[[send_cents_button_text]]</button>
                     </div>                    
+                </div>
+
+                <div class="row">
+                    <div class="col text-center text-danger">
+                        [[send_cents_error]]
+                    </div>
                 </div>
             </div>
 

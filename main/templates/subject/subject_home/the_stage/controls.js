@@ -264,10 +264,10 @@ take_update_range: function take_update_range(message_data){
  * send cents to another person
  */
 send_cents: function send_cents(){
-    let data = {}
+    let data = {amount: app.send_cents_amount,
+                recipient: app.send_cents_to};
 
-
-
+    app.send_cents_error = null;
     app.working = true;
     app.send_message("cents", data, "group");
 },
@@ -280,11 +280,12 @@ take_update_cents: function take_update_cents(message_data){
     
     if(message_data.status == "success")
     {
-        //display success message
+        app.send_cents_amount = 0;
+        app.send_cents_to = null;        
     }
     else
     {
-        //display error message
+        app.send_cents_error = "Error: " + message_data.error_message;
     }
 },
 

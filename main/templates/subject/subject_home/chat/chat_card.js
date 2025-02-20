@@ -31,7 +31,9 @@ take_update_chat: function take_update_chat(message_data){
         let text = message_data.text;
         let session_player_id = message_data.sender_id;
 
-        let chat = {session_player:session_player_id, message: text};
+        let chat = {session_player:session_player_id, 
+                    message: text,
+                    type:"chat"};
         app.chat_history.unshift(chat);
     }
 

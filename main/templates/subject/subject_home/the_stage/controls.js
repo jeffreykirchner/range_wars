@@ -281,7 +281,18 @@ take_update_cents: function take_update_cents(message_data){
     if(message_data.status == "success")
     {
         app.send_cents_amount = 0;
-        app.send_cents_to = null;        
+        app.send_cents_to = null;       
+
+        let session_player_id = message_data.player_id;
+        let amount = message_data.amount;
+        let recipient = message_data.recipient;
+        let text = message_data.text;
+
+        let chat = {session_player:session_player_id, 
+                    message: text,
+                    type:"cents"};
+
+        app.chat_history.unshift(chat);
     }
     else
     {

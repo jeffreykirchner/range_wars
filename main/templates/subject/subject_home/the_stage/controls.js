@@ -260,3 +260,43 @@ take_update_range: function take_update_range(message_data){
     }
 },
 
+/**
+ * send cents to another person
+ */
+send_cents: function send_cents(){
+    let data = {amount: app.send_cents_amount,
+                recipient: app.send_cents_to};
+
+    app.send_cents_error = null;
+    app.working = true;
+    app.send_message("cents", data, "group");
+},
+
+/**
+ * take result from send_cents
+ */
+take_update_cents: function take_update_cents(message_data){
+    app.working = false;
+    
+    if(message_data.status == "success")
+    {
+        app.send_cents_amount = 0;
+        app.send_cents_to = null;       
+
+        let session_player_id = message_data.player_id;
+        let amount = message_data.amount;
+        let recipient = message_data.recipient;
+        let text = message_data.text;
+
+        let chat = {session_player:session_player_id, 
+                    message: text,
+                    type:"cents"};
+
+        app.chat_history.unshift(chat);
+    }
+    else
+    {
+        app.send_cents_error = "Error: " + message_data.error_message;
+    }
+},
+

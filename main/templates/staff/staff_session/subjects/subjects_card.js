@@ -221,7 +221,7 @@ copy_earnings: function copy_earnings(){
  
     for(let i=0;i<app.session.session_players_order.length;i++)
     {
-       session_player = app.session.session_players[app.session.session_players_order[i]];
+       let session_player = app.session.session_players[app.session.session_players_order[i]];
 
        text += session_player.student_id + ",";
        text += Math.ceil(Number(app.session.world_state.session_players[session_player.id].earnings))/100;
@@ -360,4 +360,23 @@ get_average_earnings: function get_average_earnings()
     }
     
     return "$" + v.toFixed(2);
+},
+
+/**
+ * get earnings display
+ */
+get_earnings_display: function get_earnings_display(earnings)
+{
+    // $[[(Math.ceil(Number(session.world_state.session_players[p].earnings))/100).toFixed(2)]]
+
+    let v = (Math.ceil(Number( Math.abs(earnings)))/100).toFixed(2);
+    
+    if(earnings < 0)
+    {
+        return "-$" + v;
+    }
+    else
+    {
+        return "$" + v;
+    }
 },

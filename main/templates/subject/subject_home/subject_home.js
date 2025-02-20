@@ -47,6 +47,12 @@ let app = Vue.createApp({
                     chat_history : [],
                     chat_header : "Chat",
 
+                    send_cents_amount : 1,
+                    send_cents_to : null,
+                    send_cents_to_group : [],
+                    send_cents_button_text : "Transfer",
+                    send_cents_error : null,
+
                     end_game_modal_visible : false,
 
                     instructions : {{instructions|safe}},
@@ -166,6 +172,9 @@ let app = Vue.createApp({
                     break;
                 case "update_range":
                     app.take_update_range(message_data);
+                    break;
+                case "update_cents":
+                    app.take_update_cents(message_data);
                     break;
             }
 
@@ -336,6 +345,19 @@ let app = Vue.createApp({
             {                    
                 group.splice(index, 1);
                 group.unshift(app.session_player.id);
+            }
+
+            //add all players except local player to send cents group
+            app.send_cents_to_group = [];
+            for(let i in group)
+            {
+                if(group[i] != app.session_player.id)
+                {
+                    let parameter_set_player = app.session.parameter_set.parameter_set_players[app.session.world_state.session_players[group[i]].parameter_set_player_id];
+                    let text=parameter_set_player.id_label;
+                    let value=group[i];
+                    app.send_cents_to_group.push({text:text, value:value});
+                }
             }
             
 

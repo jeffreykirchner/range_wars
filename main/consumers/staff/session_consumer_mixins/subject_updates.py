@@ -4,12 +4,14 @@ import math
 import json
 
 from datetime import datetime, timedelta
+from decimal import Decimal
 
 from django.utils.html import strip_tags
 
 from main.models import SessionPlayer
 from main.models import Session
 from main.models import SessionEvent
+from main.globals import is_positive_integer
 
 from main.globals import ExperimentPhase
 
@@ -232,5 +234,94 @@ class SubjectUpdatesMixin():
     async def update_range(self, event):
         '''
         update range on client
+        '''
+        pass
+
+    async def cents(self, event):
+        '''
+        one player sends cents to another
+        '''
+
+        if self.controlling_channel != self.channel_name:
+            return    
+       
+        logger = logging.getLogger(__name__) 
+
+        status = "success"
+        error_message = ""
+        player_id = None
+        text = ""
+
+        try:
+            player_id = self.session_players_local[event["player_key"]]["id"]
+            event_data = event["message_text"]
+            amount = event_data["amount"]
+            recipient = event_data["recipient"]
+        except:
+            logger.warning(f"take_cents: invalid data, {event['message_text']}")
+            error_message = "Invalid data."
+            status = "fail"
+
+        session_player_source = self.world_state_local["session_players"][str(player_id)]
+        target_list = [player_id]
+
+        #check amount
+        if status == "success":
+            if not is_positive_integer(amount) and amount > 0:
+                status = "fail"
+                error_message = "Invalid amount."
+            elif amount > 200:
+                status = "fail"
+                error_message = "You may transfer at most 200 cents at a time."
+                
+        #check recipient
+        if status == "success":
+            if not is_positive_integer(recipient):
+                status = "fail"
+                error_message = "Invalid recipient."
+        
+        #check if player has enough cents
+        if status == "success":
+            if Decimal(session_player_source["earnings"]) < amount:
+                status = "fail"
+                error_message = "Insufficient funds."
+            
+        if status == "success":
+           
+            session_player_recipient = self.world_state_local["session_players"][str(recipient)]
+
+            session_player_source["earnings"] = Decimal(session_player_source["earnings"]) - amount
+            session_player_recipient["earnings"] = Decimal(session_player_recipient["earnings"]) + amount
+
+            parameter_set_player_source = self.parameter_set_local["parameter_set_players"][str(session_player_source["parameter_set_player_id"])]
+            parameter_set_player_recipient = self.parameter_set_local["parameter_set_players"][str(session_player_recipient["parameter_set_player_id"])]
+           
+            text = f"<span style='color:{parameter_set_player_source['hex_color']}'>{parameter_set_player_source['id_label']}</span> \
+                      transferred {amount} cent{'s' if amount>1 else ""} to \
+                    <span style='color:{parameter_set_player_recipient['hex_color']}'>{parameter_set_player_recipient['id_label']}</span>."
+
+            self.session_events.append(SessionEvent(session_id=self.session_id, 
+                                                    session_player_id=player_id,
+                                                    type=event['type'],
+                                                    period_number=self.world_state_local["current_period"],                                                   
+                                                    data=event_data))
+            
+            target_list = self.world_state_local["groups"][str(session_player_source["group_number"])]
+        
+        result = {"status": status, 
+                  "player_id": player_id,
+                  "amount": amount,
+                  "recipient": recipient,
+                  "text": text,
+                  "error_message": error_message}
+
+        await self.send_message(message_to_self=None, message_to_group=result,
+                                message_type=event['type'], send_to_client=False, 
+                                send_to_group=True, target_list=target_list)
+            
+    
+    async def update_cents(self, event):
+        '''
+        update cents on client
         '''
         pass

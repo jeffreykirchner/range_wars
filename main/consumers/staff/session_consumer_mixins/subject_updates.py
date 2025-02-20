@@ -250,7 +250,8 @@ class SubjectUpdatesMixin():
         status = "success"
         error_message = ""
         player_id = None
-        
+        text = ""
+
         try:
             player_id = self.session_players_local[event["player_key"]]["id"]
             event_data = event["message_text"]
@@ -291,7 +292,14 @@ class SubjectUpdatesMixin():
 
             session_player_source["earnings"] = Decimal(session_player_source["earnings"]) - amount
             session_player_recipient["earnings"] = Decimal(session_player_recipient["earnings"]) + amount
+
+            parameter_set_player_source = self.parameter_set_local["parameter_set_players"][str(session_player_source["parameter_set_player_id"])]
+            parameter_set_player_recipient = self.parameter_set_local["parameter_set_players"][str(session_player_recipient["parameter_set_player_id"])]
            
+            text = f"<span style='color:{parameter_set_player_source['hex_color']}'>{parameter_set_player_source['id_label']}</span> \
+                      transferred {amount} cent{'s' if amount>1 else ""} to \
+                    <span style='color:{parameter_set_player_recipient['hex_color']}'>{parameter_set_player_recipient['id_label']}</span>."
+
             self.session_events.append(SessionEvent(session_id=self.session_id, 
                                                     session_player_id=player_id,
                                                     type=event['type'],
@@ -304,6 +312,7 @@ class SubjectUpdatesMixin():
                   "player_id": player_id,
                   "amount": amount,
                   "recipient": recipient,
+                  "text": text,
                   "error_message": error_message}
 
         await self.send_message(message_to_self=None, message_to_group=result,

@@ -2,7 +2,10 @@
     <div v-for="c in chat_history" 
          :key="c"
          :set="psp=get_parameter_set_player_from_player_id(c.session_player)">
-        <div v-if="c.session_player==session_player.id" class="text-end">
+        <div v-if="c.type=='cents'" class="text-center">
+           <span v-html="c.message"></span>
+        </div>
+        <div v-else-if="c.session_player==session_player.id" class="text-end">
             [[c.message]]
         </div>
         <div v-else>

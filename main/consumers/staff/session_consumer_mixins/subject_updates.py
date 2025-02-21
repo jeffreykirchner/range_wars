@@ -72,6 +72,13 @@ class SubjectUpdatesMixin():
             
             target_list = self.world_state_local["groups"][str(session_player["group_number"])]
 
+            chat = {"session_player": player_id,
+                    "message": result["text"],
+                    "type": "chat"}
+            
+            async for s in SessionPlayer.objects.filter(id__in=target_list):
+                await s.push_chat_display_history(chat)
+
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False, 
                                 send_to_group=True, target_list=target_list)
@@ -307,6 +314,14 @@ class SubjectUpdatesMixin():
                                                     data=event_data))
             
             target_list = self.world_state_local["groups"][str(session_player_source["group_number"])]
+
+            # store into chat history
+            chat = {"session_player": player_id,
+                    "message": text,
+                    "type": "cents"}
+        
+            async for s in SessionPlayer.objects.filter(id__in=target_list):
+                await s.push_chat_display_history(chat)
         
         result = {"status": status, 
                   "player_id": player_id,

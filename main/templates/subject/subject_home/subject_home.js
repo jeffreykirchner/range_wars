@@ -44,7 +44,7 @@ let app = Vue.createApp({
 
                     chat_text : "",
                     chat_button_label : "Chat",
-                    chat_history : [],
+                    chat_history : {{session_player.chat_display_history|safe}},
                     chat_header : "Chat",
 
                     send_cents_amount : 1,

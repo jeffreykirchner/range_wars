@@ -12,6 +12,7 @@ from decimal import Decimal
 from django.db import models
 from django.urls import reverse
 from django.db.models import Q
+from django.core.serializers.json import DjangoJSONEncoder
 
 from main.models import Session
 from main.models import ParameterSetPlayer
@@ -41,7 +42,9 @@ class SessionPlayer(models.Model):
     current_instruction_complete = models.IntegerField(verbose_name='Current Instruction Complete', default=0)   #furthest complete page subject has done
     instructions_finished = models.BooleanField(verbose_name='Instructions Finished', default=False)             #true once subject has completed instructions
 
-    survey_complete = models.BooleanField(default=False, verbose_name="Survey Complete")                 #subject has completed the survey  
+    survey_complete = models.BooleanField(default=False, verbose_name="Survey Complete")                         #subject has completed the survey  
+
+    chat_display_history = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True, verbose_name="Chat History")       #chat display history for this subject
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -73,6 +76,8 @@ class SessionPlayer(models.Model):
         self.current_instruction = 1
         self.current_instruction_complete = 0
         self.instructions_finished = False
+
+        self.chat_display_history = []
 
         self.save()
     
@@ -124,6 +129,18 @@ class SessionPlayer(models.Model):
         text = text.replace("#id_label#", str(parameter_set_player["id_label"]))
         
         return text
+    
+    async def push_chat_display_history(self, message):
+        '''
+        push chat message to display history, max 100 messages
+        '''
+
+        if len(self.chat_display_history) >= 100:
+            self.chat_display_history.pop(99)
+
+        self.chat_display_history.insert(0, message)
+
+        await self.asave()
     
     def get_survey_link(self):
         '''

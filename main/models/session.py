@@ -203,6 +203,7 @@ class Session(models.Model):
 
             v['range_start'] = 1
             v['range_end'] = 1
+            v['range_middle'] = 1
             v['revenues'] = []             #revenue share for each value
             v['earnings'] = 0              #total earnings
             v['cost'] = 0                  #cost for each location in range 
@@ -270,6 +271,7 @@ class Session(models.Model):
             session_player["revenues"] = {str(i): 0 for i in treatment["values"].split(",")}
             session_player["range_start"] = parameter_set_player_group["start_box"]
             session_player["range_end"] = parameter_set_player_group["start_box"]
+            session_player["range_middle"] =  (Decimal(session_player["range_start"]) + Decimal(session_player["range_end"]) + 1) / 2
 
             #setup groups
             if parameter_set_player_group["group_number"] not in world_state["groups"]:

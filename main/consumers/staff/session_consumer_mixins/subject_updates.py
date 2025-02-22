@@ -224,6 +224,8 @@ class SubjectUpdatesMixin():
                 session_player["range_start"] = event_data["range_start"]
                 session_player["range_end"] = event_data["range_end"]
 
+                session_player["range_middle"] = (Decimal(session_player["range_start"]) + Decimal(session_player["range_end"]) + 1) / 2
+
                 self.session_events.append(SessionEvent(session_id=self.session_id, 
                                                         session_player_id=player_id,
                                                         type=event['type'],

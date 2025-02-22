@@ -27,6 +27,7 @@ setup_selection_range : function setup_selection_range(){
 
         let range_start_x = app.range_to_x(player.range_start);
         let range_end_x = app.range_to_x(player.range_end);
+        let range_middle_x = app.range_to_x(player.range_middle);
 
         //bar
         let range_bar = new PIXI.Graphics();
@@ -44,7 +45,7 @@ setup_selection_range : function setup_selection_range(){
 
         //center point
         let center = new PIXI.Graphics();
-        center.circle(range_start_x + range_bar.width/2, start_y + box_height/2, 4);
+        center.circle(range_middle_x, start_y + box_height/2, 4);
         center.fill({color: "white"});
         center.stroke({color: parameter_set_player.hex_color, width: 1, alignment:0.5});
         pixi_selection_ranges.push(center);

@@ -232,12 +232,14 @@ pixi_container_main_pointermove: function pixi_container_main_pointermove(event)
  */
 send_range: function send_range(){
     let session_player = app.session.world_state.session_players[app.session_player.id];
+    let period_block = app.session.world_state.period_blocks[app.session.world_state.current_period_block];
 
     let data = {       
         range_start: app.current_selection_range.start,
         range_end: app.current_selection_range.end
     };
 
+    if(period_block.phase="start") app.show_range_update_button = false;
     app.working = true;
     app.send_message("range", data, "group");
                     
@@ -248,11 +250,15 @@ send_range: function send_range(){
  */
 take_update_range: function take_update_range(message_data){
     app.working = false;
+    let period_block = app.session.world_state.period_blocks[app.session.world_state.current_period_block];
     
     if(message_data.status == "success")
     {
         //display success message
-        app.range_update_success = true;
+        if(period_block.phase=="play")
+        {
+            app.range_update_success = true;
+        }
     }
     else
     {

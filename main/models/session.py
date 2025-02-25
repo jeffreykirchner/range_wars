@@ -179,6 +179,7 @@ class Session(models.Model):
                             "groups":{},
                             "current_experiment_phase":ExperimentPhase.INSTRUCTIONS if self.parameter_set.show_instructions else ExperimentPhase.RUN,
                             "current_period_block":parameter_set["parameter_set_periodblocks_order"][0] if parameter_set["parameter_set_periodblocks_order"] else None,
+                            "period_blocks":{},
                             "time_remaining":self.parameter_set.period_length,
                             "timer_running":False,
                             "timer_history":[],
@@ -193,7 +194,7 @@ class Session(models.Model):
         #session periods
         for i in self.world_state["session_periods"]:
             self.world_state["session_periods"][i]["consumption_completed"] = False
-        
+
         #session players
         for i in self.session_players.prefetch_related('parameter_set_player').all().values('id', 
                                                                                             'parameter_set_player__start_x',
@@ -215,6 +216,17 @@ class Session(models.Model):
             
             self.world_state["session_players"][str(i['id'])] = v
             self.world_state["session_players_order"].append(i['id'])
+        
+
+        #period blocks
+        for i in parameter_set["parameter_set_periodblocks"]:
+            self.world_state["period_blocks"][str(i)] = {"id":i, 
+                                                         "phase":"start",
+                                                         "session_players":{}}
+
+            for p in self.world_state["session_players"]:
+                self.world_state["period_blocks"][str(i)]["session_players"][p] = {"ready":False}
+
         
         if not self.started:
             self.save()

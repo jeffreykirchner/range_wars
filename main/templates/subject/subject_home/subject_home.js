@@ -60,6 +60,7 @@ let app = Vue.createApp({
 
                     current_selection_range : {start:null, end:null},    //the current selection range
                     range_update_success : false,                        //if true show success check mark
+                    show_range_update_button : true,                     //if true show update button
 
                     notices_seen: [],
 

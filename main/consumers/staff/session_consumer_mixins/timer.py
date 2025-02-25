@@ -120,11 +120,18 @@ class TimerMixin():
 
                 self.world_state_local["time_remaining"] = 1
                 self.world_state_local["current_period"] +=1
+
+
+                last_session_period_id = self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-2]
+                current_session_period_id = self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-1]
+
+                last_session_period = self.world_state_local["session_periods"][last_session_period_id]
+                current_session_period = self.world_state_local["session_periods"][current_session_period_id]
+
+                if last_session_period["parameter_set_periodblock_id"] != current_session_period["parameter_set_periodblock_id"]:
+                    #the period is over 
+                    send_update = True
                 
-                # if current_period > 1:
-                #     last_period_id = self.world_state_local["session_periods_order"][current_period - 2]
-                #     last_period_id_s = str(last_period_id)
-                #     last_period = self.world_state_local["session_periods"][last_period_id_s]
 
                 
         if send_update:

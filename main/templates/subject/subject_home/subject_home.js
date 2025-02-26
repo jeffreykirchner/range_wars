@@ -261,7 +261,11 @@ let app = Vue.createApp({
          */
         do_reload: function do_reload()
         {
-            
+            app.setup_treatment();
+            app.update_treatment();
+            app.setup_selection_range();
+            app.setup_group_summary();
+            app.setup_control_handles();
         },
 
         /** send winsock request to get session info
@@ -400,11 +404,11 @@ let app = Vue.createApp({
             let period_change = false;
             let period_earnings = 0;
 
-            if (message_data.period_is_over)
-            {
-                period_earnings = message_data.earnings[app.session_player.id].period_earnings;
-                app.session.world_state.session_players[app.session_player.id].earnings = message_data.earnings[app.session_player.id].total_earnings;
-            }
+            // if (message_data.period_is_over)
+            // {
+            //     period_earnings = message_data.earnings[app.session_player.id].period_earnings;
+            //     app.session.world_state.session_players[app.session_player.id].earnings = message_data.earnings[app.session_player.id].total_earnings;
+            // }
 
             app.session.started = message_data.started;
 
@@ -435,6 +439,8 @@ let app = Vue.createApp({
 
             //update any notices on screen
             app.update_notices();
+
+            app.show_range_update_button = true;
         },
 
         /**

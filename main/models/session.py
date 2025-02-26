@@ -119,11 +119,13 @@ class Session(models.Model):
         session_periods = []
 
         for i in self.parameter_set.parameter_set_periodblocks_a.all():
-
+            round_number = 1
             for j in range(i.period_start, i.period_end+1):
                 session_periods.append(main.models.SessionPeriod(session=self, 
                                                                 parameter_set_periodblock=i,
-                                                                period_number=j))
+                                                                period_number=j,
+                                                                round_number=round_number))
+                round_number += 1
         
         main.models.SessionPeriod.objects.bulk_create(session_periods)
 

@@ -80,6 +80,7 @@ class TimerMixin():
 
         stop_timer = False
         send_update = True
+        new_period_block = False
 
         result = {"earnings":{}}
 
@@ -110,7 +111,7 @@ class TimerMixin():
 
                 period_block = self.world_state_local["period_blocks"][str(self.world_state_local["current_period_block"])]
 
-                if period_block["phase"] == "start":
+                if  period_block["phase"] == "start" or period_block["phase"] == "take_intial_ranges":
                     #check if all session players are ready
                     all_ready = True
 
@@ -139,9 +140,7 @@ class TimerMixin():
                     if last_session_period["parameter_set_periodblock_id"] != current_session_period["parameter_set_periodblock_id"]:
                         #the period is over 
                         send_update = True
-                
 
-                
         if send_update:
             session = await Session.objects.aget(id=self.session_id)
 
@@ -184,8 +183,16 @@ class TimerMixin():
 
             await self.store_world_state(force_store=True)
             
-            await self.send_message(message_to_self=False, message_to_group=result,
-                                    message_type="time", send_to_client=False, send_to_group=True)
+            if period_block["phase"] == "take_intial_ranges":
+                await self.send_message(message_to_self=result, message_to_group=None,
+                                        message_type="time", send_to_client=True, send_to_group=False)
+
+            else:
+                if period_block["phase"] == "start":
+                    period_block["phase"] = "take_intial_ranges"
+
+                await self.send_message(message_to_self=False, message_to_group=result,
+                                        message_type="time", send_to_client=False, send_to_group=True)
 
     async def update_time(self, event):
         '''

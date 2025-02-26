@@ -144,6 +144,8 @@ update_right_handle_position : function update_right_handle_position(){
  * pointer down on left handle
  */
 pixi_left_handle_pointerdown: function pixi_left_handle_pointerdown(event){
+    if(!app.show_range_update_button) return;
+
     pixi_left_handle.alpha = 0.5;
     app.selection_handle = "left";
 },
@@ -152,6 +154,8 @@ pixi_left_handle_pointerdown: function pixi_left_handle_pointerdown(event){
  * pointer down on right handle
  */
 pixi_right_handle_pointerdown: function pixi_right_handle_pointerdown(event){
+    if(!app.show_range_update_button) return;
+    
     pixi_right_handle.alpha = 0.5;
     app.selection_handle = "right";
 },

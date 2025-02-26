@@ -385,8 +385,9 @@ let app = Vue.createApp({
             app.session.world_state.timer_running = message_data.timer_running;
             app.session.world_state.started = message_data.started;
             app.session.world_state.finished = message_data.finished;
-             app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
+            app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
             app.session.world_state.session_players = message_data.session_players
+            app.session.world_state.period_blocks = message_data.period_blocks;
            
             app.update_phase_button_text();
 

@@ -384,6 +384,8 @@ let app = Vue.createApp({
             app.remove_all_notices();
 
             app.notices_seen = [];
+
+            app.show_range_update_button = true;
         },
 
         /**
@@ -413,6 +415,7 @@ let app = Vue.createApp({
             app.session.world_state.finished = message_data.finished;
             app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
             app.session.world_state.session_players = message_data.session_players
+            app.session.world_state.period_blocks = message_data.period_blocks;
 
             //pixi updates
             app.update_treatment();

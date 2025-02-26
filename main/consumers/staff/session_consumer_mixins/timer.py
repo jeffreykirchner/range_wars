@@ -103,34 +103,42 @@ class TimerMixin():
                 for i in self.world_state_local["timer_history"]:
                     total_time += i["count"]
 
-                #find current period
-                # current_period = 1
-                # temp_time = 0          #total of period lengths through current period.
-                # for i in range(1, self.world_state_local["number_of_periods"]+1):
-                #     temp_time += self.parameter_set_local["period_length"]
+                #check for end game
+                if self.world_state_local["current_period"] == len(self.world_state_local["session_periods_order"]):
+                    # do end game
+                    return
 
-                # current_period += 1
+                period_block = self.world_state_local["period_blocks"][str(self.world_state_local["current_period_block"])]
 
-                #time remaining in period
-                # time_remaining = temp_time - total_time
+                if period_block["phase"] == "start":
+                    #check if all session players are ready
+                    all_ready = True
 
-                # if current_period == 2 and time_remaining ==10:
-                #     '''test code'''
-                #     pass
+                    for p in period_block["session_players"]:
+                        session_player = period_block["session_players"][p]
 
-                self.world_state_local["time_remaining"] = 1
-                self.world_state_local["current_period"] +=1
+                        if session_player["ready"] == False:
+                            all_ready = False
+                            break
+                
+                    if all_ready:
+                        period_block["phase"] = "play"
+                else:
 
+                    self.world_state_local["time_remaining"] = 1
+                    self.world_state_local["current_period"] += 1
 
-                last_session_period_id = self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-2]
-                current_session_period_id = self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-1]
+                    last_session_period_id = self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-2]
+                    current_session_period_id = self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-1]
 
-                last_session_period = self.world_state_local["session_periods"][last_session_period_id]
-                current_session_period = self.world_state_local["session_periods"][current_session_period_id]
+                    last_session_period = self.world_state_local["session_periods"][str(last_session_period_id)]
+                    current_session_period = self.world_state_local["session_periods"][str(current_session_period_id)]
 
-                if last_session_period["parameter_set_periodblock_id"] != current_session_period["parameter_set_periodblock_id"]:
-                    #the period is over 
-                    send_update = True
+                    self.world_state_local["current_period_block"] =  current_session_period["parameter_set_periodblock_id"]
+
+                    if last_session_period["parameter_set_periodblock_id"] != current_session_period["parameter_set_periodblock_id"]:
+                        #the period is over 
+                        send_update = True
                 
 
                 
@@ -155,6 +163,7 @@ class TimerMixin():
             result["finished"] = self.world_state_local["finished"]
             result["current_experiment_phase"] = self.world_state_local["current_experiment_phase"]
             result["session_players"] = self.world_state_local["session_players"]
+            result["period_blocks"] = self.world_state_local["period_blocks"]
 
             session_player_status = {}
 

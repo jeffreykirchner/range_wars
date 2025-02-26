@@ -386,6 +386,8 @@ get_earnings_display: function get_earnings_display(earnings)
  */
 get_subject_status_display: function get_subject_status_display(p)
 {
+    if(!app.session.started) return "---";
+    
     let session_player = app.session.session_players[p];
     let period_block = app.session.world_state.period_blocks[app.session.world_state.current_period_block];
 

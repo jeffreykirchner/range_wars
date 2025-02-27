@@ -9,6 +9,9 @@ setup_control_handles : function setup_control_handles(){
     let session_player = app.session.world_state.session_players[app.session_player.id];
     let parameter_set_player = app.session.parameter_set.parameter_set_players[session_player.parameter_set_player_id];
 
+    app.current_selection_range.start = session_player.range_start;
+    app.current_selection_range.end = session_player.range_end;
+
     pixi_left_handle = new PIXI.Container();
     pixi_right_handle = new PIXI.Container();
 

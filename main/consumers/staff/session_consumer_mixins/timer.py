@@ -69,6 +69,8 @@ class TimerMixin():
         if self.controlling_channel != self.channel_name:
             return
         
+        session = await Session.objects.aget(id=self.session_id)
+        
         logger = logging.getLogger(__name__)
         #logger.info(f"continue_timer: start")
 
@@ -111,8 +113,9 @@ class TimerMixin():
                 
                 current_session_period_id = self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-1]
                 current_session_period = self.world_state_local["session_periods"][str(current_session_period_id)]
-
                 period_block = self.world_state_local["period_blocks"][str(self.world_state_local["current_period_block"])]
+                new_period_block = None
+
 
                 if period_block["phase"] == "start":
                     #check if all session players are ready
@@ -127,6 +130,7 @@ class TimerMixin():
                 
                     if all_ready:
                         period_block["phase"] = "play"
+                        new_period_block = period_block
                 else:
 
                     self.world_state_local["time_remaining"] = 1
@@ -140,20 +144,20 @@ class TimerMixin():
 
                     self.world_state_local["current_period_block"] = new_current_session_period["parameter_set_periodblock_id"]
 
-                    # if last_session_period["parameter_set_periodblock_id"] != current_session_period["parameter_set_periodblock_id"]:
-                    #     #the period is over 
-                    #     send_update = True
+                    #check if the period block has changed
+                    if new_period_block["id"] != period_block["id"]:
+                        #set ranges for new period block
+                        self.world_state_local = await sync_to_async(session.update_treatment)(self.world_state_local, self.parameter_set_local)
 
         if send_update:
-            session = await Session.objects.aget(id=self.session_id)
-
-            # self.world_state_local = await sync_to_async(session.update_treatment)(self.world_state_local, self.parameter_set_local)
+            
             self.world_state_local = await sync_to_async(session.update_revenues)(self.world_state_local, self.parameter_set_local)
 
             #add period earnings to session players
-            for player_id in self.world_state_local["session_players"]:
-                player = self.world_state_local["session_players"][player_id]
-                player["earnings"] = Decimal(player["earnings"]) + Decimal(player["total_profit"])
+            if new_period_block and new_period_block["phase"] != "start":
+                for player_id in self.world_state_local["session_players"]:
+                    player = self.world_state_local["session_players"][player_id]
+                    player["earnings"] = Decimal(player["earnings"]) + Decimal(player["total_profit"])
 
             #session status
             result["value"] = "success"

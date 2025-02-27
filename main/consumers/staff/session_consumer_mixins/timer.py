@@ -108,10 +108,13 @@ class TimerMixin():
                 if self.world_state_local["current_period"] == len(self.world_state_local["session_periods_order"]):
                     # do end game
                     return
+                
+                current_session_period_id = self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-1]
+                current_session_period = self.world_state_local["session_periods"][str(current_session_period_id)]
 
                 period_block = self.world_state_local["period_blocks"][str(self.world_state_local["current_period_block"])]
 
-                if  period_block["phase"] == "start" or period_block["phase"] == "take_intial_ranges":
+                if period_block["phase"] == "start":
                     #check if all session players are ready
                     all_ready = True
 
@@ -129,17 +132,17 @@ class TimerMixin():
                     self.world_state_local["time_remaining"] = 1
                     self.world_state_local["current_period"] += 1
 
-                    last_session_period_id = self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-2]
-                    current_session_period_id = self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-1]
+                    new_current_session_period_id = self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-1]
+                    new_current_session_period = self.world_state_local["session_periods"][str(new_current_session_period_id)]
+                    new_period_block = self.world_state_local["period_blocks"][str(new_current_session_period["parameter_set_periodblock_id"])]
+                    
+                    self.world_state_local["current_round"] = new_current_session_period["round_number"]
 
-                    last_session_period = self.world_state_local["session_periods"][str(last_session_period_id)]
-                    current_session_period = self.world_state_local["session_periods"][str(current_session_period_id)]
+                    self.world_state_local["current_period_block"] = new_current_session_period["parameter_set_periodblock_id"]
 
-                    self.world_state_local["current_period_block"] =  current_session_period["parameter_set_periodblock_id"]
-
-                    if last_session_period["parameter_set_periodblock_id"] != current_session_period["parameter_set_periodblock_id"]:
-                        #the period is over 
-                        send_update = True
+                    # if last_session_period["parameter_set_periodblock_id"] != current_session_period["parameter_set_periodblock_id"]:
+                    #     #the period is over 
+                    #     send_update = True
 
         if send_update:
             session = await Session.objects.aget(id=self.session_id)
@@ -156,6 +159,7 @@ class TimerMixin():
             result["value"] = "success"
             result["stop_timer"] = stop_timer
             result["time_remaining"] = self.world_state_local["time_remaining"]
+            result["current_round"] = self.world_state_local["current_round"]
             result["current_period"] = self.world_state_local["current_period"]
             result["timer_running"] = self.world_state_local["timer_running"]
             result["started"] = self.world_state_local["started"]
@@ -183,13 +187,11 @@ class TimerMixin():
 
             await self.store_world_state(force_store=True)
             
-            if period_block["phase"] == "take_intial_ranges":
+            if period_block["phase"] == "start":
                 await self.send_message(message_to_self=result, message_to_group=None,
-                                        message_type="time", send_to_client=True, send_to_group=False)
+                                        message_type="update_time", send_to_client=True, send_to_group=False)
 
             else:
-                if period_block["phase"] == "start":
-                    period_block["phase"] = "take_intial_ranges"
 
                 await self.send_message(message_to_self=False, message_to_group=result,
                                         message_type="time", send_to_client=False, send_to_group=True)

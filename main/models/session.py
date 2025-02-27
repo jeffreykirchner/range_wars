@@ -177,6 +177,7 @@ class Session(models.Model):
                             "session_players":{},
                             "session_players_order":[],
                             "current_period":1,
+                            "current_round":1,
                             "number_of_periods":self.session_periods.all().count(),
                             "groups":{},
                             "current_experiment_phase":ExperimentPhase.INSTRUCTIONS if self.parameter_set.show_instructions else ExperimentPhase.RUN,

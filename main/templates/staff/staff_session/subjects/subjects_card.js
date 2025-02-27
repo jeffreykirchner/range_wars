@@ -400,8 +400,12 @@ get_subject_status_display: function get_subject_status_display(p)
     {
         return session_player.instructions_finished ? "Finished" : "Page " + session_player.current_instruction.toString()
     }
+    else if(period_block.phase == "start")
+    {
+        return period_block.session_players[p].ready ? "Waiting" : "Inital Range";
+    }
     else
     {
-        return period_block.session_players[p].ready ? "Waiting" : "Ranging";
-    }   
+        return "Ranging";
+    }
 },

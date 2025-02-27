@@ -9,6 +9,14 @@ setup_treatment : function setup_treatment(){
 
     // box_width = (axis_width * (treatment.range_width/treatment.scale_width))  / values.length;
 
+    //destory pixi boxes
+    for(let i=0;i<pixi_boxes.length;i++)
+    {
+        let box = pixi_boxes[i].box;
+        box.destroy();
+    }
+    pixi_boxes = [];
+
     let start_location_x = y_axis_margin;
 
     for(let i in values)

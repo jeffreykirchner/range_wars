@@ -61,11 +61,7 @@ setup_pixi_sheets: function setup_pixi_sheets(textures){
 
     app.pixi_textures = textures;
 
-    pixi_container_main = new PIXI.Container();
-    pixi_container_main.sortableChildren = true;
-    // pixi_container_main.eventMode = 'static';
-
-    pixi_app.stage.addChild(pixi_container_main);
+    app.setup_main_container();
    
     //subject controls
     if(app.pixi_mode=="subject")
@@ -114,6 +110,22 @@ setup_pixi_sheets: function setup_pixi_sheets(textures){
 
     //start game loop
     pixi_app.ticker.add(app.game_loop);
+},
+
+/**
+ * setup the main container
+ */
+setup_main_container: function setup_main_container(){
+    //remove old container
+    if(pixi_container_main)
+    {
+        pixi_app.stage.removeChild(pixi_container_main);
+        pixi_container_main.destroy();
+    }
+
+    pixi_container_main = new PIXI.Container();
+    pixi_container_main.sortableChildren = true;
+    pixi_app.stage.addChild(pixi_container_main);
 },
 
 /**

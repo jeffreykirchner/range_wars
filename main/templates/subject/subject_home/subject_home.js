@@ -444,6 +444,8 @@ let app = Vue.createApp({
                 app.update_treatment();
                 app.setup_selection_range();
                 app.setup_control_handles();
+
+                app.range_update_success = false;
             }
             else
             {

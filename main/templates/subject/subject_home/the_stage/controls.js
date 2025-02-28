@@ -9,6 +9,9 @@ setup_control_handles : function setup_control_handles(){
     let session_player = app.session.world_state.session_players[app.session_player.id];
     let parameter_set_player = app.session.parameter_set.parameter_set_players[session_player.parameter_set_player_id];
 
+    app.current_selection_range.start = session_player.range_start;
+    app.current_selection_range.end = session_player.range_end;
+
     pixi_left_handle = new PIXI.Container();
     pixi_right_handle = new PIXI.Container();
 
@@ -144,6 +147,9 @@ update_right_handle_position : function update_right_handle_position(){
  * pointer down on left handle
  */
 pixi_left_handle_pointerdown: function pixi_left_handle_pointerdown(event){
+    if(!app.show_range_update_button) return;
+    if(app.session.world_state.current_round == 1) return;
+
     pixi_left_handle.alpha = 0.5;
     app.selection_handle = "left";
 },
@@ -152,6 +158,9 @@ pixi_left_handle_pointerdown: function pixi_left_handle_pointerdown(event){
  * pointer down on right handle
  */
 pixi_right_handle_pointerdown: function pixi_right_handle_pointerdown(event){
+    if(!app.show_range_update_button) return;
+    if(app.session.world_state.current_round == 1) return;
+    
     pixi_right_handle.alpha = 0.5;
     app.selection_handle = "right";
 },
@@ -201,6 +210,7 @@ pixi_container_main_pointerup: function pixi_container_main_pointerup(event){
  * handle pointer down on the main container
  */
 pixi_container_main_pointerdown: function pixi_container_main_pointerdown(event){
+    
     let local_pos = event.data.getLocalPosition(event.currentTarget);
     let pt = {x:local_pos.x, y:local_pos.y};
 
@@ -232,12 +242,14 @@ pixi_container_main_pointermove: function pixi_container_main_pointermove(event)
  */
 send_range: function send_range(){
     let session_player = app.session.world_state.session_players[app.session_player.id];
+    let period_block = app.session.world_state.period_blocks[app.session.world_state.current_period_block];
 
     let data = {       
         range_start: app.current_selection_range.start,
         range_end: app.current_selection_range.end
     };
 
+    if(period_block.phase=="start") app.show_range_update_button = false;
     app.working = true;
     app.send_message("range", data, "group");
                     
@@ -248,11 +260,15 @@ send_range: function send_range(){
  */
 take_update_range: function take_update_range(message_data){
     app.working = false;
+    let period_block = app.session.world_state.period_blocks[app.session.world_state.current_period_block];
     
     if(message_data.status == "success")
     {
         //display success message
-        app.range_update_success = true;
+        if(period_block.phase=="play")
+        {
+            app.range_update_success = true;
+        }
     }
     else
     {
@@ -300,3 +316,47 @@ take_update_cents: function take_update_cents(message_data){
     }
 },
 
+/**
+ * get range update button text
+ */
+get_range_update_button_text: function get_range_update_button_text(){
+    if(!app.session.started) return "";
+
+    let period_block = app.session.world_state.period_blocks[app.session.world_state.current_period_block];
+
+    let text = 'Send Range <i class="fas fa-ruler-horizontal"></i>';
+
+    //if current round is 1
+    if(period_block.phase == "start")
+    {
+        text = 'Ready to Start';
+    }
+
+    return text;
+},
+
+/**
+ * get range update button class
+ */
+get_range_update_button_class: function get_range_update_button_class(){
+
+    if(!app.session.started) return "";
+
+    let period_block = app.session.world_state.period_blocks[app.session.world_state.current_period_block];
+    let text = 'btn btn-outline-primary btn-lg';
+
+    //if current round is 1
+    if(period_block.phase == "start")
+    {
+        if(app.pixi_tick_tock.value == "tick")
+        {
+            text = 'btn btn-outline-success btn-lg';
+        }
+        else
+        {
+            text = 'btn btn-success btn-lg';
+        }
+    }
+    
+    return text;
+},

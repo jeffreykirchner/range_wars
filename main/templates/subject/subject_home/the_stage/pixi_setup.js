@@ -27,7 +27,7 @@ setup_pixi: function setup_pixi(){
     
     pixi_text_emitter = {};
     pixi_text_emitter_key = 0;
-    app.pixi_tick_tock = {value:"tick", time:Date.now()};
+
 },
 
 reset_pixi_app: async function reset_pixi_app(){    
@@ -61,11 +61,7 @@ setup_pixi_sheets: function setup_pixi_sheets(textures){
 
     app.pixi_textures = textures;
 
-    pixi_container_main = new PIXI.Container();
-    pixi_container_main.sortableChildren = true;
-    // pixi_container_main.eventMode = 'static';
-
-    pixi_app.stage.addChild(pixi_container_main);
+    app.setup_main_container();
    
     //subject controls
     if(app.pixi_mode=="subject")
@@ -117,6 +113,22 @@ setup_pixi_sheets: function setup_pixi_sheets(textures){
 },
 
 /**
+ * setup the main container
+ */
+setup_main_container: function setup_main_container(){
+    //remove old container
+    if(pixi_container_main)
+    {
+        pixi_app.stage.removeChild(pixi_container_main);
+        pixi_container_main.destroy();
+    }
+
+    pixi_container_main = new PIXI.Container();
+    pixi_container_main.sortableChildren = true;
+    pixi_app.stage.addChild(pixi_container_main);
+},
+
+/**
  * game loop for pixi
  */
 game_loop: function game_loop(delta)
@@ -139,7 +151,7 @@ game_loop: function game_loop(delta)
     {%endif%}
 
     //tick tock
-    if(Date.now() - app.pixi_tick_tock.time >= 200)
+    if(Date.now() - app.pixi_tick_tock.time >= 300)
     {
         app.pixi_tick_tock.time = Date.now();
         if(app.pixi_tick_tock.value == "tick") 

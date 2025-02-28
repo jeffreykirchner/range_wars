@@ -380,3 +380,32 @@ get_earnings_display: function get_earnings_display(earnings)
         return "$" + v;
     }
 },
+
+/**
+ * get subject status display
+ */
+get_subject_status_display: function get_subject_status_display(p)
+{
+    if(!app.session.started) return "---";
+    
+    let session_player = app.session.session_players[p];
+    let period_block = app.session.world_state.period_blocks[app.session.world_state.current_period_block];
+
+    if(!app.session.started)
+    {
+        return "---";
+    }
+
+    if(app.session.world_state.current_experiment_phase == 'Instructions')
+    {
+        return session_player.instructions_finished ? "Finished" : "Page " + session_player.current_instruction.toString()
+    }
+    else if(period_block.phase == "start")
+    {
+        return period_block.session_players[p].ready ? "Waiting" : "Inital Range";
+    }
+    else
+    {
+        return "Ranging";
+    }
+},

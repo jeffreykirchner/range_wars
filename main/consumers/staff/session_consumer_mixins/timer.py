@@ -69,6 +69,8 @@ class TimerMixin():
         if self.controlling_channel != self.channel_name:
             return
         
+        session = await Session.objects.aget(id=self.session_id)
+        
         logger = logging.getLogger(__name__)
         #logger.info(f"continue_timer: start")
 
@@ -80,6 +82,7 @@ class TimerMixin():
 
         stop_timer = False
         send_update = True
+        new_period_block = False
 
         result = {"earnings":{}}
 
@@ -103,51 +106,76 @@ class TimerMixin():
                 for i in self.world_state_local["timer_history"]:
                     total_time += i["count"]
 
-                #find current period
-                # current_period = 1
-                # temp_time = 0          #total of period lengths through current period.
-                # for i in range(1, self.world_state_local["number_of_periods"]+1):
-                #     temp_time += self.parameter_set_local["period_length"]
-
-                # current_period += 1
-
-                #time remaining in period
-                # time_remaining = temp_time - total_time
-
-                # if current_period == 2 and time_remaining ==10:
-                #     '''test code'''
-                #     pass
-
-                self.world_state_local["time_remaining"] = 1
-                self.world_state_local["current_period"] +=1
+                #check for end game
+                if self.world_state_local["current_period"] == len(self.world_state_local["session_periods_order"]):
+                    # do end game
+                    self.world_state_local["current_experiment_phase"] = ExperimentPhase.NAMES
+                    self.world_state_local["timer_running"] = False
                 
-                # if current_period > 1:
-                #     last_period_id = self.world_state_local["session_periods_order"][current_period - 2]
-                #     last_period_id_s = str(last_period_id)
-                #     last_period = self.world_state_local["session_periods"][last_period_id_s]
+                current_session_period_id = self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-1]
+                current_session_period = self.world_state_local["session_periods"][str(current_session_period_id)]
+                period_block = self.world_state_local["period_blocks"][str(self.world_state_local["current_period_block"])]
+                new_period_block = None
 
-                
+                if self.world_state_local["current_experiment_phase"] == ExperimentPhase.RUN:
+
+                    if period_block["phase"] == "start":
+                        #check if all session players are ready
+                        all_ready = True
+
+                        for p in period_block["session_players"]:
+                            session_player = period_block["session_players"][p]
+
+                            if session_player["ready"] == False:
+                                all_ready = False
+                                break
+                    
+                        if all_ready:
+                            period_block["phase"] = "play"
+                            new_period_block = period_block
+                    else:
+
+                        self.world_state_local["time_remaining"] = 1
+                        self.world_state_local["current_period"] += 1
+
+                        new_current_session_period_id = self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-1]
+                        new_current_session_period = self.world_state_local["session_periods"][str(new_current_session_period_id)]
+                        new_period_block = self.world_state_local["period_blocks"][str(new_current_session_period["parameter_set_periodblock_id"])]
+                        
+                        self.world_state_local["current_round"] = new_current_session_period["round_number"]
+
+                        self.world_state_local["current_period_block"] = new_current_session_period["parameter_set_periodblock_id"]
+
+                        #check if the period block has changed
+                        if new_period_block["id"] != period_block["id"]:
+                            #set ranges for new period block
+                            self.world_state_local = await sync_to_async(session.update_treatment)(self.world_state_local, self.parameter_set_local)
+
         if send_update:
-            session = await Session.objects.aget(id=self.session_id)
-
-            # self.world_state_local = await sync_to_async(session.update_treatment)(self.world_state_local, self.parameter_set_local)
+            
             self.world_state_local = await sync_to_async(session.update_revenues)(self.world_state_local, self.parameter_set_local)
 
             #add period earnings to session players
-            for player_id in self.world_state_local["session_players"]:
-                player = self.world_state_local["session_players"][player_id]
-                player["earnings"] = Decimal(player["earnings"]) + Decimal(player["total_profit"])
+            if self.world_state_local["current_experiment_phase"] == ExperimentPhase.RUN :
+
+                if new_period_block and new_period_block["phase"] != "start":
+                    for player_id in self.world_state_local["session_players"]:
+                        player = self.world_state_local["session_players"][player_id]
+                        player["earnings"] = Decimal(player["earnings"]) + Decimal(player["total_profit"])
 
             #session status
             result["value"] = "success"
             result["stop_timer"] = stop_timer
             result["time_remaining"] = self.world_state_local["time_remaining"]
+            result["current_round"] = self.world_state_local["current_round"]
             result["current_period"] = self.world_state_local["current_period"]
             result["timer_running"] = self.world_state_local["timer_running"]
             result["started"] = self.world_state_local["started"]
             result["finished"] = self.world_state_local["finished"]
             result["current_experiment_phase"] = self.world_state_local["current_experiment_phase"]
             result["session_players"] = self.world_state_local["session_players"]
+            result["period_blocks"] = self.world_state_local["period_blocks"]
+            result["current_period_block"] = self.world_state_local["current_period_block"]
 
             session_player_status = {}
 
@@ -168,8 +196,14 @@ class TimerMixin():
 
             await self.store_world_state(force_store=True)
             
-            await self.send_message(message_to_self=False, message_to_group=result,
-                                    message_type="time", send_to_client=False, send_to_group=True)
+            if period_block["phase"] == "start":
+                await self.send_message(message_to_self=result, message_to_group=None,
+                                        message_type="update_time", send_to_client=True, send_to_group=False)
+
+            else:
+
+                await self.send_message(message_to_self=False, message_to_group=result,
+                                        message_type="time", send_to_client=False, send_to_group=True)
 
     async def update_time(self, event):
         '''

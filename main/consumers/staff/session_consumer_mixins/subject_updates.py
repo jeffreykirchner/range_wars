@@ -221,6 +221,10 @@ class SubjectUpdatesMixin():
             #check if range is valid given the currrent treatment
 
             if status == "success":
+                period_block = self.world_state_local["period_blocks"][str(self.world_state_local["current_period_block"])]
+                
+                period_block["session_players"][str(player_id)]["ready"] = True
+
                 session_player["range_start"] = event_data["range_start"]
                 session_player["range_end"] = event_data["range_end"]
 

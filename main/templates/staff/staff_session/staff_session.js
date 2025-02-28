@@ -28,6 +28,7 @@ let app = Vue.createApp({
                     session_events : null,
                     the_feed : [],
                     staff_edit_name_etc_form_ids: {{staff_edit_name_etc_form_ids|safe}},
+                    pixi_tick_tock : {value:"tick", time:Date.now()},
 
                     move_to_next_phase_text : 'Start Next Experiment Phase',
 
@@ -273,6 +274,9 @@ let app = Vue.createApp({
          */
         do_reload: function do_reload()
         {
+            app.setup_main_container();
+
+            app.setup_axis();
             app.setup_treatment();
             app.update_treatment();
             app.setup_selection_range();
@@ -293,9 +297,15 @@ let app = Vue.createApp({
 
             app.session.world_state =  app.session.world_state;
 
+            let world_state = app.session.world_state;
+
             if(app.session.started)
             {
-                current_treatment = app.session.parameter_set.parameter_set_treatments_order[0];
+                let session_period_id = world_state.session_periods_order[world_state.current_period-1];
+                let session_period = app.session.session_periods[session_period_id];
+                let parameter_set_periodblock = app.session.parameter_set.parameter_set_periodblocks[session_period.parameter_set_periodblock_id];
+                
+                current_treatment = app.session.parameter_set.parameter_set_treatments[parameter_set_periodblock.parameter_set_treatment].id;
                 current_group = 1;
             }
             else
@@ -376,22 +386,46 @@ let app = Vue.createApp({
         take_update_time: function take_update_time(message_data){
            
             let status = message_data.value;
+            let world_state = app.session.world_state;
 
             if(status == "fail") return;
 
-            // app.session.started = result.started;
-            app.session.world_state.current_period = message_data.current_period;
-            app.session.world_state.time_remaining = message_data.time_remaining;
-            app.session.world_state.timer_running = message_data.timer_running;
-            app.session.world_state.started = message_data.started;
-            app.session.world_state.finished = message_data.finished;
-             app.session.world_state.current_experiment_phase = message_data.current_experiment_phase;
-            app.session.world_state.session_players = message_data.session_players
+            world_state.current_period = message_data.current_period;
+            world_state.current_round = message_data.current_round;
+            world_state.time_remaining = message_data.time_remaining;
+            world_state.timer_running = message_data.timer_running;
+            world_state.started = message_data.started;
+            world_state.finished = message_data.finished;
+            world_state.current_experiment_phase = message_data.current_experiment_phase;
+            world_state.session_players = message_data.session_players
+            world_state.period_blocks = message_data.period_blocks;
+            world_state.current_period_block = message_data.current_period_block;
            
             app.update_phase_button_text();
 
-            app.update_treatment();
-            app.setup_selection_range();
+            //check if a new period block is has started
+            if(world_state.current_round == 1 && world_state.current_period > 1)
+            {
+                let session_period_id = world_state.session_periods_order[world_state.current_period-1];
+                let session_period = app.session.session_periods[session_period_id];
+                let parameter_set_periodblock = app.session.parameter_set.parameter_set_periodblocks[session_period.parameter_set_periodblock_id];
+                
+                current_treatment = app.session.parameter_set.parameter_set_treatments[parameter_set_periodblock.parameter_set_treatment].id;
+                
+                app.setup_main_container();
+                
+                app.setup_axis();
+                app.setup_treatment();
+                app.update_treatment();
+                app.setup_selection_range();
+            }
+            else
+            {
+                app.update_treatment();
+                app.setup_selection_range();
+            }
+
+            
         },
        
         //do nothing on when enter pressed for post

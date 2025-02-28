@@ -28,6 +28,7 @@ let app = Vue.createApp({
                     session_events : null,
                     the_feed : [],
                     staff_edit_name_etc_form_ids: {{staff_edit_name_etc_form_ids|safe}},
+                    pixi_tick_tock : {value:"tick", time:Date.now()},
 
                     move_to_next_phase_text : 'Start Next Experiment Phase',
 
@@ -398,6 +399,7 @@ let app = Vue.createApp({
             world_state.current_experiment_phase = message_data.current_experiment_phase;
             world_state.session_players = message_data.session_players
             world_state.period_blocks = message_data.period_blocks;
+            world_state.current_period_block = message_data.current_period_block;
            
             app.update_phase_button_text();
 

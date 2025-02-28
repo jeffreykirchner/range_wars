@@ -27,7 +27,7 @@ setup_pixi: function setup_pixi(){
     
     pixi_text_emitter = {};
     pixi_text_emitter_key = 0;
-    app.pixi_tick_tock = {value:"tick", time:Date.now()};
+
 },
 
 reset_pixi_app: async function reset_pixi_app(){    
@@ -151,7 +151,7 @@ game_loop: function game_loop(delta)
     {%endif%}
 
     //tick tock
-    if(Date.now() - app.pixi_tick_tock.time >= 200)
+    if(Date.now() - app.pixi_tick_tock.time >= 300)
     {
         app.pixi_tick_tock.time = Date.now();
         if(app.pixi_tick_tock.value == "tick") 

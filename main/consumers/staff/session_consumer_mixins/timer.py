@@ -171,6 +171,7 @@ class TimerMixin():
             result["current_experiment_phase"] = self.world_state_local["current_experiment_phase"]
             result["session_players"] = self.world_state_local["session_players"]
             result["period_blocks"] = self.world_state_local["period_blocks"]
+            result["current_period_block"] = self.world_state_local["current_period_block"]
 
             session_player_status = {}
 

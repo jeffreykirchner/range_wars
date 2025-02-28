@@ -148,6 +148,7 @@ update_right_handle_position : function update_right_handle_position(){
  */
 pixi_left_handle_pointerdown: function pixi_left_handle_pointerdown(event){
     if(!app.show_range_update_button) return;
+    if(app.session.world_state.current_round == 1) return;
 
     pixi_left_handle.alpha = 0.5;
     app.selection_handle = "left";
@@ -158,6 +159,7 @@ pixi_left_handle_pointerdown: function pixi_left_handle_pointerdown(event){
  */
 pixi_right_handle_pointerdown: function pixi_right_handle_pointerdown(event){
     if(!app.show_range_update_button) return;
+    if(app.session.world_state.current_round == 1) return;
     
     pixi_right_handle.alpha = 0.5;
     app.selection_handle = "right";
@@ -208,6 +210,7 @@ pixi_container_main_pointerup: function pixi_container_main_pointerup(event){
  * handle pointer down on the main container
  */
 pixi_container_main_pointerdown: function pixi_container_main_pointerdown(event){
+    
     let local_pos = event.data.getLocalPosition(event.currentTarget);
     let pt = {x:local_pos.x, y:local_pos.y};
 
@@ -246,7 +249,7 @@ send_range: function send_range(){
         range_end: app.current_selection_range.end
     };
 
-    if(period_block.phase="start") app.show_range_update_button = false;
+    if(period_block.phase=="start") app.show_range_update_button = false;
     app.working = true;
     app.send_message("range", data, "group");
                     
@@ -313,3 +316,47 @@ take_update_cents: function take_update_cents(message_data){
     }
 },
 
+/**
+ * get range update button text
+ */
+get_range_update_button_text: function get_range_update_button_text(){
+    if(!app.session.started) return "";
+
+    let period_block = app.session.world_state.period_blocks[app.session.world_state.current_period_block];
+
+    let text = 'Send Range <i class="fas fa-ruler-horizontal"></i>';
+
+    //if current round is 1
+    if(period_block.phase == "start")
+    {
+        text = 'Ready to Start';
+    }
+
+    return text;
+},
+
+/**
+ * get range update button class
+ */
+get_range_update_button_class: function get_range_update_button_class(){
+
+    if(!app.session.started) return "";
+
+    let period_block = app.session.world_state.period_blocks[app.session.world_state.current_period_block];
+    let text = 'btn btn-outline-primary btn-lg';
+
+    //if current round is 1
+    if(period_block.phase == "start")
+    {
+        if(app.pixi_tick_tock.value == "tick")
+        {
+            text = 'btn btn-outline-success btn-lg';
+        }
+        else
+        {
+            text = 'btn btn-success btn-lg';
+        }
+    }
+    
+    return text;
+},

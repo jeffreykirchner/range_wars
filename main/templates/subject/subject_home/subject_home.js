@@ -39,6 +39,7 @@ let app = Vue.createApp({
                     session_player : null, 
                     session : null,
                     website_instance_id : "{{website_instance_id}}",
+                    pixi_tick_tock : {value:"tick", time:Date.now()}, //tick tock
 
                     form_ids: {{form_ids|safe}},
 
@@ -250,14 +251,16 @@ let app = Vue.createApp({
         {
             app.setup_main_container();
 
+            app.setup_axis();
             app.setup_treatment();
             app.update_treatment();
             app.setup_selection_range();
+
             app.setup_group_summary();
             app.setup_control_handles();
 
-            app.update_left_handle_position();
-            app.update_right_handle_position();
+            // app.update_left_handle_position();
+            // app.update_right_handle_position();
         },
 
         /** send winsock request to get session info
@@ -418,6 +421,7 @@ let app = Vue.createApp({
             world_state.current_experiment_phase = message_data.current_experiment_phase;
             world_state.session_players = message_data.session_players
             world_state.period_blocks = message_data.period_blocks;
+            world_state.current_period_block = message_data.current_period_block;
 
             //pixi updates
 
@@ -428,6 +432,9 @@ let app = Vue.createApp({
                 let parameter_set_periodblock = app.session.parameter_set.parameter_set_periodblocks[session_period.parameter_set_periodblock_id];
                 let session_player = app.session.world_state.session_players[app.session_player.id];
                 
+                app.current_selection_range.start = session_player.range_start;
+                app.current_selection_range.end = session_player.range_end;
+
                 current_treatment = app.session.parameter_set.parameter_set_treatments[parameter_set_periodblock.parameter_set_treatment].id;
                 
                 app.setup_main_container();
@@ -436,18 +443,13 @@ let app = Vue.createApp({
                 app.setup_treatment();
                 app.update_treatment();
                 app.setup_selection_range();
-
-                current_selection_range.start = session_player.range_start;
-                current_selection_range.end = session_player.range_end;
-
-                app.update_left_handle_position();
-                app.update_right_handle_position();
+                app.setup_control_handles();
             }
             else
             {
                 app.update_treatment();
                 app.setup_selection_range();
-                app.setup_group_summary();
+                app.setup_group_summary();                
             }
 
             //collect names
@@ -465,6 +467,7 @@ let app = Vue.createApp({
             app.update_notices();
 
             app.show_range_update_button = true;
+
         },
 
         /**

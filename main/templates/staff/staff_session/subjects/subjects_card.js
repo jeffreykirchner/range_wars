@@ -402,7 +402,7 @@ get_subject_status_display: function get_subject_status_display(p)
     }
     else if(period_block.phase == "start")
     {
-        return period_block.session_players[p].ready ? "Waiting" : "Inital Range";
+        return period_block.session_players[p].ready ? "Waiting" : "Starting";
     }
     else
     {

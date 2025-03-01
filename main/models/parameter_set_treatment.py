@@ -28,6 +28,8 @@ class ParameterSetTreatment(models.Model):
 
     costs = models.CharField(verbose_name='Costs', max_length=100, default="0,0,0,0")    #costs for each Vertex
 
+    preserve_order = models.BooleanField(verbose_name='Preserve Order', default=False)   #preserve order of players on battle space
+
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
 
@@ -58,6 +60,8 @@ class ParameterSetTreatment(models.Model):
         self.range_height_ticks = new_ps.get("range_height_ticks")
 
         self.costs = new_ps.get("costs")
+
+        self.preserve_order = True if new_ps.get("preserve_order") else False
 
         self.save()
         
@@ -100,9 +104,11 @@ class ParameterSetTreatment(models.Model):
 
             "values" : self.values,
 
-            "range_height_ticks" : self.range_height_ticks,
+            "range_height_ticks" : self.range_height_ticks ,
 
             "costs" : self.costs,
+
+            "preserve_order" : 1 if self.preserve_order else 0,
         }
     
     def get_json_for_subject(self, update_required=False):

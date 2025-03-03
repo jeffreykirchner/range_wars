@@ -53,9 +53,13 @@ class ParameterSetTreatmentForm(forms.ModelForm):
     costs = forms.CharField(label='Costs',
                             widget=forms.TextInput(attrs={"v-model":"current_parameter_set_treatment.costs",
                                                           "autocomplete":"off",}))
+    
+    preserve_order = forms.ChoiceField(label='Preserve Order',
+                                      choices=((1, 'Yes'), (0, 'No')),
+                                      widget=forms.Select(attrs={"v-model":"current_parameter_set_treatment.preserve_order",}))
 
     class Meta:
         model=ParameterSetTreatment
         fields =['id_label_pst',  'range_width', 'range_height', 'scale_width', 'scale_height',
-                 'range_height_ticks', 'values', 'costs']
+                 'range_height_ticks', 'values', 'costs', 'preserve_order']
     

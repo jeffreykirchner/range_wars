@@ -219,6 +219,9 @@ class SubjectUpdatesMixin():
                 logger.warning(f"take_range: invalid range, {event_data}")
 
             #check if range is valid given the currrent treatment
+            if status == "success":
+                if treatment["preserve_order"]:
+                    pass
 
             if status == "success":
                 period_block = self.world_state_local["period_blocks"][str(self.world_state_local["current_period_block"])]

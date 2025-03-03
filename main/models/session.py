@@ -289,10 +289,10 @@ class Session(models.Model):
             session_player["range_middle"] =  (Decimal(session_player["range_start"]) + Decimal(session_player["range_end"]) + 1) / 2
 
             #setup groups
-            if parameter_set_player_group["group_number"] not in world_state["groups"]:
-                world_state["groups"][parameter_set_player_group["group_number"]] = []
+            if str(parameter_set_player_group["group_number"]) not in world_state["groups"]:
+                world_state["groups"][str(parameter_set_player_group["group_number"])] = []
             
-            world_state["groups"][parameter_set_player_group["group_number"]].append(int(i))
+            world_state["groups"][str(parameter_set_player_group["group_number"])].append(int(i))
             session_player["group_number"] = parameter_set_player_group["group_number"]
 
         return world_state

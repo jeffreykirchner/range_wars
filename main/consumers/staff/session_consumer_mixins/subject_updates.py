@@ -205,9 +205,12 @@ class SubjectUpdatesMixin():
             treatment =  self.parameter_set_local["parameter_set_treatments"][str(period_block["parameter_set_treatment"])]
             values = treatment["values"].split(",")
             session_player = self.world_state_local["session_players"][str(player_id)]
+            parameter_set_player = self.parameter_set_local["parameter_set_players"][str(session_player["parameter_set_player_id"])]
+            parameter_set_player_group = parameter_set_player["parameter_set_player_groups"][str(period_block["id"])]
 
             range_start = event_data["range_start"]
             range_end = event_data["range_end"]
+            range_middle = (Decimal(range_start) + Decimal(range_end) + 1) / 2
 
             if range_start < 0 or \
                range_end < 0 or \
@@ -221,17 +224,54 @@ class SubjectUpdatesMixin():
             #check if range is valid given the currrent treatment
             if status == "success":
                 if treatment["preserve_order"]:
-                    pass
+                    group_number = parameter_set_player_group["group_number"]
+                    position = parameter_set_player_group["position"]
 
+                    left_1_session_player_id = self.world_state_local["group_map"].get(str(group_number) + "-" + str(position-1))
+                    left_2_session_player_id = self.world_state_local["group_map"].get(str(group_number) + "-" + str(position-2))
+                    right_1_session_player_id = self.world_state_local["group_map"].get(str(group_number) + "-" + str(position+1))
+                    right_2_session_player_id = self.world_state_local["group_map"].get(str(group_number) + "-" + str(position+2))
+                    
+                    #check if start range is <= left 2 range end
+                    if left_2_session_player_id:
+                        left_2_range_start = self.world_state_local["session_players"][str(left_2_session_player_id)]["range_end"]
+                        if range_start <= left_2_range_start:
+                            left_2_parameter_set_player = self.parameter_set_local["parameter_set_players"][str(self.world_state_local["session_players"][str(left_2_session_player_id)]["parameter_set_player_id"])]
+                            status = "fail"
+                            error_message = f"Your range cannot overlap with {left_2_parameter_set_player['id_label']}'s."
+                    
+                    #check if end range >= right 2 range start
+                    if right_2_session_player_id:
+                        right_2_range_end = self.world_state_local["session_players"][str(right_2_session_player_id)]["range_start"]
+                        if range_end >= right_2_range_end:
+                            right_2_parameter_set_player = self.parameter_set_local["parameter_set_players"][str(self.world_state_local["session_players"][str(right_2_session_player_id)]["parameter_set_player_id"])]
+                            status = "fail"
+                            error_message = f"Your range cannot overlap with {right_2_parameter_set_player['id_label']}'s."
+
+                    #check if middle range is < left 1 middle range
+                    if left_1_session_player_id:
+                        left_1_range_middle = self.world_state_local["session_players"][str(left_1_session_player_id)]["range_middle"]
+                        if Decimal(range_middle) < Decimal(left_1_range_middle):
+                            left_1_parameter_set_player = self.parameter_set_local["parameter_set_players"][str(self.world_state_local["session_players"][str(left_1_session_player_id)]["parameter_set_player_id"])]
+                            status = "fail"
+                            error_message = f"Your mid-range cannot be lower than {left_1_parameter_set_player['id_label']}'s."
+                    
+                    #check if middle range is > right 1 middle range
+                    if right_1_session_player_id:
+                        right_1_range_middle = self.world_state_local["session_players"][str(right_1_session_player_id)]["range_middle"]
+                        if Decimal(range_middle) > Decimal(right_1_range_middle):
+                            right_1_parameter_set_player = self.parameter_set_local["parameter_set_players"][str(self.world_state_local["session_players"][str(right_1_session_player_id)]["parameter_set_player_id"])]
+                            status = "fail"
+                            error_message = f"Your mid-range cannot be higher than {right_1_parameter_set_player['id_label']}'s."
+                    
             if status == "success":
                 period_block = self.world_state_local["period_blocks"][str(self.world_state_local["current_period_block"])]
                 
                 period_block["session_players"][str(player_id)]["ready"] = True
 
-                session_player["range_start"] = event_data["range_start"]
-                session_player["range_end"] = event_data["range_end"]
-
-                session_player["range_middle"] = (Decimal(session_player["range_start"]) + Decimal(session_player["range_end"]) + 1) / 2
+                session_player["range_start"] = range_start
+                session_player["range_end"] = range_end
+                session_player["range_middle"] = range_middle
 
                 self.session_events.append(SessionEvent(session_id=self.session_id, 
                                                         session_player_id=player_id,

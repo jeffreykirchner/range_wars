@@ -276,6 +276,7 @@ class Session(models.Model):
         treatment = parameter_set["parameter_set_treatments"][str(period_block["parameter_set_treatment"])]
         costs = treatment["costs"].split(",")
         world_state["groups"] = {}
+        world_state["group_map"] = {}      #maps group number and position to session player id 
 
         for i in world_state["session_players"]:
             session_player = world_state["session_players"][i]
@@ -292,9 +293,11 @@ class Session(models.Model):
             if str(parameter_set_player_group["group_number"]) not in world_state["groups"]:
                 world_state["groups"][str(parameter_set_player_group["group_number"])] = []
             
+            world_state["group_map"][str(parameter_set_player_group["group_number"]) + "-" + str(parameter_set_player_group["position"])] = i
+
             world_state["groups"][str(parameter_set_player_group["group_number"])].append(int(i))
             session_player["group_number"] = parameter_set_player_group["group_number"]
-
+        
         return world_state
 
     def update_revenues(self, world_state, parameter_set):

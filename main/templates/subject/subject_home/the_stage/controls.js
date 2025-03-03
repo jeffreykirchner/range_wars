@@ -250,6 +250,7 @@ send_range: function send_range(){
     };
 
     if(period_block.phase=="start") app.show_range_update_button = false;
+    app.range_update_error = null;
     app.working = true;
     app.send_message("range", data, "group");
                     
@@ -273,6 +274,7 @@ take_update_range: function take_update_range(message_data){
     else
     {
         //display error message
+        app.range_update_error = "Error: " + message_data.error_message;
     }
 },
 

@@ -120,7 +120,7 @@
             <!-- send updated range -->
             <div class="col-4 text-center">
                 <div class="row">
-                    <div class="col text-end">
+                    <div class="col-8 text-end">
                         <button v-bind:class="get_range_update_button_class()"
                             v-show="show_range_update_button"
                             type="button" 
@@ -134,10 +134,17 @@
                         
                         <span v-show="!show_range_update_button">Waiting for Others.</span>
                     </div>
-                    <div class="col text-start pt-2 ps-0">
-                        <span v-if="range_update_success"><i class="fas fa-check fa-lg" style="color: #63E6BE;"></i></span>
+                    <div class="col-4 text-start pt-3 ps-0">
+                        <span v-if="range_update_success"><i class="fas fa-check fa-lg" style="color: #63E6BE;"></i></span>                        
+                    </div>
+                </div> 
+                   
+                <div class="row justify-content-center">
+                    <div class="col text-danger">
+                       [[range_update_error]]
                     </div>
                 </div>
+
             </div>
 
             <!-- send chat -->

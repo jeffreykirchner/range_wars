@@ -34,7 +34,10 @@
                                 </th>
                                 <th scope="col" class = "m-1 p-1">
                                     Costs
-                                </th>   
+                                </th>  
+                                <th scope="col" class = "m-1 p-1">
+                                    Preserve Order
+                                </th>  
                             </tr>
                         </thead>
                         <tbody id="treatment_list">
@@ -61,6 +64,10 @@
                                 <td v-on:click="show_edit_parameter_set_treatment(p)" 
                                     class="player_table_cell">
                                     [[temp_p.costs]]
+                                </td>
+                                <td v-on:click="show_edit_parameter_set_treatment(p)" 
+                                    class="player_table_cell">
+                                    [[temp_p.preserve_order ? 'Yes' : 'No']]
                                 </td>
                             </tr>
                         </tbody>

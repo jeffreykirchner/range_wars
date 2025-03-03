@@ -92,6 +92,7 @@ let app = Vue.createApp({
                     //errors
                     interaction_start_error: null,
                     interaction_error: null,
+                    range_update_error: null,
 
                     //open modals
                     interaction_start_modal_open : false,

@@ -107,7 +107,7 @@ class TimerMixin():
                     total_time += i["count"]
 
                 #check for end game
-                if self.world_state_local["current_period"] == len(self.world_state_local["session_periods_order"]):
+                if self.world_state_local["current_period"] >= len(self.world_state_local["session_periods_order"]):
                     # do end game
                     self.world_state_local["current_experiment_phase"] = ExperimentPhase.NAMES
                     self.world_state_local["timer_running"] = False

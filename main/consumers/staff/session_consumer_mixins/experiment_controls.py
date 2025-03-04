@@ -143,9 +143,10 @@ class ExperimentControlsMixin():
         end experiment early
         '''
 
-        self.world_state_local["number_of_periods"] = self.world_state_local["current_period"]
+        self.world_state_local["session_periods_order"] = self.world_state_local["session_periods_order"][:self.world_state_local["current_period"]]
 
-        result = {"value" : "success", "result" : self.world_state_local["number_of_periods"]}
+        result = {"value" : "success", 
+                  "result" : self.world_state_local["session_periods_order"]}
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)

@@ -33,6 +33,7 @@ from main.models import ParameterSet
 
 from main.globals import ExperimentPhase
 from main.globals import round_half_away_from_zero
+from main.globals import round_up
 
 #experiment sessoin
 class Session(models.Model):

@@ -57,9 +57,17 @@ class ParameterSetTreatmentForm(forms.ModelForm):
     preserve_order = forms.ChoiceField(label='Preserve Order',
                                       choices=((1, 'Yes'), (0, 'No')),
                                       widget=forms.Select(attrs={"v-model":"current_parameter_set_treatment.preserve_order",}))
+    
+    enable_chat = forms.ChoiceField(label='Enable Chat',
+                                    choices=((1, 'Yes'), (0, 'No')),
+                                    widget=forms.Select(attrs={"v-model":"current_parameter_set_treatment.enable_chat",}))
+    
+    enable_transfer_cents = forms.ChoiceField(label='Enable Transfer Cents',
+                                              choices=((1, 'Yes'), (0, 'No')),
+                                              widget=forms.Select(attrs={"v-model":"current_parameter_set_treatment.enable_transfer_cents",}))
 
     class Meta:
         model=ParameterSetTreatment
         fields =['id_label_pst',  'range_width', 'range_height', 'scale_width', 'scale_height',
-                 'range_height_ticks', 'values', 'costs', 'preserve_order']
+                 'range_height_ticks', 'values', 'costs', 'preserve_order', 'enable_chat', 'enable_transfer_cents']
     

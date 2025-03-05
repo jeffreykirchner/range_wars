@@ -66,8 +66,7 @@ class SubjectUpdatesMixin():
             self.session_events.append(SessionEvent(session_id=self.session_id, 
                                                     session_player_id=result["sender_id"],
                                                     type="chat",
-                                                    period_number=self.world_state_local["current_period"],
-                                                    time_remaining=self.world_state_local["time_remaining"],
+                                                    group_number=session_player["group_number"],
                                                     data=result))
             
             target_list = self.world_state_local["groups"][str(session_player["group_number"])]
@@ -275,6 +274,7 @@ class SubjectUpdatesMixin():
 
                 self.session_events.append(SessionEvent(session_id=self.session_id, 
                                                         session_player_id=player_id,
+                                                        group_number=session_player["group_number"],
                                                         type=event['type'],
                                                         period_number=self.world_state_local["current_period"],                                                   
                                                         data=event_data))
@@ -358,6 +358,7 @@ class SubjectUpdatesMixin():
 
             self.session_events.append(SessionEvent(session_id=self.session_id, 
                                                     session_player_id=player_id,
+                                                    group_number=session_player_source["group_number"],
                                                     type=event['type'],
                                                     period_number=self.world_state_local["current_period"],                                                   
                                                     data=event_data))

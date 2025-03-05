@@ -189,8 +189,7 @@ class Session(models.Model):
                             "started":True,
                             "finished":False,
                             "session_periods":{str(i.id) : i.json() for i in self.session_periods.all()},
-                            "session_periods_order" : list(self.session_periods.all().values_list('id', flat=True)),
-                            "tokens":{},}
+                            "session_periods_order" : list(self.session_periods.all().values_list('id', flat=True)),}
         
         inventory = {str(i):0 for i in list(self.session_periods.all().values_list('id', flat=True))}
 
@@ -209,11 +208,13 @@ class Session(models.Model):
             v['range_end'] = 1
             v['range_middle'] = 1
             v['revenues'] = []             #revenue share for each value
+            v['overlaps'] = {}             #overlaps totals with other group members
             v['earnings'] = 0              #total earnings
             v['cost'] = 0                  #cost for each location in range 
             v['total_cost'] = 0            #total cost
             v['total_revenue'] = 0         #total revenue 
             v['total_profit'] = 0          #total profit
+            v['total_loss'] = 0            #total loss
             v['group_number'] = 0          #current group number
             v['parameter_set_player_id'] = i['parameter_set_player__id']
             
@@ -316,6 +317,7 @@ class Session(models.Model):
         #reset revenues to zero for all values
         for i in world_state["session_players"]:
             world_state["session_players"][i]["revenues"] = {str(i): 0 for i in values}
+            world_state["session_players"][i]["overlaps"] = {}
 
         #update revenues for each group at each value
         for g in world_state["groups"]:
@@ -333,24 +335,35 @@ class Session(models.Model):
                 for p in players_in_range:
                     session_player = world_state["session_players"][str(p)]
                     session_player["revenues"][values[t]] = 1/len(players_in_range) * box_value
+
+                    #store overlap totals
+                    for o in players_in_range:
+                        if o == p:
+                            continue
+
+                        if str(o) not in session_player["overlaps"]:
+                            session_player["overlaps"][str(o)] = 0
+
+                        session_player["overlaps"][str(o)] += 1
         
         #update total revenue for each player
         for i in world_state["session_players"]:
             session_player = world_state["session_players"][i]
             session_player["total_revenue"] = 0
+            session_player["total_loss"] = 0
             session_player["total_cost"] = (session_player["range_end"] - session_player["range_start"] + 1) * float(session_player["cost"]) * box_value
             session_player["total_cost"] = round_up(Decimal(session_player["total_cost"]), 2)
 
             for r in range(session_player["range_start"], session_player["range_end"]+1):
                 value = values[r]
-
-                # try:
-                #     value = values[r]
-                # except:
-                #     logger.info(f"Error: {r} {values}")
-                #     continue
                 revenue = session_player["revenues"][values[r]]
-                session_player["total_revenue"] += (float(value) * float(revenue))
+
+                ajusted_revenue = float(value) * float(revenue)
+                session_player["total_revenue"] += ajusted_revenue
+
+                #check for losses
+                if ajusted_revenue - (float(session_player["cost"]) * box_value) < 0:
+                    session_player["total_loss"] += (ajusted_revenue - (float(session_player["cost"]) * box_value))
 
             session_player["total_revenue"] = round_up(Decimal(session_player["total_revenue"]), 2)
             session_player["total_profit"] = round_up(session_player["total_revenue"] - session_player["total_cost"], 2)
@@ -440,45 +453,58 @@ class Session(models.Model):
 
             writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
-            session_players_list = self.session_players.all().values('id','parameter_set_player__id_label')
+            session_periods = self.session_periods.all()
+            parameter_set = self.parameter_set.json()
+            world_state = self.world_state
            
-            top_row = ["Session ID", "Period", "Client #", "Label", "Earnings ¢"]
-            for i in session_players_list:
-
-                top_row.append(f'Cherries I Sent To {i["parameter_set_player__id_label"]}')
-                top_row.append(f'Cherries I Took From {i["parameter_set_player__id_label"]}')
-
-                top_row.append(f'Cherries {i["parameter_set_player__id_label"]} Sent To Me')
-                top_row.append(f'Cherries {i["parameter_set_player__id_label"]} Took From Me')
-
+            top_row = ["Session ID", "Period", "Period Block", "Treatment", "Client #", "Group", "Position", "Label", 
+                       "Range Start", "Range End", "Range Middle", 
+                       "Total Cost", "Total Revenue", "Total Profit", "Total Loss"]
+            
+            for player_number, player_id in enumerate(world_state["session_players"]):               
+                top_row.append(f'Overlap #{player_number+1}')
+            
             writer.writerow(top_row)
 
-            world_state = self.world_state
-            parameter_set_players = {}
-            for i in self.session_players.all().values('id','parameter_set_player__id_label'):
-                parameter_set_players[str(i['id'])] = i
-
+            
             # logger.info(parameter_set_players)
 
-            for period_number, period in enumerate(world_state["session_periods"]):
-                summary_data = self.session_periods.get(id=period).summary_data
+            for session_period in session_periods:
+                summary_data = session_period.summary_data
 
-                for player_number, player in enumerate(world_state["session_players"]):
-                    player_s = str(player)
-                    summary_data_player = summary_data[player_s]
-                    temp_row = [self.id, 
-                                period_number+1, 
-                                player_number+1,
-                                parameter_set_players[player_s]["parameter_set_player__id_label"],
-                                summary_data_player["earnings"],
-                                ]
+                if not summary_data.get("session_players", False):
+                    continue
+
+                parameter_set_periodblock = parameter_set["parameter_set_periodblocks"][str(session_period.parameter_set_periodblock.id)]
+                parameter_set_treatment = parameter_set["parameter_set_treatments"][str(parameter_set_periodblock["parameter_set_treatment"])]
+
+                for player_number, player_id in enumerate(summary_data["session_players"]):
                     
-                    for p in world_state["session_players"]:
-                        p_s = str(p)
-                        temp_row.append(summary_data_player["interactions"][p_s]["cherries_i_sent"])
-                        temp_row.append(summary_data_player["interactions"][p_s]["cherries_i_took"])
-                        temp_row.append(summary_data[p_s]["interactions"][player_s]["cherries_i_sent"])
-                        temp_row.append(summary_data[p_s]["interactions"][player_s]["cherries_i_took"])
+                    session_player = summary_data["session_players"][player_id]
+                    parameter_set_player = parameter_set["parameter_set_players"][str(session_player["parameter_set_player_id"])]
+                    parameter_set_player_group = parameter_set_player["parameter_set_player_groups"][str(parameter_set_periodblock["id"])] 
+
+                    temp_row = [self.id, 
+                                session_period.period_number, 
+                                f'{parameter_set_periodblock["period_start"]} to {parameter_set_periodblock["period_end"]}',
+                                parameter_set_treatment["id_label_pst"],
+                                player_number+1,      
+                                parameter_set_player_group["group_number"],
+                                parameter_set_player_group["position"],
+                                parameter_set_player["id_label"],
+                                session_player["range_start"],
+                                session_player["range_end"],
+                                session_player["range_middle"],
+                                session_player["total_cost"],
+                                session_player["total_revenue"],
+                                session_player["total_profit"],
+                                session_player["total_loss"]]
+                    
+                    for player_number, player_id in enumerate(world_state["session_players"]):
+                        if player_id in session_player["overlaps"]:
+                            temp_row.append(session_player["overlaps"][player_id])
+                        else:
+                            temp_row.append("")
                     
                     writer.writerow(temp_row)
                     
@@ -495,7 +521,7 @@ class Session(models.Model):
 
             writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
-            writer.writerow(["Session ID", "Period", "Time", "Client #", "Label", "Action","Info (Plain)", "Info (JSON)", "Timestamp"])
+            writer.writerow(["Session ID", "Period", "Group", "Client #", "Label", "Action","Info (Plain)", "Info (JSON)", "Timestamp"])
 
             # session_events =  main.models.SessionEvent.objects.filter(session__id=self.id).prefetch_related('period_number', 'time_remaining', 'type', 'data', 'timestamp')
             # session_events = session_events.select_related('session_player')
@@ -512,7 +538,7 @@ class Session(models.Model):
             for p in self.session_events.exclude(type="time").exclude(type="world_state").exclude(type='target_locations'):
                 writer.writerow([self.id,
                                 p.period_number, 
-                                p.time_remaining, 
+                                p.group_number, 
                                 parameter_set_players[str(p.session_player_id)]["player_number"], 
                                 parameter_set_players[str(p.session_player_id)]["parameter_set_player__id_label"], 
                                 p.type, 
@@ -531,16 +557,13 @@ class Session(models.Model):
         '''
 
         if type == "chat":
-            nearby_text = ""
-            for i in data["nearby_players"]:
-                if nearby_text != "":
-                    nearby_text += ", "
-                nearby_text += f'{session_players[str(i)]["parameter_set_player__id_label"]}'
-
-            temp_s = re.sub("\n", " ", data["text"])
-            return f'{temp_s} @  {nearby_text}'
+            return  data["text"]
         elif type == "help_doc":
             return data
+        elif type == "range":
+            return f'{data["range_start"]} to {data["range_end"]}'
+        elif type == "cents":
+            return f'{data["amount"]} cent(s) to #{session_players[str(data["recipient"])]["player_number"]}'
 
         return ""
     

@@ -9,6 +9,7 @@ from asgiref.sync import sync_to_async
 
 from main.models import Session
 from main.models import SessionEvent
+from main.models import SessionPeriod
 
 from main.globals import ExperimentPhase
 from main.globals import round_up
@@ -163,6 +164,12 @@ class TimerMixin():
                         player = self.world_state_local["session_players"][player_id]
                         player["earnings"] = Decimal(player["earnings"]) + Decimal(player["total_profit"])
 
+                    #store data
+                    summary_data = {"session_players": self.world_state_local["session_players"]}
+
+                    await SessionPeriod.objects.filter(session=session, period_number=self.world_state_local["current_period"]) \
+                                               .aupdate(summary_data=summary_data)
+
             #session status
             result["value"] = "success"
             result["stop_timer"] = stop_timer
@@ -184,7 +191,6 @@ class TimerMixin():
             self.session_events.append(SessionEvent(session_id=self.session_id, 
                                                     type="time",
                                                     period_number=self.world_state_local["current_period"],
-                                                    time_remaining=self.world_state_local["time_remaining"],
                                                     data=result))
             
             await SessionEvent.objects.abulk_create(self.session_events, ignore_conflicts=True)

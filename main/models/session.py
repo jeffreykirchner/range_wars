@@ -472,6 +472,9 @@ class Session(models.Model):
             for session_period in session_periods:
                 summary_data = session_period.summary_data
 
+                if not summary_data.get("session_players", False):
+                    continue
+
                 parameter_set_periodblock = parameter_set["parameter_set_periodblocks"][str(session_period.parameter_set_periodblock.id)]
                 parameter_set_treatment = parameter_set["parameter_set_treatments"][str(parameter_set_periodblock["parameter_set_treatment"])]
 
@@ -518,7 +521,7 @@ class Session(models.Model):
 
             writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
-            writer.writerow(["Session ID", "Period", "Time", "Client #", "Label", "Action","Info (Plain)", "Info (JSON)", "Timestamp"])
+            writer.writerow(["Session ID", "Period", "Group", "Client #", "Label", "Action","Info (Plain)", "Info (JSON)", "Timestamp"])
 
             # session_events =  main.models.SessionEvent.objects.filter(session__id=self.id).prefetch_related('period_number', 'time_remaining', 'type', 'data', 'timestamp')
             # session_events = session_events.select_related('session_player')
@@ -535,7 +538,7 @@ class Session(models.Model):
             for p in self.session_events.exclude(type="time").exclude(type="world_state").exclude(type='target_locations'):
                 writer.writerow([self.id,
                                 p.period_number, 
-                                p.time_remaining, 
+                                p.group_number, 
                                 parameter_set_players[str(p.session_player_id)]["player_number"], 
                                 parameter_set_players[str(p.session_player_id)]["parameter_set_player__id_label"], 
                                 p.type, 
@@ -554,16 +557,13 @@ class Session(models.Model):
         '''
 
         if type == "chat":
-            nearby_text = ""
-            for i in data["nearby_players"]:
-                if nearby_text != "":
-                    nearby_text += ", "
-                nearby_text += f'{session_players[str(i)]["parameter_set_player__id_label"]}'
-
-            temp_s = re.sub("\n", " ", data["text"])
-            return f'{temp_s} @  {nearby_text}'
+            return  data["text"]
         elif type == "help_doc":
             return data
+        elif type == "range":
+            return f'{data["range_start"]} to {data["range_end"]}'
+        elif type == "cents":
+            return f'{data["amount"]} cent(s) to #{session_players[str(data["recipient"])]["player_number"]}'
 
         return ""
     

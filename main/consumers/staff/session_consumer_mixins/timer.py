@@ -191,7 +191,6 @@ class TimerMixin():
             self.session_events.append(SessionEvent(session_id=self.session_id, 
                                                     type="time",
                                                     period_number=self.world_state_local["current_period"],
-                                                    time_remaining=self.world_state_local["time_remaining"],
                                                     data=result))
             
             await SessionEvent.objects.abulk_create(self.session_events, ignore_conflicts=True)

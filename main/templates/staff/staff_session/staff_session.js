@@ -156,6 +156,9 @@ let app = Vue.createApp({
                 case "download_summary_data":
                     app.take_download_summary_data(message_data);
                     break;
+                case "download_period_block_data":
+                    app.take_download_period_block_data(message_data);
+                    break;
                 case "download_action_data":
                     app.take_download_action_data(message_data);
                     break;

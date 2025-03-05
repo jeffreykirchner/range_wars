@@ -444,7 +444,7 @@ class Session(models.Model):
 
     def get_download_summary_csv(self):
         '''
-        return data summary in csv format
+        return data period summary in csv format
         '''
         logger = logging.getLogger(__name__)
         
@@ -508,6 +508,26 @@ class Session(models.Model):
                     
                     writer.writerow(temp_row)
                     
+            v = output.getvalue()
+            output.close()
+
+        return v
+    
+    def get_download_period_block_csv(self):
+        '''
+        return data period block in csv format
+        '''
+        logger = logging.getLogger(__name__)
+        
+        
+        with io.StringIO() as output:
+
+            writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
+
+            top_row = ["Session ID", "Period Block", "Treatment", "Client #", "Group", "Position", "Label"]
+            
+            writer.writerow(top_row)
+
             v = output.getvalue()
             output.close()
 

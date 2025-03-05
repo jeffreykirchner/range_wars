@@ -32,7 +32,7 @@ import main
 from main.models import ParameterSet
 
 from main.globals import ExperimentPhase
-from main.globals import round_up
+from main.globals import round_half_away_from_zero
 
 #experiment sessoin
 class Session(models.Model):
@@ -64,6 +64,8 @@ class Session(models.Model):
     world_state = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True, verbose_name="Current Session State")       #world state at this point in session
 
     replay_data = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True, verbose_name="Replay Data")   
+
+    period_block_data = models.JSONField(encoder=DjangoJSONEncoder, null=True, blank=True, verbose_name="Period Block Data")      #period block data
 
     website_instance_id = models.CharField(max_length=300, default="", verbose_name="Website Instance ID", null=True, blank=True)           #website instance from azure
 
@@ -223,14 +225,24 @@ class Session(models.Model):
         
 
         #period blocks
+        self.period_block_data = {}
         for i in parameter_set["parameter_set_periodblocks"]:
+            #world state
             self.world_state["period_blocks"][str(i)] = {"id":i, 
                                                          "phase":"start",
                                                          "session_players":{}}
+            
+            #period block data
+            self.period_block_data[str(i)] = {"session_players":{}}
 
             for p in self.world_state["session_players"]:
                 self.world_state["period_blocks"][str(i)]["session_players"][p] = {"ready":False}
 
+                self.period_block_data[str(i)]["session_players"][p] = {"cents_sent":{},
+                                                                        "chat_messages_sent":0,
+                                                                        "total_revenue":0,
+                                                                        "total_cost":0,
+                                                                        "total_profit":0,}
         
         if not self.started:
             self.save()
@@ -352,7 +364,7 @@ class Session(models.Model):
             session_player["total_revenue"] = 0
             session_player["total_loss"] = 0
             session_player["total_cost"] = (session_player["range_end"] - session_player["range_start"] + 1) * float(session_player["cost"]) * box_value
-            session_player["total_cost"] = round_up(Decimal(session_player["total_cost"]), 2)
+            session_player["total_cost"] = round_half_away_from_zero(Decimal(session_player["total_cost"]), 2)
 
             for r in range(session_player["range_start"], session_player["range_end"]+1):
                 value = values[r]
@@ -365,8 +377,8 @@ class Session(models.Model):
                 if ajusted_revenue - (float(session_player["cost"]) * box_value) < 0:
                     session_player["total_loss"] += (ajusted_revenue - (float(session_player["cost"]) * box_value))
 
-            session_player["total_revenue"] = round_up(Decimal(session_player["total_revenue"]), 2)
-            session_player["total_profit"] = round_up(session_player["total_revenue"] - session_player["total_cost"], 2)
+            session_player["total_revenue"] = round_half_away_from_zero(Decimal(session_player["total_revenue"]), 2)
+            session_player["total_profit"] = session_player["total_revenue"] - session_player["total_cost"]
         
         return world_state
 
@@ -379,6 +391,7 @@ class Session(models.Model):
         #self.time_remaining = self.parameter_set.period_length
         #self.timer_running = False
         self.world_state ={}
+        self.period_block_data = {}
         self.save()
 
         for p in self.session_players.all():
@@ -519,14 +532,56 @@ class Session(models.Model):
         '''
         logger = logging.getLogger(__name__)
         
+        #  {"cents_sent":{},
+        #                                                                 "chat_messages_sent":0,
+        #                                                                 "total_revenue":0,
+        #                                                                 "total_cost":0,
+        #                                                                 "total_profit":0,}
         
         with io.StringIO() as output:
 
             writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
-            top_row = ["Session ID", "Period Block", "Treatment", "Client #", "Group", "Position", "Label"]
+            top_row = ["Session ID", "Period Block", "Treatment", "Client #", "Group", "Position", "Label", 
+                       "Chat Count", "Total Revenue", "Total Cost", "Total Profit"]
+
+            for player_number, player_id in enumerate(self.world_state["session_players"]):
+                top_row.append(f'Cents Sent #{player_number+1}')
             
             writer.writerow(top_row)
+
+            parameter_set = self.parameter_set.json()
+
+            for period_block_id in self.period_block_data:
+                period_block = self.period_block_data[period_block_id]
+                parameter_set_periodblock = parameter_set["parameter_set_periodblocks"][str(period_block_id)]
+                parameter_set_treatment = parameter_set["parameter_set_treatments"][str(parameter_set_periodblock["parameter_set_treatment"])]
+
+                for player_number, player_id in enumerate(period_block["session_players"]):
+                    session_player = period_block["session_players"][player_id]
+                    parameter_set_player = parameter_set["parameter_set_players"][str(self.world_state["session_players"][player_id]["parameter_set_player_id"])]
+                    parameter_set_player_group = parameter_set_player["parameter_set_player_groups"][str(parameter_set_periodblock["id"])]
+
+                    temp_row = [self.id,
+                                f'{parameter_set_periodblock["period_start"]} to {parameter_set_periodblock["period_end"]}',
+                                parameter_set_treatment["id_label_pst"],
+                                player_number+1,      
+                                parameter_set_player_group["group_number"],
+                                parameter_set_player_group["position"],
+                                parameter_set_player["id_label"],
+                                session_player["chat_messages_sent"],
+                                session_player["total_revenue"],
+                                session_player["total_cost"],
+                                session_player["total_profit"]]
+                    
+                    for player_number, player_id in enumerate(self.world_state["session_players"]):
+                        if player_id in session_player["cents_sent"]:
+                            temp_row.append(session_player["cents_sent"][player_id])
+                        else:
+                            temp_row.append("")
+
+                    writer.writerow(temp_row)
+
 
             v = output.getvalue()
             output.close()

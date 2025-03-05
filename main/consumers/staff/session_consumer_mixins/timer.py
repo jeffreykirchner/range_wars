@@ -164,11 +164,20 @@ class TimerMixin():
                         player = self.world_state_local["session_players"][player_id]
                         player["earnings"] = Decimal(player["earnings"]) + Decimal(player["total_profit"])
 
-                    #store data
+                        pbd = session.period_block_data[str(self.world_state_local["current_period_block"])]["session_players"][str(player_id)]
+                        pbd["total_revenue"] = Decimal(pbd["total_revenue"]) + Decimal(player["total_revenue"])
+                        pbd["total_cost"] = Decimal(pbd["total_cost"]) + Decimal(player["total_cost"])
+                        pbd["total_profit"] = Decimal(pbd["total_profit"]) + Decimal(player["total_profit"])
+                
+                    #store period block data
+                    await session.asave(update_fields=["period_block_data"])
+
+                    #store data period data
                     summary_data = {"session_players": self.world_state_local["session_players"]}
 
                     await SessionPeriod.objects.filter(session=session, period_number=self.world_state_local["current_period"]) \
                                                .aupdate(summary_data=summary_data)
+                    
 
             #session status
             result["value"] = "success"

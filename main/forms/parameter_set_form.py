@@ -23,10 +23,6 @@ class ParameterSetForm(forms.ModelForm):
                                           choices=((1, 'Yes'), (0,'No' )),
                                           widget=forms.Select(attrs={"v-model":"parameter_set.show_instructions",}))
 
-    enable_chat = forms.ChoiceField(label='Enable Chat',
-                                    choices=((1, 'Yes'), (0,'No' )),
-                                    widget=forms.Select(attrs={"v-model":"parameter_set.enable_chat",}))
-
     survey_required = forms.ChoiceField(label='Show Survey',
                                         choices=((1, 'Yes'), (0,'No' )),
                                         widget=forms.Select(attrs={"v-model":"parameter_set.survey_required",}))
@@ -56,7 +52,7 @@ class ParameterSetForm(forms.ModelForm):
     class Meta:
         model=ParameterSet
         fields =['period_length',
-                 'show_instructions', 'enable_chat',
+                 'show_instructions',
                  'survey_required', 'survey_link', 'prolific_mode', 'prolific_completion_link', 'reconnection_limit',
                  'test_mode']
 

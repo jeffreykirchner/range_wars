@@ -16,6 +16,16 @@ class DataMixin():
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
+        
+    async def download_period_block_data(self, event):
+        '''
+        download period block data
+        '''
+
+        result = await sync_to_async(take_download_period_block_data, thread_sensitive=self.thread_sensitive)(self.session_id)
+
+        await self.send_message(message_to_self=result, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def download_action_data(self, event):
         '''
@@ -56,6 +66,15 @@ def take_download_summary_data(session_id):
     session = Session.objects.get(id=session_id)
 
     return {"value" : "success", "result" : session.get_download_summary_csv()}
+
+def take_download_period_block_data(session_id):
+    '''
+    download summary data for session
+    '''
+
+    session = Session.objects.get(id=session_id)
+
+    return {"value" : "success", "result" : session.get_download_period_block_csv()}
 
 def take_download_action_data(session_id):
     '''

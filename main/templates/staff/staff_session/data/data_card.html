@@ -9,15 +9,28 @@
     </div>
     <div class="card-body"> 
 
-        <!-- summary data -->
+        <!-- period summary data -->
         <div class="row">
             <div class="col-md text-center">
                 <button type="button"
                         class="btn btn-outline-primary"
                         v-on:click = "download_summary_data()"
-                        title="Download Summary Data"
+                        title="Download Period Summary Data"
                         v-bind:disabled="reconnecting || working || session.started==false">
-                    Download Summary <i class="fas fa-scroll"></i>
+                    Download Period Summary <i class="fas fa-scroll"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- period block data -->
+        <div class="row mt-2">
+            <div class="col-md text-center">
+                <button type="button"
+                        class="btn btn-outline-primary"
+                        v-on:click = "download_period_block_data()"
+                        title="Download Period Block Data"
+                        v-bind:disabled="reconnecting || working || session.started==false">
+                    Download Period Block <i class="fas fa-scroll"></i>
                 </button>
             </div>
         </div>

@@ -28,7 +28,9 @@ class ParameterSetTreatment(models.Model):
 
     costs = models.CharField(verbose_name='Costs', max_length=100, default="0,0,0,0")    #costs for each Vertex
 
-    preserve_order = models.BooleanField(verbose_name='Preserve Order', default=False)   #preserve order of players on battle space
+    preserve_order = models.BooleanField(verbose_name='Preserve Order', default=False)                        #preserve order of players on battle space
+    enable_chat = models.BooleanField( verbose_name='Enable Chat', default=True)                              #if true enable chat
+    enable_transfer_cents = models.BooleanField(verbose_name='Enable Transfer Cents', default=True)           #if true enable chat
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
@@ -62,6 +64,8 @@ class ParameterSetTreatment(models.Model):
         self.costs = new_ps.get("costs")
 
         self.preserve_order = True if new_ps.get("preserve_order") else False
+        self.enable_chat = True if new_ps.get("enable_chat") else False
+        self.enable_transfer_cents = True if new_ps.get("enable_transfer_cents") else False
 
         self.save()
         
@@ -109,6 +113,8 @@ class ParameterSetTreatment(models.Model):
             "costs" : self.costs,
 
             "preserve_order" : 1 if self.preserve_order else 0,
+            "enable_chat" : 1 if self.enable_chat else 0,
+            "enable_transfer_cents" : 1 if self.enable_transfer_cents else 0,
         }
     
     def get_json_for_subject(self, update_required=False):

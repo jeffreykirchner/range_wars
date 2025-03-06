@@ -235,13 +235,6 @@ let app = Vue.createApp({
             }
 
             app.setup_pixi();                        
-
-            //chat mode
-            if(!app.session.parameter_set.enable_chat)
-            {
-                app.chat_header = "History";
-            }
-
             app.first_load_done = true;
         },
 

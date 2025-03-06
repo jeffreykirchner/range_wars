@@ -77,6 +77,11 @@ class SubjectUpdatesMixin():
             
             async for s in SessionPlayer.objects.filter(id__in=target_list):
                 await s.push_chat_display_history(chat)
+            
+            #store chat into period block data
+            session = await Session.objects.aget(id=self.session_id)
+            session.period_block_data[str(self.world_state_local["current_period_block"])]["session_players"][str(player_id)]["chat_messages_sent"] += 1
+            await session.asave(update_fields=["period_block_data"])
 
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False, 
@@ -318,6 +323,7 @@ class SubjectUpdatesMixin():
             error_message = "Invalid data."
             status = "fail"
 
+        
         session_player_source = self.world_state_local["session_players"][str(player_id)]
         target_list = [player_id]
 
@@ -343,7 +349,6 @@ class SubjectUpdatesMixin():
                 error_message = "Insufficient funds."
             
         if status == "success":
-           
             session_player_recipient = self.world_state_local["session_players"][str(recipient)]
 
             session_player_source["earnings"] = Decimal(session_player_source["earnings"]) - amount
@@ -372,6 +377,18 @@ class SubjectUpdatesMixin():
         
             async for s in SessionPlayer.objects.filter(id__in=target_list):
                 await s.push_chat_display_history(chat)
+
+            #store cents into period block data
+            session = await Session.objects.aget(id=self.session_id)
+
+            pbd = session.period_block_data[str(self.world_state_local["current_period_block"])]["session_players"][str(player_id)]["cents_sent"]
+           
+            if str(recipient) in pbd:
+                pbd[str(recipient)] += amount
+            else:
+                pbd[str(recipient)] = amount
+
+            await session.asave(update_fields=["period_block_data"])
         
         result = {"status": status, 
                   "player_id": player_id,

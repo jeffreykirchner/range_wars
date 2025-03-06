@@ -44,3 +44,20 @@ take_update_chat: function take_update_chat(message_data){
 
 },
 
+/**
+ * true if chat should be displayed
+ */
+show_chat: function show_chat()
+{
+    if(!app.session.started) return false;
+
+    if(app.session.world_state.current_round > 1) return false;
+
+    let period_block = app.session.parameter_set.parameter_set_periodblocks[app.session.world_state.current_period_block];
+    let treatment = app.session.parameter_set.parameter_set_treatments[period_block.parameter_set_treatment];
+
+    if(!treatment.enable_chat) return false;
+
+    return true;
+},
+

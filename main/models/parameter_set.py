@@ -23,8 +23,6 @@ class ParameterSet(models.Model):
 
     show_instructions = models.BooleanField(default=True, verbose_name='Show Instructions')                   #if true show instructions
 
-    enable_chat = models.BooleanField(default=True, verbose_name='Enable Chat')                                  #if true enable chat
-
     survey_required = models.BooleanField(default=False, verbose_name="Survey Required")                      #if true show the survey below
     survey_link = models.CharField(max_length = 1000, default = '', verbose_name = 'Survey Link', blank=True, null=True)
 
@@ -184,7 +182,6 @@ class ParameterSet(models.Model):
         self.json_for_session["period_length"] = self.period_length
 
         self.json_for_session["show_instructions"] = 1 if self.show_instructions else 0
-        self.json_for_session["enable_chat"] = 1 if self.enable_chat else 0
 
         self.json_for_session["survey_required"] = 1 if self.survey_required else 0
         self.json_for_session["survey_link"] = self.survey_link

@@ -38,9 +38,9 @@
         <!-- the pixi stage -->
         <div class="row">
             <div class="col">         
-                <div id="chat_overlay" v-if="pixi_mode=='subject' && show_chat()">
+                <div id="chat_overlay" v-if="pixi_mode=='subject' && (show_chat() || show_transfer_cents())">
                     <div class="text-center fw-bold">
-                        [[chat_header]]
+                        [[show_chat() ? 'Chat' : 'History']]
                     </div>
                     
                     {%include "subject/subject_home/the_stage/chat_overlay.html"%}
@@ -57,14 +57,15 @@
         <!-- staff controls -->
         <div class="row" v-if="pixi_mode=='staff' && session">
             
-    
         </div>
 
         <div class="row justify-content-end mt-2 ms-1" 
             v-show="session.started" 
             v-if="pixi_mode=='subject'">
             <!-- transfer money -->
-            <div class="col-4 text-center  pb-2"  style="border-style: solid; border-width: 1px;border-color: lightgray;">
+            <div class="col-4 text-center pb-2" 
+                 style="border-style: solid; border-width: 1px;border-color: lightgray;"
+                 v-show="show_transfer_cents()">
                 <div class="row">
                     <div class="col text-center">
                         Transfer Cents

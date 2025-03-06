@@ -7,6 +7,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 
 from main.models import ParameterSet
 from main.models import ParameterSetTreatment
+from main.models import HelpDocsSubject
 
 import main
 
@@ -17,6 +18,7 @@ class ParameterSetPeriodblock(models.Model):
 
     parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE, related_name="parameter_set_periodblocks_a")
     parameter_set_treatment = models.ForeignKey(ParameterSetTreatment, on_delete=models.SET_NULL, related_name="parameter_set_periodblocks_b", blank=True, null=True)
+    help_doc = models.ForeignKey(HelpDocsSubject, on_delete=models.CASCADE, related_name="parameter_set_notices", blank=True, null=True)
 
     period_start = models.IntegerField(verbose_name='Period Start', default=1)         #starting period
     period_end = models.IntegerField(verbose_name='Period End', default=1)             #ending period
@@ -43,6 +45,13 @@ class ParameterSetPeriodblock(models.Model):
 
         self.period_start = new_ps.get("period_start")
         self.period_end = new_ps.get("period_end")
+
+        help_doc_id = new_ps.get("help_doc", None)
+        if help_doc_id:
+            help_doc = main.models.HelpDocsSubject.objects.filter(id=help_doc_id).first()
+            self.help_doc = help_doc
+        else:
+            self.help_doc = None
        
         self.save()
         
@@ -77,6 +86,9 @@ class ParameterSetPeriodblock(models.Model):
             "id" : self.id,
 
             "parameter_set_treatment" : self.parameter_set_treatment.id if self.parameter_set_treatment else None,
+
+            "help_doc" : self.help_doc.id if self.help_doc else None,
+            "help_doc_title" : self.help_doc.title if self.help_doc else None,
 
             "period_start" : self.period_start,
             "period_end" : self.period_end,

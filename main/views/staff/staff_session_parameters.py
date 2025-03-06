@@ -67,6 +67,11 @@ class StaffSessionParametersView(SingleObjectMixin, View):
         for i in parameter_set_player_group_form:
             parameter_set_player_group_form_ids.append(i.html_name)
 
+        try:
+            parameter_set_periodblock_form.fields["help_doc"].queryset = session.parameter_set.parameter_set_players.first().instruction_set.help_docs_subject.all()
+        except:
+            pass
+
         return render(request=request,
                       template_name=self.template_name,
                       context={"channel_key" : uuid.uuid4(),

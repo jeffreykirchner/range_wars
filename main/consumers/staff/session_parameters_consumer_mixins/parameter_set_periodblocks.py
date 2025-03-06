@@ -79,6 +79,7 @@ def take_update_parameter_set_periodblock(data):
 
     form = ParameterSetPeriodblockForm(form_data_dict, instance=parameter_set_periodblock)
     form.fields["parameter_set_treatment"].queryset = session.parameter_set.parameter_set_treatments.all()
+    form.fields["help_doc"].queryset = session.parameter_set.parameter_set_players.first().instruction_set.help_docs_subject.all()
 
     if form.is_valid():         
         form.save()              

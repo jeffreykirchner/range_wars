@@ -48,11 +48,12 @@ let app = Vue.createApp({
                     chat_history : {{session_player.chat_display_history|safe}},
                     chat_header : "Chat",
 
-                    send_cents_amount : 1,
+                    send_cents_amount : 0,
                     send_cents_to : null,
                     send_cents_to_group : [],
                     send_cents_button_text : "Transfer",
                     send_cents_error : null,
+                    send_cents_success : false,                        //if true show success check mark for sending cents
 
                     end_game_modal_visible : false,
 
@@ -60,7 +61,7 @@ let app = Vue.createApp({
                     instruction_pages_show_scroll : false,
 
                     current_selection_range : {start:null, end:null},    //the current selection range
-                    range_update_success : false,                        //if true show success check mark
+                    range_update_success : false,                        //if true show success check mark for updating range
                     show_range_update_button : true,                     //if true show update button
 
                     notices_seen: [],
@@ -383,6 +384,8 @@ let app = Vue.createApp({
             app.chat_history = [];
 
             app.show_range_update_button = true;
+            app.range_update_success = false;
+            app.send_cents_success = false;
         },
 
         /**
@@ -441,6 +444,7 @@ let app = Vue.createApp({
                 app.setup_control_handles();
 
                 app.range_update_success = false;
+                app.send_cents_success = false;
             }
             else
             {

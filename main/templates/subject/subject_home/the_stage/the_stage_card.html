@@ -80,6 +80,7 @@
                                 max="200"
                                 placeholder="Amount (¢)" 
                                 v-model="send_cents_amount"
+                                v-on:change="send_cents_success=false"
                                 id="id_send_cents_amount"                                                    
                                 maxlength="3">
                     </div>
@@ -91,6 +92,7 @@
                                 placeholder="Person"
                                 class="form-select form-select text-center"
                                 id="id_send_cents_to"
+                                v-on:change="send_cents_success=false"
                                 :style="'color:' + get_parameter_set_player_from_player_id(send_cents_to).hex_color">
                             <option value=null>---</option>
                             <option v-for="option in send_cents_to_group" 
@@ -108,7 +110,10 @@
                                     title="Send cents to another person."
                                     v-bind:disabled="reconnecting || working || session.started===false || session.world_state.finished"
                                     v-on:click="send_cents()">[[send_cents_button_text]]</button>
-                    </div>                    
+                    </div>   
+                    <div class="col-auto pt-2 ps-0">
+                        <span v-if="send_cents_success"><i class="fas fa-check fa-lg" style="color: #63E6BE;"></i></span>
+                    </div>                 
                 </div>
 
                 <div class="row">

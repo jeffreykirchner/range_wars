@@ -329,9 +329,12 @@ class SubjectUpdatesMixin():
 
         #check amount
         if status == "success":
-            if not is_positive_integer(amount) and amount > 0:
+            if not is_positive_integer(amount):
                 status = "fail"
                 error_message = "Invalid amount."
+            elif amount <= 0:
+                status = "fail"
+                error_message = "Amount must be positive."
             elif amount > 200:
                 status = "fail"
                 error_message = "You may transfer at most 200 cents at a time."

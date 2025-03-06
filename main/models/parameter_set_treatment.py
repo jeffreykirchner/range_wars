@@ -20,7 +20,6 @@ class ParameterSetTreatment(models.Model):
     range_height = models.DecimalField(verbose_name='Range Height', default=2, max_digits=5, decimal_places=2)           #range height
     
     scale_width = models.DecimalField(verbose_name='Scale Width', default=2, max_digits=5, decimal_places=2)           #scale width
-    scale_height = models.DecimalField(verbose_name='Scale Height', default=2, max_digits=5, decimal_places=2)           #scale height
 
     values = models.CharField(verbose_name='Values', max_length=1000, default="10,9,8,7,6,5,4,3,2,1")                     #Values for each box
 
@@ -55,7 +54,6 @@ class ParameterSetTreatment(models.Model):
         self.range_height = new_ps.get("range_height")
 
         self.scale_width = new_ps.get("scale_width")
-        self.scale_height = new_ps.get("scale_height")
 
         self.values = new_ps.get("values")
 
@@ -104,7 +102,6 @@ class ParameterSetTreatment(models.Model):
             "range_height" : self.range_height,
 
             "scale_width" : self.scale_width,
-            "scale_height" : self.scale_height,
 
             "values" : self.values,
 

@@ -33,13 +33,6 @@ class ParameterSetTreatmentForm(forms.ModelForm):
                                                                         "step":"1",
                                                                         "min":"0"}))
     
-    scale_height = forms.DecimalField(label='Scale Height',
-                                        min_value=0,
-                                        widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_treatment.scale_height",
-                                                                        "step":"1",
-                                                                        "min":"0"}))
-
-    
     range_height_ticks = forms.IntegerField(label='Range Height Ticks',
                                             min_value=1,
                                             widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_treatment.range_height_ticks",
@@ -68,6 +61,6 @@ class ParameterSetTreatmentForm(forms.ModelForm):
 
     class Meta:
         model=ParameterSetTreatment
-        fields =['id_label_pst',  'range_width', 'range_height', 'scale_width', 'scale_height',
+        fields =['id_label_pst',  'range_width', 'range_height', 'scale_width',
                  'range_height_ticks', 'values', 'costs', 'preserve_order', 'enable_chat', 'enable_transfer_cents']
     

@@ -159,7 +159,7 @@ end_early: function end_early(){
  * @param message_data {json}
 */
 take_end_early: function take_end_early(message_data){
-    session.world_state.session_periods_order = message_data.result;
+    app.session.world_state.session_periods_order = message_data.result;
 },
 
 /** send invitations

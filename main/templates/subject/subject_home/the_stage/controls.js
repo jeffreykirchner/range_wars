@@ -311,6 +311,11 @@ take_update_cents: function take_update_cents(message_data){
                     type:"cents"};
 
         app.chat_history.unshift(chat);
+
+        if(app.session_player.id == session_player_id)
+        {
+           app.send_cents_success = true;
+        }
     }
     else
     {

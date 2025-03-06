@@ -380,6 +380,7 @@ let app = Vue.createApp({
             app.remove_all_notices();
 
             app.notices_seen = [];
+            app.chat_history = [];
 
             app.show_range_update_button = true;
         },

@@ -428,7 +428,8 @@ let app = Vue.createApp({
                 let session_period_id = world_state.session_periods_order[world_state.current_period-1];
                 let session_period = app.session.session_periods[session_period_id];
                 let parameter_set_periodblock = app.session.parameter_set.parameter_set_periodblocks[session_period.parameter_set_periodblock_id];
-                let session_player = app.session.world_state.session_players[app.session_player.id];
+                let session_player = world_state.session_players[app.session_player.id];
+                let period_block = world_state.period_blocks[world_state.current_period_block];
                 
                 app.current_selection_range.start = session_player.range_start;
                 app.current_selection_range.end = session_player.range_end;
@@ -445,6 +446,12 @@ let app = Vue.createApp({
 
                 app.range_update_success = false;
                 app.send_cents_success = false;
+
+                //notice help pop up
+                if(parameter_set_periodblock.help_doc && period_block.phase == 'start')
+                {
+                    app.send_load_help_doc_subject(parameter_set_periodblock.help_doc_title);
+                }
             }
             else
             {

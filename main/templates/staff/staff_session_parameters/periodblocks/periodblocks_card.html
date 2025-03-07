@@ -28,7 +28,10 @@
                                 </th>
                                 <th scope="col" class = "m-1 p-1">
                                     Treatment
-                                </th>       
+                                </th>      
+                                <th scope="col" class = "m-1 p-1">
+                                    Instruction Popup
+                                </th>  
                             </tr>
                         </thead>
                         <tbody id="periodblock_list">
@@ -51,6 +54,10 @@
                                         [[parameter_set.parameter_set_treatments[temp_p.parameter_set_treatment].id_label_pst]]
                                     </span>
                              </td>
+                             <td v-on:click="show_edit_parameter_set_periodblock(p)" 
+                                class="player_table_cell">
+                                [[temp_p.help_doc_title]]
+                            </td>
                         </tbody>
                         
                     </table>

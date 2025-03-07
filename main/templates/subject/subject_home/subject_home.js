@@ -436,6 +436,10 @@ let app = Vue.createApp({
 
                 current_treatment = app.session.parameter_set.parameter_set_treatments[parameter_set_periodblock.parameter_set_treatment].id;
                 
+                pixi_left_handle.alpha = 1;
+                pixi_right_handle.alpha = 1;
+                app.selection_handle = null;
+
                 app.setup_main_container();
                 
                 app.setup_axis();
@@ -446,6 +450,8 @@ let app = Vue.createApp({
 
                 app.range_update_success = false;
                 app.send_cents_success = false;
+
+                
 
                 //notice help pop up
                 if(parameter_set_periodblock.help_doc && period_block.phase == 'start')

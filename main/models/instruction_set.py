@@ -87,6 +87,8 @@ class InstructionSet(models.Model):
         main.models.Instruction.objects.bulk_create(instructions)
 
     def copy_help_docs_subject(self, i_set):
+
+        self.help_docs_subject.all().delete()
         
         help_docs_subject = []
 
@@ -114,6 +116,7 @@ class InstructionSet(models.Model):
             "action_page_6" : self.action_page_6,
 
             "instruction_pages" : [i.json() for i in self.instructions.all()],
+            "help_docs_subject" : [i.json() for i in self.help_docs_subject.all()],
         }
     
     async def ajson(self):
@@ -134,6 +137,7 @@ class InstructionSet(models.Model):
             "action_page_6" : self.action_page_6,
 
             "instruction_pages" : [await i.ajson() async for i in self.instructions.all()],
+            "help_docs_subject" : [await i.ajson() async for i in self.help_docs_subject.all()],
         }
     
     #return json object of class

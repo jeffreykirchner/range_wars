@@ -131,7 +131,7 @@
                             v-show="show_range_update_button"
                             type="button" 
                             id="send_range_id" 
-                            title="Sumbit your updated range."
+                            title="Submit your updated range."
                             v-bind:disabled="reconnecting || working || session.started===false || session.world_state.finished"
                             v-on:click="send_range()">
 

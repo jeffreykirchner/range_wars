@@ -25,11 +25,11 @@ function show_edit_help_doc_modal(id){
     app.clear_main_form_errors();
     app.cancel_modal = true;
 
-    let instruction = app.instruction_set.instruction_pages[id];
+    let help_doc = app.instruction_set.help_docs_subject[id];
 
-    tinymce.get("id_text").setContent(instruction.text);
+    tinymce.get("id_text").setContent(help_doc.text);
     
-    app.current_help_doc = Object.assign({}, instruction);
+    app.current_help_doc_subject = Object.assign({}, help_doc);
     app.edit_help_doc_modal.show();
 }
 
@@ -38,8 +38,8 @@ function show_edit_help_doc_modal(id){
  */
 function send_update_help_doc(){
     app.working = true;
-    app.current_help_doc.text = tinymce.get("id_text").getContent();
-    app.send_message("update_help_doc", {form_data:app.current_help_doc});
+    app.current_help_doc_subject.text = tinymce.get("id_text").getContent();
+    app.send_message("update_help_doc", {form_data:app.current_help_doc_subject});
 }
 
 /** hide edit instruction modal

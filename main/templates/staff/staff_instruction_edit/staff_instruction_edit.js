@@ -162,6 +162,7 @@ let app = createApp({
 
                 app.edit_instruction_set_modal.hide();
                 app.edit_instruction_modal.hide();
+                app.edit_help_doc_modal.hide();
                 app.import_instruction_set_modal.hide();
                 app.upload_instruction_set_modal.hide();
 

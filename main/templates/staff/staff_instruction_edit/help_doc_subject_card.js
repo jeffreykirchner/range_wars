@@ -9,13 +9,13 @@ function send_add_help_doc(){
 /**
  * send request to delete instruction page
  */
-function send_delete_help_doc(instruction_id){
-    if (!confirm('Delete Page?')) {
+function send_delete_help_doc(help_doc_id){
+    if (!confirm('Delete Help Doc?')) {
         return;
     }
 
     app.working = true;
-    app.send_message("delete_help_doc_page", {id:app.instruction_set.id, instruction_id:instruction_id});
+    app.send_message("delete_help_doc_page", {id:app.instruction_set.id, help_doc_id:help_doc_id});
 }
 
 /**

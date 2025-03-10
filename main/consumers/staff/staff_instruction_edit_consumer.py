@@ -122,10 +122,10 @@ class StaffInstructionEditConsumer(SocketConsumerMixin,
         message_text = event["message_text"]
 
         instruction_set = await InstructionSet.objects.aget(id=message_text['id'])
-        instruction = await Instruction.objects.acreate(instruction_set=instruction_set, page_number=await instruction_set.instructions.acount()+1)
+        help_doc_subject = await HelpDocsSubject.objects.acreate(instruction_set=instruction_set, title="***New Help Doc***", text="Help Doc Text Here")
 
-        event['type'] = 'get_help_doc_set'
-        await self.get_help_doc_set(event)
+        event['type'] = 'get_instruction_set'
+        await self.get_instruction_set(event)
 
     async def delete_help_doc_page(self, event):
         '''
@@ -137,12 +137,12 @@ class StaffInstructionEditConsumer(SocketConsumerMixin,
         self.user = self.scope["user"]
         message_text = event["message_text"]
 
-        instruction = await Instruction.objects.aget(id=message_text['instruction_id'])
+        help_doc_subject = await HelpDocsSubject.objects.aget(id=message_text['help_doc_id'])
 
-        await instruction.adelete()
+        await help_doc_subject.adelete()
 
-        event['type'] = 'get_help_doc_set'
-        await self.get_help_doc_set(event)
+        event['type'] = 'get_instruction_set'
+        await self.get_instruction_set(event)
 
     async def update_help_doc(self, event):
         '''

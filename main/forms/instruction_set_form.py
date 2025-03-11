@@ -14,12 +14,12 @@ class InstructionSetForm(forms.ModelForm):
                                                           "v-model":"instruction_set.label",
                                                           "placeholder" : "Instruction Set Name"}))
     
-    action_page_1 = forms.IntegerField(label='Required Action: 1', 
+    action_page_1 = forms.IntegerField(label='Required Action: Move Range', 
                                        widget=forms.NumberInput(attrs={"min":"1", 
                                                                        "v-model":"instruction_set.action_page_1",
                                                                        "placeholder" : "Page Number"}))
     
-    action_page_2 = forms.IntegerField(label='Required Action: 2', 
+    action_page_2 = forms.IntegerField(label='Required Action: Submit Range', 
                                        widget=forms.NumberInput(attrs={"min":"1", 
                                                                         "v-model":"instruction_set.action_page_2",
                                                                        "placeholder" : "Page Number"}))

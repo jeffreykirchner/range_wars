@@ -21,6 +21,18 @@ class InstructionSet(models.Model):
     action_page_4 = models.IntegerField(verbose_name='Required Action: 4', default=4)
     action_page_5 = models.IntegerField(verbose_name='Required Action: 5', default=5)
     action_page_6 = models.IntegerField(verbose_name='Required Action: 6', default=6)
+
+    p1_example_start_range = models.IntegerField(verbose_name='Person 1 Example Start Range', default=1)
+    p1_example_end_range = models.IntegerField(verbose_name='Person 1 Example End Range', default=1)
+
+    p2_example_start_range = models.IntegerField(verbose_name='Person 2 Example Start Range', default=11)
+    p2_example_end_range = models.IntegerField(verbose_name='Person 2 Example End Range', default=20)
+
+    p3_example_start_range = models.IntegerField(verbose_name='Person 3 Example Start Range', default=21)
+    p3_example_end_range = models.IntegerField(verbose_name='Person 3 Example End Range', default=30)
+
+    p4_example_start_range = models.IntegerField(verbose_name='Person 4 Example Start Range', default=31)
+    p4_example_end_range = models.IntegerField(verbose_name='Person 4 Example End Range', default=40)
         
     timestamp = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -49,6 +61,18 @@ class InstructionSet(models.Model):
         self.action_page_4 = new_ps.get("action_page_4")
         self.action_page_5 = new_ps.get("action_page_5")
         self.action_page_6 = new_ps.get("action_page_6")
+
+        self.p1_example_start_range = new_ps.get("p1_example_start_range")
+        self.p1_example_end_range = new_ps.get("p1_example_end_range")
+
+        self.p2_example_start_range = new_ps.get("p2_example_start_range")
+        self.p2_example_end_range = new_ps.get("p2_example_end_range")
+
+        self.p3_example_start_range = new_ps.get("p3_example_start_range")
+        self.p3_example_end_range = new_ps.get("p3_example_end_range")
+
+        self.p4_example_start_range = new_ps.get("p4_example_start_range")
+        self.p4_example_end_range = new_ps.get("p4_example_end_range")
 
         self.save()
         
@@ -127,6 +151,18 @@ class InstructionSet(models.Model):
             "action_page_5" : self.action_page_5,
             "action_page_6" : self.action_page_6,
 
+            "p1_example_start_range" : self.p1_example_start_range,
+            "p1_example_end_range" : self.p1_example_end_range,
+
+            "p2_example_start_range" : self.p2_example_start_range,
+            "p2_example_end_range" : self.p2_example_end_range,
+
+            "p3_example_start_range" : self.p3_example_start_range,
+            "p3_example_end_range" : self.p3_example_end_range,
+
+            "p4_example_start_range" : self.p4_example_start_range,
+            "p4_example_end_range" : self.p4_example_end_range,
+
             "instruction_pages" : [i.json() for i in self.instructions.all()],
             "help_docs_subject" : [i.json() for i in self.help_docs_subject.all()],
         }
@@ -147,6 +183,18 @@ class InstructionSet(models.Model):
             "action_page_4" : self.action_page_4,
             "action_page_5" : self.action_page_5,
             "action_page_6" : self.action_page_6,
+
+            "p1_example_start_range" : self.p1_example_start_range,
+            "p1_example_end_range" : self.p1_example_end_range,
+
+            "p2_example_start_range" : self.p2_example_start_range,
+            "p2_example_end_range" : self.p2_example_end_range,
+
+            "p3_example_start_range" : self.p3_example_start_range,
+            "p3_example_end_range" : self.p3_example_end_range,
+
+            "p4_example_start_range" : self.p4_example_start_range,
+            "p4_example_end_range" : self.p4_example_end_range,
 
             "instruction_pages" : [await i.ajson() async for i in self.instructions.all()],
             "help_docs_subject" : [await i.ajson() async for i in self.help_docs_subject.all()],

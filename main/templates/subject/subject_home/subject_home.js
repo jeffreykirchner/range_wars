@@ -297,6 +297,18 @@ let app = Vue.createApp({
 
             if(app.session.world_state.current_experiment_phase == 'Instructions')
             {
+                //load instruction examples
+                for(let i=0;i<app.session.world_state.session_players_order.length;i++)
+                {
+                    let session_player_id = app.session.world_state.session_players_order[i];
+                    let session_player = app.session.world_state.session_players[session_player_id];
+
+                    let index = i+1;
+
+                    session_player.range_start = app.instructions["p" + index + "_example_start_range"];
+                    session_player.range_end = app.instructions["p" + index + "_example_end_range"];
+                }
+
                 Vue.nextTick(() => {
                     app.process_instruction_page();
                     app.instruction_display_scroll();
@@ -450,7 +462,6 @@ let app = Vue.createApp({
 
                 app.range_update_success = false;
                 app.send_cents_success = false;
-
                 
 
                 //notice help pop up

@@ -298,16 +298,16 @@ let app = Vue.createApp({
             if(app.session.world_state.current_experiment_phase == 'Instructions')
             {
                 //load instruction examples
-                for(let i=0;i<app.session.world_state.session_players_order.length;i++)
-                {
-                    let session_player_id = app.session.world_state.session_players_order[i];
-                    let session_player = app.session.world_state.session_players[session_player_id];
+                // for(let i=0;i<app.session.world_state.session_players_order.length;i++)
+                // {
+                //     let session_player_id = app.session.world_state.session_players_order[i];
+                //     let session_player = app.session.world_state.session_players[session_player_id];
 
-                    let index = i+1;
+                //     let index = i+1;
 
-                    session_player.range_start = app.instructions["p" + index + "_example_start_range"];
-                    session_player.range_end = app.instructions["p" + index + "_example_end_range"];
-                }
+                //     session_player.range_start = app.instructions["p" + index + "_example_start_range"];
+                //     session_player.range_end = app.instructions["p" + index + "_example_end_range"];
+                // }
 
                 Vue.nextTick(() => {
                     app.process_instruction_page();
@@ -347,15 +347,17 @@ let app = Vue.createApp({
             let parameter_set_player = app.session.parameter_set.parameter_set_players[session_player.parameter_set_player_id]; 
 
             current_group = session_player.group_number;
-
-            //move local player to front of group list  
             let group = app.session.world_state.groups[current_group];
-            let index = group.indexOf(app.session_player.id);
-            if(index != -1)
-            {                    
-                group.splice(index, 1);
-                group.unshift(app.session_player.id);
-            }
+
+            //handled server side
+            //move local player to front of group list 
+            // let group = app.session.world_state.groups[current_group];
+            // let index = group.indexOf(app.session_player.id);
+            // if(index != -1)
+            // {                    
+            //     group.splice(index, 1);
+            //     group.unshift(app.session_player.id);
+            // }
 
             //add all players except local player to send cents group
             app.send_cents_to_group = [];

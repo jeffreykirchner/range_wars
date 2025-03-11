@@ -415,7 +415,36 @@ class SubjectUpdatesMixin():
         '''
         process treatment update from client during instructions phase
         '''
-        pass
+        if self.controlling_channel != self.channel_name:
+            return    
+       
+        logger = logging.getLogger(__name__) 
+
+        status = "success"
+        error_message = ""
+        player_id = None
+        text = ""
+
+        try:
+            player_id = self.session_players_local[event["player_key"]]["id"]
+            session = await Session.objects.aget(id=self.session_id)
+            event_data = event["message_text"]           
+            instruction_world_state = event_data["amount"] 
+        except:
+            logger.warning(f"instructions_update_treatment: invalid data, {event['message_text']}")
+            error_message = "Invalid data."
+            status = "fail"
+
+        if status == "success":
+            result = {status: status, "error_message": error_message}
+            result["world_state"] = session.update_treatment(instruction_world_state, self.parameter_set_local)
+
+            target_list = [player_id]
+
+            await self.send_message(message_to_self=None, message_to_group=result,
+                                    message_type=event['type'], send_to_client=False, 
+                                    send_to_group=True, target_list=target_list)
+
 
     async def update_instructions_update_treatment(self, event):
         '''

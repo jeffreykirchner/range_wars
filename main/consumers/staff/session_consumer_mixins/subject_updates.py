@@ -410,3 +410,15 @@ class SubjectUpdatesMixin():
         update cents on client
         '''
         pass
+
+    async def instructions_update_treatment(self, event):
+        '''
+        process treatment update from client during instructions phase
+        '''
+        pass
+
+    async def update_instructions_update_treatment(self, event):
+        '''
+        update treatment on client during the instructions phase
+        '''
+        pass

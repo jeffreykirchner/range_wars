@@ -36,23 +36,24 @@ class GetSessionMixin():
 
             world_state = result["session"]["world_state"]
 
-            group_number = world_state['session_players'][str(self.session_player_id)]['group_number']
+            if session_player.session.started:
+                group_number = world_state['session_players'][str(self.session_player_id)]['group_number']
 
-            #move local player to front of group list
-            world_state['groups'][str(group_number)].remove(self.session_player_id)
-            world_state['groups'][str(group_number)].insert(0, self.session_player_id)
+                #move local player to front of group list
+                world_state['groups'][str(group_number)].remove(self.session_player_id)
+                world_state['groups'][str(group_number)].insert(0, self.session_player_id)
 
-            if world_state['current_experiment_phase'] == 'Instructions':
-                
-                #show example range to subject
-                for index, i in enumerate(world_state['groups'][str(group_number)]):
-                    session_player_ws = world_state['session_players'][str(i)]
-                    session_player_ws['range_start'] = instruction_set[f'p{index + 1}_example_start_range']
-                    session_player_ws['range_end'] = instruction_set[f'p{index + 1}_example_end_range']
-                    session_player_ws['range_middle'] = (Decimal( session_player_ws['range_start']) + Decimal(session_player_ws['range_end']) + 1) / 2
-                
-                #recalcuate the world state
-                world_state = await sync_to_async(session_player.session.update_revenues)(world_state, result["session"]["parameter_set"])
+                if world_state['current_experiment_phase'] == 'Instructions':
+                    
+                    #show example range to subject
+                    for index, i in enumerate(world_state['groups'][str(group_number)]):
+                        session_player_ws = world_state['session_players'][str(i)]
+                        session_player_ws['range_start'] = instruction_set[f'p{index + 1}_example_start_range']
+                        session_player_ws['range_end'] = instruction_set[f'p{index + 1}_example_end_range']
+                        session_player_ws['range_middle'] = (Decimal( session_player_ws['range_start']) + Decimal(session_player_ws['range_end']) + 1) / 2
+                    
+                    #recalcuate the world state
+                    world_state = await sync_to_async(session_player.session.update_revenues)(world_state, result["session"]["parameter_set"])
 
             await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=None, 
                                     message_type=event['type'], send_to_client=True, send_to_group=False)

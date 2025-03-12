@@ -21,6 +21,7 @@ let app = Vue.createApp({
                     is_subject : false,
                     first_load_done : false,          //true after software is loaded for the first time
                     help_text : "Loading ...",
+                    help_modal_title : "Help",
                     user_id : {{user.id}},
                     session_id : {{session.id}},
                     session_key : "{{session.session_key}}",

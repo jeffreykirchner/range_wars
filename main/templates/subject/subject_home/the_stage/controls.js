@@ -250,6 +250,25 @@ pixi_container_main_pointermove: function pixi_container_main_pointermove(event)
 },
 
 /**
+ * update handle visibility
+ */
+update_handle_visibility: function update_handle_visibility(){
+    let period_block = app.get_current_period_block();
+
+    if(period_block.phase == 'play' ||
+       app.session.world_state.current_experiment_phase == 'Instructions')
+    {
+        pixi_left_handle.visible = true;
+        pixi_right_handle.visible = true;
+    }
+    else
+    {
+        pixi_left_handle.visible = false;
+        pixi_right_handle.visible = false;
+    }
+},
+
+/**
  * submit new range to the server
  */
 send_range: function send_range(){

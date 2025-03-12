@@ -256,6 +256,7 @@ let app = Vue.createApp({
 
             app.setup_group_summary();
             app.setup_control_handles();
+            app.update_handle_visibility();
 
             // app.update_left_handle_position();
             // app.update_right_handle_position();
@@ -439,14 +440,15 @@ let app = Vue.createApp({
             world_state.current_period_block = message_data.current_period_block;
 
             //pixi updates
+           
 
             if(world_state.current_round == 1 && world_state.current_period > 1)
             {
                 let session_period_id = world_state.session_periods_order[world_state.current_period-1];
                 let session_period = app.session.session_periods[session_period_id];
-                let parameter_set_periodblock = app.session.parameter_set.parameter_set_periodblocks[session_period.parameter_set_periodblock_id];
+                let parameter_set_periodblock = app.get_current_parameter_set_period_block();
                 let session_player = world_state.session_players[app.session_player.id];
-                let period_block = world_state.period_blocks[world_state.current_period_block];
+                let period_block = app.get_current_period_block();
                 
                 app.current_selection_range.start = session_player.range_start;
                 app.current_selection_range.end = session_player.range_end;
@@ -461,8 +463,6 @@ let app = Vue.createApp({
                 
                 app.setup_axis();
                 app.setup_treatment();
-                app.update_treatment();
-                app.setup_selection_range();
                 app.setup_control_handles();
 
                 app.range_update_success = false;
@@ -477,10 +477,13 @@ let app = Vue.createApp({
             }
             else
             {
-                app.update_treatment();
-                app.setup_selection_range();
-                app.setup_group_summary();                
+                                
             }
+
+            app.update_treatment();
+            app.setup_selection_range();
+            app.setup_group_summary();
+            app.update_handle_visibility();
 
             //collect names
             if(app.session.world_state.current_experiment_phase == 'Names')

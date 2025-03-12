@@ -69,6 +69,7 @@ let app = Vue.createApp({
                     // modals
                     end_game_modal : null,
                     help_modal : null,
+                    help_modal_title : null,
                     test_mode : {%if session.parameter_set.test_mode%}true{%else%}false{%endif%},
 
                     //pixi

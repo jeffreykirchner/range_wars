@@ -15,6 +15,7 @@ let app = Vue.createApp({
                     working : false,
                     first_load_done : false,          //true after software is loaded for the first time
                     help_text : "Loading ...",
+                    help_modal_title : "Help",
                     session : {{session_json | safe}},
                     parameter_set : {{parameter_set_json | safe}},                   
     

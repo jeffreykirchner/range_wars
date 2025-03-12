@@ -29,9 +29,9 @@ class InterfaceMixin():
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
         
     @check_message_for_me
-    async def update_instructions_update_treatment(self, event):
+    async def update_instructions_range(self, event):
         '''
-        update treatment on client during the instructions phase
+        update range on client during the instructions phase
         '''
         event_data = json.loads(event["group_data"])
 

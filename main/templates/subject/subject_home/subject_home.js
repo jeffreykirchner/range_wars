@@ -177,6 +177,9 @@ let app = Vue.createApp({
                 case "update_range":
                     app.take_update_range(message_data);
                     break;
+                case "update_instructions_range":
+                    app.take_update_instructions_range(message_data);
+                    break;
                 case "update_cents":
                     app.take_update_cents(message_data);
                     break;

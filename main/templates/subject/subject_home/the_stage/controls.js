@@ -201,6 +201,18 @@ pixi_right_handle_drag: function pixi_right_handle_drag(x){
  * pointer up on the main container
  */
 pixi_container_main_pointerup: function pixi_container_main_pointerup(event){
+
+    if(app.session.world_state.current_experiment_phase == 'Instructions' &&
+       app.session_player.current_instruction == app.instructions.action_page_1 &&
+       app.session_player.current_instruction_complete < app.instructions.action_page_1)    
+     {
+         if(app.selection_handle == "left" || app.selection_handle == "right")
+         {
+             app.session_player.current_instruction_complete=app.instructions.action_page_1;
+             app.send_current_instruction_complete();
+         }
+     }
+
     pixi_left_handle.alpha = 1;
     pixi_right_handle.alpha = 1;
     app.selection_handle = null;
@@ -249,11 +261,30 @@ send_range: function send_range(){
         range_end: app.current_selection_range.end
     };
 
-    if(period_block.phase=="start") app.show_range_update_button = false;
-    app.range_update_error = null;
-    app.working = true;
-    app.send_message("range", data, "group");
-                    
+    if(app.session.world_state.current_experiment_phase == 'Instructions')
+    {
+        app.working = true;
+        if(app.session_player.current_instruction == app.instructions.action_page_2 &&
+           app.session_player.current_instruction_complete < app.instructions.action_page_2)    
+        {
+            app.session_player.current_instruction_complete=app.instructions.action_page_2;
+            app.send_current_instruction_complete();
+        }
+
+        data["world_state"] = Object.assign({}, app.session.world_state);
+        data.world_state.session_players[app.session_player.id].range_start = data.range_start;
+        data.world_state.session_players[app.session_player.id].range_end = data.range_end;
+        data.world_state.session_players[app.session_player.id].range_middle = (data.range_start + data.range_end + 1) / 2;
+
+        app.send_message("instructions_range", data, "group");
+    }
+    else
+    {
+        if(period_block.phase=="start") app.show_range_update_button = false;
+        app.range_update_error = null;
+        app.working = true;
+        app.send_message("range", data, "group");
+    } 
 },
 
 /**
@@ -275,6 +306,23 @@ take_update_range: function take_update_range(message_data){
     {
         //display error message
         app.range_update_error = "Error: " + message_data.error_message;
+    }
+},
+
+take_update_instructions_range: function take_update_instructions_range(message_data){
+    app.working = false;
+
+    if(message_data.status == "success")
+    {
+        app.session.world_state = message_data.world_state;
+
+        app.update_treatment();
+        app.setup_selection_range();
+        app.setup_group_summary(); 
+    }
+    else
+    {
+
     }
 },
 

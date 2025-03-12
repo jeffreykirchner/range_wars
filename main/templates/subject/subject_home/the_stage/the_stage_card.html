@@ -12,7 +12,10 @@
         </span>
 
         <span class="float-end" v-if="is_subject">
-            <button type="button" class="btn btn-link" title="Show Help" v-on:click="send_load_help_doc_subject('subject_stage')">
+            <button type="button" 
+                    class="btn btn-link" 
+                    title="Show Help" 
+                    v-on:click="get_current_treatment().preserve_order ? send_load_help_doc_subject('Graph - Preserve Order') : send_load_help_doc_subject('Graph - Free Range')">
                 <i class="far fa-question-circle"></i> 
             </button>
         </span>
@@ -68,7 +71,11 @@
                  v-show="show_transfer_cents()">
                 <div class="row">
                     <div class="col text-center">
-                        Transfer Cents
+                        
+                        Transfer Profits
+                        <button type="button" class="ps-0 btn btn-link" title="Show Help" v-on:click="send_load_help_doc_subject('Transfer Cents')">
+                            <i class="far fa-question-circle"></i> 
+                        </button> 
                     </div>
                 </div>
                 <div class="row justify-content-center">
@@ -156,7 +163,13 @@
             <!-- send chat -->
             <div class="col-4">
                 <div class="row" v-if="show_chat()">
-                    <div class="col">
+                    <div class="col-2 me-0 pe-1 text-end">
+                        <button type="button" class="btn pe-0 btn-link" title="Show Help" v-on:click="send_load_help_doc_subject('Chat')">
+                            <i class="far fa-question-circle"></i> 
+                        </button> 
+                    </div>
+
+                    <div class="col-10 ms-0 ps-0">
                         <div class="input-group">
                             <input type="text" 
                                 class="form-control form-control" 

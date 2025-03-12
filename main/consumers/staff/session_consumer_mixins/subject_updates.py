@@ -225,64 +225,64 @@ class SubjectUpdatesMixin():
                 error_message = "Invalid range."
                 logger.warning(f"take_range: invalid range, {event_data}")
 
-            #check if range is valid given the currrent treatment
-            if status == "success":
-                if treatment["preserve_order"]:
-                    group_number = parameter_set_player_group["group_number"]
-                    position = parameter_set_player_group["position"]
+        #check if range is valid given the currrent treatment
+        if status == "success":
+            if treatment["preserve_order"]:
+                group_number = parameter_set_player_group["group_number"]
+                position = parameter_set_player_group["position"]
 
-                    left_1_session_player_id = self.world_state_local["group_map"].get(str(group_number) + "-" + str(position-1))
-                    left_2_session_player_id = self.world_state_local["group_map"].get(str(group_number) + "-" + str(position-2))
-                    right_1_session_player_id = self.world_state_local["group_map"].get(str(group_number) + "-" + str(position+1))
-                    right_2_session_player_id = self.world_state_local["group_map"].get(str(group_number) + "-" + str(position+2))
-                    
-                    #check if start range is <= left 2 range end
-                    if left_2_session_player_id:
-                        left_2_range_start = self.world_state_local["session_players"][str(left_2_session_player_id)]["range_end"]
-                        if range_start <= left_2_range_start:
-                            left_2_parameter_set_player = self.parameter_set_local["parameter_set_players"][str(self.world_state_local["session_players"][str(left_2_session_player_id)]["parameter_set_player_id"])]
-                            status = "fail"
-                            error_message = f"Your range cannot overlap with {left_2_parameter_set_player['id_label']}'s."
-                    
-                    #check if end range >= right 2 range start
-                    if right_2_session_player_id:
-                        right_2_range_end = self.world_state_local["session_players"][str(right_2_session_player_id)]["range_start"]
-                        if range_end >= right_2_range_end:
-                            right_2_parameter_set_player = self.parameter_set_local["parameter_set_players"][str(self.world_state_local["session_players"][str(right_2_session_player_id)]["parameter_set_player_id"])]
-                            status = "fail"
-                            error_message = f"Your range cannot overlap with {right_2_parameter_set_player['id_label']}'s."
-
-                    #check if middle range is < left 1 middle range
-                    if left_1_session_player_id:
-                        left_1_range_middle = self.world_state_local["session_players"][str(left_1_session_player_id)]["range_middle"]
-                        if Decimal(range_middle) < Decimal(left_1_range_middle):
-                            left_1_parameter_set_player = self.parameter_set_local["parameter_set_players"][str(self.world_state_local["session_players"][str(left_1_session_player_id)]["parameter_set_player_id"])]
-                            status = "fail"
-                            error_message = f"Your mid-range cannot be lower than {left_1_parameter_set_player['id_label']}'s."
-                    
-                    #check if middle range is > right 1 middle range
-                    if right_1_session_player_id:
-                        right_1_range_middle = self.world_state_local["session_players"][str(right_1_session_player_id)]["range_middle"]
-                        if Decimal(range_middle) > Decimal(right_1_range_middle):
-                            right_1_parameter_set_player = self.parameter_set_local["parameter_set_players"][str(self.world_state_local["session_players"][str(right_1_session_player_id)]["parameter_set_player_id"])]
-                            status = "fail"
-                            error_message = f"Your mid-range cannot be higher than {right_1_parameter_set_player['id_label']}'s."
-                    
-            if status == "success":
-                period_block = self.world_state_local["period_blocks"][str(self.world_state_local["current_period_block"])]
+                left_1_session_player_id = self.world_state_local["group_map"].get(str(group_number) + "-" + str(position-1))
+                left_2_session_player_id = self.world_state_local["group_map"].get(str(group_number) + "-" + str(position-2))
+                right_1_session_player_id = self.world_state_local["group_map"].get(str(group_number) + "-" + str(position+1))
+                right_2_session_player_id = self.world_state_local["group_map"].get(str(group_number) + "-" + str(position+2))
                 
-                period_block["session_players"][str(player_id)]["ready"] = True
+                #check if start range is <= left 2 range end
+                if left_2_session_player_id:
+                    left_2_range_start = self.world_state_local["session_players"][str(left_2_session_player_id)]["range_end"]
+                    if range_start <= left_2_range_start:
+                        left_2_parameter_set_player = self.parameter_set_local["parameter_set_players"][str(self.world_state_local["session_players"][str(left_2_session_player_id)]["parameter_set_player_id"])]
+                        status = "fail"
+                        error_message = f"Your range cannot overlap with {left_2_parameter_set_player['id_label']}'s."
+                
+                #check if end range >= right 2 range start
+                if right_2_session_player_id:
+                    right_2_range_end = self.world_state_local["session_players"][str(right_2_session_player_id)]["range_start"]
+                    if range_end >= right_2_range_end:
+                        right_2_parameter_set_player = self.parameter_set_local["parameter_set_players"][str(self.world_state_local["session_players"][str(right_2_session_player_id)]["parameter_set_player_id"])]
+                        status = "fail"
+                        error_message = f"Your range cannot overlap with {right_2_parameter_set_player['id_label']}'s."
 
-                session_player["range_start"] = range_start
-                session_player["range_end"] = range_end
-                session_player["range_middle"] = range_middle
+                #check if middle range is < left 1 middle range
+                if left_1_session_player_id:
+                    left_1_range_middle = self.world_state_local["session_players"][str(left_1_session_player_id)]["range_middle"]
+                    if Decimal(range_middle) < Decimal(left_1_range_middle):
+                        left_1_parameter_set_player = self.parameter_set_local["parameter_set_players"][str(self.world_state_local["session_players"][str(left_1_session_player_id)]["parameter_set_player_id"])]
+                        status = "fail"
+                        error_message = f"Your mid-range cannot be lower than {left_1_parameter_set_player['id_label']}'s."
+                
+                #check if middle range is > right 1 middle range
+                if right_1_session_player_id:
+                    right_1_range_middle = self.world_state_local["session_players"][str(right_1_session_player_id)]["range_middle"]
+                    if Decimal(range_middle) > Decimal(right_1_range_middle):
+                        right_1_parameter_set_player = self.parameter_set_local["parameter_set_players"][str(self.world_state_local["session_players"][str(right_1_session_player_id)]["parameter_set_player_id"])]
+                        status = "fail"
+                        error_message = f"Your mid-range cannot be higher than {right_1_parameter_set_player['id_label']}'s."
+                    
+        if status == "success":
+            period_block = self.world_state_local["period_blocks"][str(self.world_state_local["current_period_block"])]
+            
+            period_block["session_players"][str(player_id)]["ready"] = True
 
-                self.session_events.append(SessionEvent(session_id=self.session_id, 
-                                                        session_player_id=player_id,
-                                                        group_number=session_player["group_number"],
-                                                        type=event['type'],
-                                                        period_number=self.world_state_local["current_period"],                                                   
-                                                        data=event_data))
+            session_player["range_start"] = range_start
+            session_player["range_end"] = range_end
+            session_player["range_middle"] = range_middle
+
+            self.session_events.append(SessionEvent(session_id=self.session_id, 
+                                                    session_player_id=player_id,
+                                                    group_number=session_player["group_number"],
+                                                    type=event['type'],
+                                                    period_number=self.world_state_local["current_period"],                                                   
+                                                    data=event_data))
         
         result = {"status": status, "error_message": error_message}
 
@@ -290,7 +290,6 @@ class SubjectUpdatesMixin():
                                 message_type=event['type'], send_to_client=False, 
                                 send_to_group=True, target_list=[player_id])
             
-        # result is returned on next timmer tick
     
     async def update_range(self, event):
         '''
@@ -408,5 +407,47 @@ class SubjectUpdatesMixin():
     async def update_cents(self, event):
         '''
         update cents on client
+        '''
+        pass
+
+    async def instructions_range(self, event):
+        '''
+        process range update from client during instructions phase
+        '''
+        if self.controlling_channel != self.channel_name:
+            return    
+       
+        logger = logging.getLogger(__name__) 
+
+        status = "success"
+        error_message = ""
+        player_id = None
+        text = ""
+
+        try:
+            player_id = self.session_players_local[event["player_key"]]["id"]
+            session = await Session.objects.aget(id=self.session_id)
+            event_data = event["message_text"]           
+            instruction_world_state = event_data["world_state"] 
+        except:
+            logger.warning(f"instructions_update_treatment: invalid data, {event['message_text']}")
+            error_message = "Invalid data."
+            status = "fail"
+
+        if status == "success":
+
+            result = {"status": status, "error_message": error_message}
+            result["world_state"] = session.update_revenues(instruction_world_state, self.parameter_set_local)
+
+            target_list = [player_id]
+
+            await self.send_message(message_to_self=None, message_to_group=result,
+                                    message_type=event['type'], send_to_client=False, 
+                                    send_to_group=True, target_list=target_list)
+
+
+    async def update_instructions_range(self, event):
+        '''
+        update treatment on client during the instructions phase
         '''
         pass

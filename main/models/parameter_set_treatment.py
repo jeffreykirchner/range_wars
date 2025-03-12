@@ -29,7 +29,7 @@ class ParameterSetTreatment(models.Model):
 
     preserve_order = models.BooleanField(verbose_name='Preserve Order', default=False)                        #preserve order of players on battle space
     enable_chat = models.BooleanField( verbose_name='Enable Chat', default=True)                              #if true enable chat
-    enable_transfer_cents = models.BooleanField(verbose_name='Enable Transfer Cents', default=True)           #if true enable chat
+    enable_transfer_cents = models.BooleanField(verbose_name='Enable Profit Transfer', default=True)           #if true enable chat
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)

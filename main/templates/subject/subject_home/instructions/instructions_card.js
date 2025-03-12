@@ -93,6 +93,11 @@ send_current_instruction_complete: function current_instruction_complete()
  */
 process_instruction_page: function process_instruction_page(){
 
+    let world_state = app.session.world_state;
+    world_state.current_period = 2;
+    world_state.current_round = 2;
+    world_state.period_blocks[world_state.current_period_block].phase = "player";
+
     //update view when instructions changes
     switch(app.session_player.current_instruction){
         case app.instructions.action_page_1:    

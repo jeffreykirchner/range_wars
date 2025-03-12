@@ -122,7 +122,7 @@ class StaffInstructionEditConsumer(SocketConsumerMixin,
         message_text = event["message_text"]
 
         instruction_set = await InstructionSet.objects.aget(id=message_text['id'])
-        help_doc_subject = await HelpDocsSubject.objects.acreate(instruction_set=instruction_set, title="***New Help Doc***", text="Help Doc Text Here")
+        help_doc_subject = await HelpDocsSubject.objects.acreate(instruction_set=instruction_set, title="~~~New Help Doc~~~", text="Help Doc Text Here")
 
         event['type'] = 'get_instruction_set'
         await self.get_instruction_set(event)

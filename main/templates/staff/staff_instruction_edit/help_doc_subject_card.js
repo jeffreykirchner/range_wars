@@ -49,7 +49,6 @@ function hide_edit_help_doc_modal(){
     if(app.cancel_modal) Object.assign(app.instruction_set, app.paramterset_before_edit);
     app.paramterset_before_edit=null;
     app.cancel_modal = false;
-    
 }
 
 

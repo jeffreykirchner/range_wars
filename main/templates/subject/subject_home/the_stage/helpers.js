@@ -115,3 +115,28 @@ get_parameter_set_player_from_player_id: function get_parameter_set_player_from_
         return {id_label:null};
     }
 },
+
+/**
+ * get current treatment
+ */
+get_current_treatment: function get_current_treatment()
+{
+    let parameter_set_period_block = app.get_current_parameter_set_period_block();    
+    return app.session.parameter_set.parameter_set_treatments[parameter_set_period_block.parameter_set_treatment];
+},
+
+/**
+ * get current period block
+ */
+get_current_period_block: function get_current_period_block()
+{
+    return app.session.world_state.period_blocks[app.session.world_state.current_period_block];
+},
+
+/**
+ * get current parameter set period block
+ */
+get_current_parameter_set_period_block: function get_current_parameter_set_period_block()
+{
+    return app.session.parameter_set.parameter_set_periodblocks[app.session.world_state.current_period_block];
+},

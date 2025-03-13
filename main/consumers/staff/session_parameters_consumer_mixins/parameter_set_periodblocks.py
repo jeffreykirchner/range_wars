@@ -132,8 +132,16 @@ def take_add_parameterset_periodblock(data):
         logger.warning(f"take_update_take_update_parameter_set session, not found ID: {session_id}")
         return {"value" : "fail"}
     
+    parameter_set_periodblock_last = ParameterSetPeriodblock.objects.filter(parameter_set=session.parameter_set).last()
+    
     parameter_set_periodblock = ParameterSetPeriodblock.objects.create(parameter_set=session.parameter_set)
 
+    if parameter_set_periodblock_last:
+        parameter_set_periodblock.period_start = parameter_set_periodblock_last.period_start + 1
+        parameter_set_periodblock.period_end = parameter_set_periodblock.period_start + 1
+    
+    parameter_set_periodblock.save()
+    
     for p in session.parameter_set.parameter_set_players.all():
        main.models.ParameterSetPlayerGroup.objects.create(parameter_set_player=p, 
                                                    parameter_set_period_block=parameter_set_periodblock)

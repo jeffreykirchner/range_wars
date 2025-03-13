@@ -51,18 +51,20 @@ class ParameterSetPlayer(models.Model):
         self.save()
 
         #add player groups
-        new_parameter_set_player_groups = new_ps.get("parameter_set_player_groups")
+        if new_parameter_set_periodblocks_map:
 
-        for pg in new_parameter_set_player_groups:
-            parameter_set_player_group = main.models.ParameterSetPlayerGroup()
-            new_parameter_set_player_group = new_parameter_set_player_groups[pg]
+            new_parameter_set_player_groups = new_ps.get("parameter_set_player_groups")
 
-            parameter_set_player_group.parameter_set_player = self
-            parameter_set_player_group.parameter_set_period_block_id = int(new_parameter_set_periodblocks_map[str(pg)])
-            parameter_set_player_group.group_number = new_parameter_set_player_group["group_number"]
-            parameter_set_player_group.position = new_parameter_set_player_group["position"]
+            for pg in new_parameter_set_player_groups:
+                parameter_set_player_group = main.models.ParameterSetPlayerGroup()
+                new_parameter_set_player_group = new_parameter_set_player_groups[pg]
 
-            parameter_set_player_group.save()
+                parameter_set_player_group.parameter_set_player = self
+                parameter_set_player_group.parameter_set_period_block_id = int(new_parameter_set_periodblocks_map[str(pg)])
+                parameter_set_player_group.group_number = new_parameter_set_player_group["group_number"]
+                parameter_set_player_group.position = new_parameter_set_player_group["position"]
+
+                parameter_set_player_group.save()
 
         
         message = "Parameters loaded successfully."

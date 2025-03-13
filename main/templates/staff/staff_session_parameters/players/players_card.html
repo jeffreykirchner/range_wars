@@ -80,10 +80,14 @@
                                     v-bind:key="pb"
                                     v-on:click="show_edit_parameter_set_player_group(p, pb)"
                                     class="player_table_cell">
-                    
-                                    G[[temp_p.parameter_set_player_groups[pb].group_number]] 
-                                    P[[temp_p.parameter_set_player_groups[pb].position]] 
-                                    B[[temp_p.parameter_set_player_groups[pb].start_box]] 
+                                    <span v-if="temp_p.parameter_set_player_groups[pb]">
+                                        G[[temp_p.parameter_set_player_groups[pb].group_number]] 
+                                        P[[temp_p.parameter_set_player_groups[pb].position]] 
+                                        B[[temp_p.parameter_set_player_groups[pb].start_box]] 
+                                    </span>
+                                    <span v-else class="text-danger">
+                                        <i class="fas fa-exclamation-triangle"></i>                                         
+                                    </span>
 
                                 </td>
                             </tr>
@@ -96,6 +100,7 @@
 
         <div class="row justify-content-center">
             <div class="col-md-auto">
+
                 <button class="btn btn-outline-success btn-sm"
                         type="button"
                         title="Add player"

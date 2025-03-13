@@ -125,8 +125,17 @@ def take_add_parameterset_treatment(data):
     except ObjectDoesNotExist:
         logger.warning(f"take_add_parameterset_treatment session, not found ID: {session_id}")
         return {"value" : "fail"}
+    
+    parameter_set_treatment_last = ParameterSetTreatment.objects.filter(parameter_set=session.parameter_set).last()
 
     parameter_set_treatment = ParameterSetTreatment.objects.create(parameter_set=session.parameter_set)
+
+    if parameter_set_treatment_last:
+        parameter_set_treatment.from_dict(parameter_set_treatment_last.json())
+
+    parameter_set_treatment.id_label_pst = "~"
+    parameter_set_treatment.save()
+
     session.parameter_set.update_json_fk(update_treatments=True)
 
     return {"value" : "success"}

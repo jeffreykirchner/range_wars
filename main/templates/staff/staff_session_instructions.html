@@ -35,4 +35,13 @@
 
 {% endfor %}
 
+{% for i in instruction_set.help_docs_subject %}
+          
+    <div class="mb-2" {% if not forloop.last %}style="page-break-after: always;"{% endif %}>
+        <span class="fs-5 text-text-secondary fst-italic">Help Doc: {{i.title|safe}}</span>
+        {{i.text|safe}}
+    </div>   
+
+{% endfor %}
+
 {% endblock %}

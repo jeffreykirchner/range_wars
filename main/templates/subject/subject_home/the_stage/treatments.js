@@ -2,7 +2,7 @@
  * setup boxes for the current treatment
  */
 setup_treatment : function setup_treatment(){
-    let treatment = app.session.parameter_set.parameter_set_treatments[current_treatment];
+    let treatment = app.session.parameter_set.parameter_set_treatments[app.current_treatment];
     let values = treatment.values.split(",");
     let parameter_set_players = app.session.parameter_set.parameter_set_players;
     let parameter_set_players_order = app.session.parameter_set.parameter_set_players_order;
@@ -58,11 +58,11 @@ setup_treatment : function setup_treatment(){
  * update the boxes for the current treatment
  */
 update_treatment : function update_treatment(){
-    let values = app.session.parameter_set.parameter_set_treatments[current_treatment].values.split(",");
+    let values = app.session.parameter_set.parameter_set_treatments[app.current_treatment].values.split(",");
     let parameter_set_players = app.session.parameter_set.parameter_set_players;
     let parameter_set_players_order = app.session.parameter_set.parameter_set_players_order;
     let world_state = app.session.world_state;
-    let current_group_memebers = app.session.started ? world_state["groups"][current_group] : [];
+    let current_group_memebers = app.session.started ? world_state["groups"][app.current_group] : [];
     let session_players = world_state["session_players"];
 
     for(let i=0;i<pixi_boxes.length;i++)
@@ -179,7 +179,7 @@ update_treatment : function update_treatment(){
  */
 value_to_y : function value_to_y(value){
 
-    let unit_rate = axis_height / app.session.parameter_set.parameter_set_treatments[current_treatment].range_height;
+    let unit_rate = axis_height / app.session.parameter_set.parameter_set_treatments[app.current_treatment].range_height;
 
     return value * unit_rate;
 
@@ -198,7 +198,7 @@ range_to_x : function range_to_x(range)
  */
 x_to_range : function x_to_range(x)
 {
-    let values_count = app.session.parameter_set.parameter_set_treatments[current_treatment].values.split(',').length;
+    let values_count = app.session.parameter_set.parameter_set_treatments[app.current_treatment].values.split(',').length;
     if(x <= y_axis_margin) return 0;
     if(x >= (axis_width + y_axis_margin)) return values_count - 1;
 

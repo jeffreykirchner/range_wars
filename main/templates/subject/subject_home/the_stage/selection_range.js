@@ -10,7 +10,7 @@ setup_selection_range : function setup_selection_range(){
         pixi_selection_ranges[i].destroy();
     }
 
-    let current_group_memebers = app.session.world_state.groups[current_group];
+    let current_group_memebers = app.session.world_state.groups[app.current_group];
     let session_players = app.session.world_state.session_players;
     let parameter_set_players = app.session.parameter_set.parameter_set_players;
 

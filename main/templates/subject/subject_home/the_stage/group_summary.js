@@ -13,7 +13,7 @@ setup_group_summary : function setup_group_summary(){
     let small_margin = 5;
 
     let world_state = app.session.world_state;
-    let current_group_memebers = world_state.groups[current_group];
+    let current_group_memebers = world_state.groups[app.current_group];
 
     //border
     let box = new PIXI.Graphics();

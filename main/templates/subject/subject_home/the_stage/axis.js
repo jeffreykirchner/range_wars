@@ -1,6 +1,6 @@
 setup_axis : function setup_axis(){
 
-    let treatment = app.session.parameter_set.parameter_set_treatments[current_treatment];
+    let treatment = app.session.parameter_set.parameter_set_treatments[app.current_treatment];
     let values = treatment.values.split(",");
 
     //add white background

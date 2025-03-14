@@ -19,7 +19,7 @@ class PhaseMixin():
         result = json.loads(event["group_data"])
 
         #re-order session players
-        world_state = result["session"]["world_state"]
+        world_state = result["world_state"]
         
         group_number = world_state['session_players'][str(self.session_player_id)]['group_number']
 

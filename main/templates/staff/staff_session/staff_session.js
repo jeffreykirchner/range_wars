@@ -81,6 +81,10 @@ let app = Vue.createApp({
                     replay_timeout : null,
                     replay_time_remaining : 0,
                     replay_current_period : 0,
+
+                    //current treatment and group
+                    current_treatment : null,
+                    current_group : 1,
                 }},
     methods: {
 
@@ -309,13 +313,13 @@ let app = Vue.createApp({
                 let session_period = app.session.session_periods[session_period_id];
                 let parameter_set_periodblock = app.session.parameter_set.parameter_set_periodblocks[session_period.parameter_set_periodblock_id];
                 
-                current_treatment = app.get_current_treatment().id;
-                current_group = 1;
+                app.current_treatment = app.get_current_treatment().id;
+                app.current_group = 1;
             }
             else
             {
-                current_treatment = app.session.parameter_set.parameter_set_treatments_order[0];
-                current_group = 1;
+                app.current_treatment = app.session.parameter_set.parameter_set_treatments_order[0];
+                app.current_group = 1;
             }
 
             if(!app.first_load_done)
@@ -414,7 +418,7 @@ let app = Vue.createApp({
                 let session_period = app.session.session_periods[session_period_id];
                 let parameter_set_periodblock = app.session.parameter_set.parameter_set_periodblocks[session_period.parameter_set_periodblock_id];
                 
-                current_treatment = app.get_current_treatment().id;
+                app.current_treatment = app.get_current_treatment().id;
                 
                 app.setup_main_container();
                 

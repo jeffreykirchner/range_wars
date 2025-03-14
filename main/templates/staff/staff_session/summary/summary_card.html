@@ -35,7 +35,23 @@
                 Treatment:
             </div>
             <div class="col text-start ps-1">
-                [[session.parameter_set.parameter_set_treatments[current_treatment].label]]
+                <span v-if="session.started">
+                    [[current_treatment ? session.parameter_set.parameter_set_treatments[current_treatment].id_label_pst : '---']]
+                </span>
+                <span v-else>
+                    <select v-model="current_treatment"
+                            placeholder="Treatment"
+                            class="form-select  form-select-sm text-center"
+                            id="id_current_treatment"
+                            v-on:change="update_current_treatment()"
+                            >
+                        <option v-for="option in session.parameter_set.parameter_set_treatments" 
+                            :key="option.id"
+                            :value="option.id">
+                        [[option.id_label_pst]]
+                        </option>
+                    </select>
+                </span>
             </div>
         </div> 
         <!-- <div class="row"> -->

@@ -64,6 +64,14 @@ class GetSessionMixin():
         '''
         
         result = await sync_to_async(take_get_session_subject, thread_sensitive=self.thread_sensitive)(self.session_player_id)
+        
+        world_state = result["session"]["world_state"]
+        
+        group_number = world_state['session_players'][str(self.session_player_id)]['group_number']
+
+        #move local player to front of group list
+        world_state['groups'][str(group_number)].remove(self.session_player_id)
+        world_state['groups'][str(group_number)].insert(0, self.session_player_id)
 
         await self.send_message(message_to_self=result, message_to_subjects=None, message_to_staff=None, 
                                 message_type=event['type'], send_to_client=True, send_to_group=False)

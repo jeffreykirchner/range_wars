@@ -99,7 +99,9 @@ let app = Vue.createApp({
                     //open modals
                     interaction_start_modal_open : false,
                     
-                    //
+                     //current treatment and group
+                     current_treatment : null,
+                     current_group : 1,
                 }},
     methods: {
 
@@ -288,7 +290,7 @@ let app = Vue.createApp({
                 let parameter_set_periodblock = app.session.parameter_set.parameter_set_periodblocks[session_period.parameter_set_periodblock_id];
                 let session_player = app.session.world_state.session_players[app.session_player.id];
                 
-                current_treatment = app.get_current_treatment().id;
+                app.current_treatment = app.get_current_treatment().id;
                 
                 app.update_group_order();               
             }
@@ -353,8 +355,8 @@ let app = Vue.createApp({
             let session_player = app.session.world_state.session_players[app.session_player.id];
             let parameter_set_player = app.session.parameter_set.parameter_set_players[session_player.parameter_set_player_id]; 
 
-            current_group = session_player.group_number;
-            let group = app.session.world_state.groups[current_group];
+            app.current_group = session_player.group_number;
+            let group = app.session.world_state.groups[app.current_group];
 
             //handled server side
             //move local player to front of group list 
@@ -456,7 +458,7 @@ let app = Vue.createApp({
                 app.current_selection_range.start = session_player.range_start;
                 app.current_selection_range.end = session_player.range_end;
 
-                current_treatment = app.get_current_treatment().id;
+                app.current_treatment = app.get_current_treatment().id;
                 
                 pixi_left_handle.alpha = 1;
                 pixi_right_handle.alpha = 1;

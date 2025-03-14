@@ -98,6 +98,8 @@ let app = Vue.createApp({
 
                     //open modals
                     interaction_start_modal_open : false,
+                    
+                    //
                 }},
     methods: {
 
@@ -286,7 +288,7 @@ let app = Vue.createApp({
                 let parameter_set_periodblock = app.session.parameter_set.parameter_set_periodblocks[session_period.parameter_set_periodblock_id];
                 let session_player = app.session.world_state.session_players[app.session_player.id];
                 
-                current_treatment = app.session.parameter_set.parameter_set_treatments[parameter_set_periodblock.parameter_set_treatment].id;
+                current_treatment = app.get_current_treatment().id;
                 
                 app.update_group_order();               
             }
@@ -454,7 +456,7 @@ let app = Vue.createApp({
                 app.current_selection_range.start = session_player.range_start;
                 app.current_selection_range.end = session_player.range_end;
 
-                current_treatment = app.session.parameter_set.parameter_set_treatments[parameter_set_periodblock.parameter_set_treatment].id;
+                current_treatment = app.get_current_treatment().id;
                 
                 pixi_left_handle.alpha = 1;
                 pixi_right_handle.alpha = 1;

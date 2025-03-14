@@ -309,7 +309,7 @@ let app = Vue.createApp({
                 let session_period = app.session.session_periods[session_period_id];
                 let parameter_set_periodblock = app.session.parameter_set.parameter_set_periodblocks[session_period.parameter_set_periodblock_id];
                 
-                current_treatment = app.session.parameter_set.parameter_set_treatments[parameter_set_periodblock.parameter_set_treatment].id;
+                current_treatment = app.get_current_treatment().id;
                 current_group = 1;
             }
             else
@@ -414,7 +414,7 @@ let app = Vue.createApp({
                 let session_period = app.session.session_periods[session_period_id];
                 let parameter_set_periodblock = app.session.parameter_set.parameter_set_periodblocks[session_period.parameter_set_periodblock_id];
                 
-                current_treatment = app.session.parameter_set.parameter_set_treatments[parameter_set_periodblock.parameter_set_treatment].id;
+                current_treatment = app.get_current_treatment().id;
                 
                 app.setup_main_container();
                 

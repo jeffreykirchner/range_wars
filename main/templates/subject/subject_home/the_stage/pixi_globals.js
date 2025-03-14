@@ -25,6 +25,3 @@ let control_style = {fontFamily : 'Arial', fontSize: 20, fill : "white", align :
 let origin_x = 0;
 let origin_y = 0;
 let box_width = 0;                  //width of a single box
-
-let current_treatment = null;       //current treatment
-let current_group = 1;              //current group

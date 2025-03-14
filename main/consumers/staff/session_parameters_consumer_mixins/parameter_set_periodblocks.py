@@ -137,7 +137,7 @@ def take_add_parameterset_periodblock(data):
     parameter_set_periodblock = ParameterSetPeriodblock.objects.create(parameter_set=session.parameter_set)
 
     if parameter_set_periodblock_last:
-        parameter_set_periodblock.period_start = parameter_set_periodblock_last.period_start + 1
+        parameter_set_periodblock.period_start = parameter_set_periodblock_last.period_end + 1
         parameter_set_periodblock.period_end = parameter_set_periodblock.period_start + 1
         parameter_set_periodblock.parameter_set_treatment = parameter_set_periodblock_last.parameter_set_treatment
     

@@ -116,13 +116,13 @@ setup_group_summary : function setup_group_summary(){
         pixi_group_summary.addChild(bar);
 
         //text cost
-        let text_cost = new PIXI.Text({text:player.total_cost, style:text_style_sub});
+        let text_cost = new PIXI.Text({text:player.total_cost + "¢", style:text_style_sub});
         text_cost.pivot.set(text_cost.width, text_cost.height/2);
         text_cost.position.set(center_x - small_margin, start_y+bar.height/2);
         pixi_group_summary.addChild(text_cost);
 
         //text profit
-        let text_profit = new PIXI.Text({text:player.total_profit, style:text_style_sub});
+        let text_profit = new PIXI.Text({text:player.total_profit + "¢", style:text_style_sub});
         text_profit.pivot.set(0, text_profit.height/2);
         text_profit.position.set(center_x + small_margin, start_y+bar.height/2);
         pixi_group_summary.addChild(text_profit);

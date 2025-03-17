@@ -73,18 +73,11 @@ do_test_mode_instructions: function do_test_mode_instructions()
         //take action if needed to complete page
         switch (app.session_player.current_instruction)
         {
-            case 1:
+            case app.instructions.action_page_1:
+                app.test_mode_move_range();
                 break;
-            case 2:
-                
-                break;
-            case 3:
-                
-                break;
-            case 4:
-                
-                break;
-            case 5:
+            case app.instructions.action_page_2:              
+                app.test_mode_submit_range();  
                 break;
         }   
     }
@@ -103,23 +96,33 @@ do_test_mode_run: function do_test_mode_run()
     if(go)
         if(app.chat_text != "")
         {
-            document.getElementById("send_chat_id").click();
-            go=false;
+            if(!app.show_chat())
+            {
+                app.chat_text = "";
+                go = false;
+            }
+            else
+            {
+                document.getElementById("send_chat_id").click();
+                go=false;
+            }
         }
     
     if(app.session.world_state.finished) return;
         
     if(go)
-        switch (app.random_number(1, 3)){
+        switch (app.random_number(1, 4)){
             case 1:
                 app.do_test_mode_chat();
-                break;
-            
+                break;            
             case 2:                
-                app.test_mode_move();
+                app.test_mode_send_cents();
                 break;
             case 3:
-                
+                app.test_mode_move_range();
+                break;
+            case 4:
+                app.test_mode_submit_range();
                 break;
         }
 },
@@ -128,47 +131,55 @@ do_test_mode_run: function do_test_mode_run()
  * test mode chat
  */
 do_test_mode_chat: function do_test_mode_chat(){
+    if(!app.show_chat()) return;
+    if(app.working) return;
 
     app.chat_text = app.random_string(5, 20);
 },
 
 /**
- * test mode move to a location
+ * test mode move range
  */
-test_mode_move: function test_mode_move(){
-
-    if(app.session.world_state.finished) return;
-
-    let obj = app.session.world_state.session_players[app.session_player.id];
-    let current_period_id = app.session.world_state.session_periods_order[app.session.world_state.current_period-1];
-
-    if(!current_period_id) return;
-   
-    if(!app.test_mode_location_target || 
-        app.get_distance(app.test_mode_location_target,  obj.current_location) <= 25)
+test_mode_move_range: function test_mode_move_range()
+{
+    if(app.random_number(1, 2) == 1)
     {
-         //if near target location, move to a new one
-
-        let rn = app.random_number(0, Object.keys(app.session.world_state.tokens[current_period_id]).length-1);
-        let r = Object.keys(app.session.world_state.tokens[current_period_id])[rn];
-        
-        app.test_mode_location_target = app.session.world_state.tokens[current_period_id][r].current_location;
-    }
-    else if(app.get_distance(app.test_mode_location_target,  obj.current_location)<1000)
-    {
-        //object is close move to it
-        obj.target_location = app.test_mode_location_target;
+        app.pixi_left_handle_pointerdown(null);
+        app.pixi_left_handle_drag(app.random_number(0, axis_width));
+        app.pixi_container_main_pointerup(null);
     }
     else
     {
-        //if far from target location, move to intermediate location
-        obj.target_location = app.get_point_from_angle_distance(obj.current_location.x, 
-                                                        obj.current_location.y,
-                                                        app.test_mode_location_target.x,
-                                                        app.test_mode_location_target.y,
-                                                        app.random_number(300,1000))
-    }
+        app.pixi_right_handle_pointerdown(null);
+        app.pixi_right_handle_drag(app.random_number(0, axis_width));
+        app.pixi_container_main_pointerup(null);
+    }    
+},
 
-    app.target_location_update();
+/**
+ * test mode move submit range
+ */
+test_mode_submit_range: function test_mode_submit_range()
+{
+    if(app.working) return;
+
+    if(!app.show_range_update_button) return;
+
+    app.send_range();
+},
+
+/**
+ * test mode send cents
+ */
+test_mode_send_cents: function test_mode_send_cents()
+{
+    if(app.working) return;
+
+    if(!app.show_transfer_cents()) return;
+
+    app.send_cents_amount = app.random_number(1, 10);
+    app.send_cents_to = app.send_cents_to_group[app.random_number(0, app.send_cents_to_group.length - 1)].value;
+
+    app.send_cents();
 },
 {%endif%}

@@ -41,7 +41,7 @@
                 <span v-else>
                     <select v-model="current_treatment"
                             placeholder="Treatment"
-                            class="form-select  form-select-sm text-center"
+                            class="form-select form-select-sm text-center"
                             id="id_current_treatment"
                             v-on:change="update_current_treatment()"
                             >
@@ -54,6 +54,30 @@
                 </span>
             </div>
         </div> 
+        <div class="row">
+            <div class="col text-end pe-1">
+                Group:
+            </div>
+            <div class="col text-start ps-1">
+                <span v-if="!session.started">
+                    ---
+                </span>
+                <span v-else>
+                    <select v-model="current_group"
+                            placeholder="Group"
+                            class="form-select form-select-sm text-center"
+                            id="id_current_group"
+                            v-on:change="update_current_group()"
+                            >
+                        <option v-for="(value, key) in session.world_state.groups" 
+                            :key="key"
+                            :value="key">
+                        [[key]]
+                        </option>
+                    </select>
+                </span>
+            </div>
+        </div>
         <!-- <div class="row"> -->
             <!-- <div class="col text-end pe-1">
                 Time Remaining:

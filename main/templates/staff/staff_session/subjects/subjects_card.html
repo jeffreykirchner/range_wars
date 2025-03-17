@@ -92,6 +92,9 @@
                                 </span>
                             </th>
                             <th scope="col" class = "text-center">
+                                Group
+                            </th>
+                            <th scope="col" class = "text-center">
                                 <span v-if="!session.parameter_set.prolific_mode">
                                     Earnings
                                 </span>
@@ -138,6 +141,14 @@
                                 </span>
                                 <span v-else>
                                     [[temp_p.player_key]]
+                                </span>
+                            </td>
+                            <td class="player_table_cell text-nowrap" v-on:click="show_edit_subject(p)">
+                                <span v-if="session.started">
+                                    [[session.world_state.session_players[p].group_number]]
+                                </span>
+                                <span v-else>
+                                    ---
                                 </span>
                             </td>
                             <td class="player_table_cell text-nowrap">

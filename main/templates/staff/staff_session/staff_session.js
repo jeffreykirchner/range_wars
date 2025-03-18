@@ -288,6 +288,7 @@ let app = Vue.createApp({
             app.setup_treatment();
             app.update_treatment();
             app.setup_selection_range();
+            app.setup_group_summary();
         },
 
         /** send winsock request to get session info
@@ -427,15 +428,17 @@ let app = Vue.createApp({
                 
                 app.setup_axis();
                 app.setup_treatment();
-                app.update_treatment();
-                app.setup_selection_range();
+                // app.update_treatment();
+                // app.setup_selection_range();
             }
             else
             {
-                app.update_treatment();
-                app.setup_selection_range();
+                
             }
 
+            app.update_treatment();
+            app.setup_selection_range();
+            app.setup_group_summary();
             
         },
        
@@ -456,6 +459,7 @@ let app = Vue.createApp({
         {%include "subject/subject_home/the_stage/axis.js"%}
         {%include "subject/subject_home/the_stage/treatments.js"%}
         {%include "subject/subject_home/the_stage/selection_range.js"%}
+        {%include "subject/subject_home/the_stage/group_summary.js"%}
         {%include "subject/subject_home/the_stage/helpers.js"%}
        
         {%include "subject/subject_home/the_stage/staff.js"%}

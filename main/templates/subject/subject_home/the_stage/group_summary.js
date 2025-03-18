@@ -2,6 +2,8 @@
  * setup the group summary graph
  */
 setup_group_summary : function setup_group_summary(){
+    
+    if(!app.session.started) return;
 
     if(pixi_group_summary) pixi_group_summary.destroy();
 

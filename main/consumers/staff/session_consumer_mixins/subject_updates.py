@@ -56,7 +56,7 @@ class SubjectUpdatesMixin():
                 error_message = "Session not started."
         
         result = {"status": status, "error_message": error_message}
-        result["sender_id"] = player_id
+        result["player_id"] = player_id
 
         if status == "success":
             session_player = self.world_state_local["session_players"][str(player_id)]
@@ -64,7 +64,7 @@ class SubjectUpdatesMixin():
             result["text"] = strip_tags(event_data["text"])
             
             self.session_events.append(SessionEvent(session_id=self.session_id, 
-                                                    session_player_id=result["sender_id"],
+                                                    session_player_id=result["player_id"],
                                                     type="chat",
                                                     group_number=session_player["group_number"],
                                                     data=result))
@@ -267,7 +267,10 @@ class SubjectUpdatesMixin():
                         right_1_parameter_set_player = self.parameter_set_local["parameter_set_players"][str(self.world_state_local["session_players"][str(right_1_session_player_id)]["parameter_set_player_id"])]
                         status = "fail"
                         error_message = f"Your mid-range cannot be higher than {right_1_parameter_set_player['id_label']}'s."
-                    
+
+        result = {"status": status, 
+                  "error_message": error_message}
+        
         if status == "success":
             period_block = self.world_state_local["period_blocks"][str(self.world_state_local["current_period_block"])]
             
@@ -277,15 +280,18 @@ class SubjectUpdatesMixin():
             session_player["range_end"] = range_end
             session_player["range_middle"] = range_middle
 
+            result["player_id"] = player_id
+            result["range_start"] = range_start
+            result["range_end"] = range_end
+            result["range_middle"] = range_middle
+
             self.session_events.append(SessionEvent(session_id=self.session_id, 
                                                     session_player_id=player_id,
                                                     group_number=session_player["group_number"],
                                                     type=event['type'],
                                                     period_number=self.world_state_local["current_period"],                                                   
-                                                    data=event_data))
+                                                    data=result))
         
-        result = {"status": status, "error_message": error_message}
-
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False, 
                                 send_to_group=True, target_list=[player_id])
@@ -293,9 +299,12 @@ class SubjectUpdatesMixin():
     
     async def update_range(self, event):
         '''
-        update range on client
+        send survey complete update
         '''
-        pass
+        event_data = json.loads(event["group_data"])
+
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def cents(self, event):
         '''
@@ -322,7 +331,6 @@ class SubjectUpdatesMixin():
             error_message = "Invalid data."
             status = "fail"
 
-        
         session_player_source = self.world_state_local["session_players"][str(player_id)]
         target_list = [player_id]
 
@@ -363,12 +371,7 @@ class SubjectUpdatesMixin():
                       transferred {amount} cent{'s' if amount>1 else ""} to \
                     <span style='color:{parameter_set_player_recipient['hex_color']}'>{parameter_set_player_recipient['id_label']}</span>."
 
-            self.session_events.append(SessionEvent(session_id=self.session_id, 
-                                                    session_player_id=player_id,
-                                                    group_number=session_player_source["group_number"],
-                                                    type=event['type'],
-                                                    period_number=self.world_state_local["current_period"],                                                   
-                                                    data=event_data))
+           
             
             target_list = self.world_state_local["groups"][str(session_player_source["group_number"])]
 
@@ -399,16 +402,26 @@ class SubjectUpdatesMixin():
                   "text": text,
                   "error_message": error_message}
 
+        if status == "success":
+             self.session_events.append(SessionEvent(session_id=self.session_id, 
+                                                    session_player_id=player_id,
+                                                    group_number=session_player_source["group_number"],
+                                                    type=event['type'],
+                                                    period_number=self.world_state_local["current_period"],                                                   
+                                                    data=result))
+
         await self.send_message(message_to_self=None, message_to_group=result,
                                 message_type=event['type'], send_to_client=False, 
                                 send_to_group=True, target_list=target_list)
             
-    
     async def update_cents(self, event):
         '''
-        update cents on client
+        send survey complete update
         '''
-        pass
+        event_data = json.loads(event["group_data"])
+
+        await self.send_message(message_to_self=event_data, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
     async def instructions_range(self, event):
         '''

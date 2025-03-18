@@ -171,7 +171,7 @@ send_chat_instructions: function send_chat_instructions(chat_text_processed)
     let message_data = {
         "status": "success",
         "text": chat_text_processed,
-        "sender_id": app.session_player.id,       
+        "player_id": app.session_player.id,       
         "nearby_players": [],
     };
 

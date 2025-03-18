@@ -29,7 +29,7 @@ take_update_chat: function take_update_chat(message_data){
     if(message_data.status == "success")
     {
         let text = message_data.text;
-        let session_player_id = message_data.sender_id;
+        let session_player_id = message_data.player_id;
 
         let chat = {session_player:session_player_id, 
                     message: text,
@@ -37,7 +37,7 @@ take_update_chat: function take_update_chat(message_data){
         app.chat_history.unshift(chat);
     }
 
-    if(message_data.sender_id == app.session_player.id)
+    if(message_data.player_id == app.session_player.id)
     {
         app.working = false;
     }

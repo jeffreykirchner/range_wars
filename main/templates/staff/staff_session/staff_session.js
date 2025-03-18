@@ -27,7 +27,7 @@ let app = Vue.createApp({
                     session_key : "{{session.session_key}}",
                     session : null,
                     session_events : null,
-                    the_feed : [],
+                    the_feed : {},
                     staff_edit_name_etc_form_ids: {{staff_edit_name_etc_form_ids|safe}},
                     pixi_tick_tock : {value:"tick", time:Date.now()},
 
@@ -315,6 +315,12 @@ let app = Vue.createApp({
                 
                 app.current_treatment = app.get_current_treatment().id;
                 app.current_group = 1;
+
+                app.the_feed = {};
+                for(let i in app.session.world_state.groups)
+                {
+                    app.the_feed[i] = [];
+                }
             }
             else
             {
@@ -378,9 +384,6 @@ let app = Vue.createApp({
             {
                 let text = message_data.text;
                 
-                app.session.world_state.session_players[message_data.sender_id].show_chat = true;    
-                app.session.world_state.session_players[message_data.sender_id].chat_time = Date.now();
-                pixi_avatars[message_data.sender_id].chat.bubble_text.text = text;
             }
             else
             {

@@ -85,10 +85,10 @@ setup_pixi_sheets: function setup_pixi_sheets(textures){
     app.setup_treatment();
     app.update_treatment();
     app.setup_selection_range();
+    app.setup_group_summary();
     
     if(app.pixi_mode=="subject")
     {
-        app.setup_group_summary();
         app.setup_control_handles();
         app.update_handle_visibility();
     }

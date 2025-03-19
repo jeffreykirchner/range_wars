@@ -27,11 +27,11 @@ class InterfaceMixin():
             total_period_length = self.parameter_set_local["period_length"]
 
             for j in range(total_period_length+1):
-                session_events_local[str(i.period_number)][str(j)] = []
+                session_events_local[str(i.period_number)] = []
 
         async for i in session.session_events.exclude(type="help_doc"):
             v = {"type" : i.type, "data" : i.data}
-            session_events_local[str(i.period_number)][str(i.time_remaining)].append(v)
+            session_events_local[str(i.period_number)].append(v)
 
         # session.replay_data = session_events_local
         # await session.asave()

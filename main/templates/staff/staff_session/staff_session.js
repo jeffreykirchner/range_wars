@@ -79,7 +79,6 @@ let app = Vue.createApp({
                     session_ticks : null,
                     replay_mode : "paused",
                     replay_timeout : null,
-                    replay_time_remaining : 0,
                     replay_current_period : 0,
 
                     //current treatment and group

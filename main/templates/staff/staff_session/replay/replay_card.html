@@ -37,20 +37,20 @@
                     Pause <i class="fas fa-pause"></i>
                 </button>
 
-                <button type="button"                   
+                <!-- <button type="button"                   
                     class="btn btn-outline-primary ms-2" 
                     title="Previous Period" 
                     v-bind:disabled="working || replay_current_period==1"
                     v-on:click="advance_period('-1')">
                     Back <i class="fas fa-step-backward"></i>
-                </button>
+                </button> -->
 
                 <button type="button" 
                     class="btn btn-outline-primary ms-2" 
                     title="Next Period" 
                     v-bind:disabled="working || replay_current_period==session.world_state.number_of_periods"
                     v-on:click="advance_period('1')">
-                    Next <i class="fas fa-step-forward"></i>
+                    Next Period Block <i class="fas fa-step-forward"></i>
                 </button>
 
                 <button type="button" 

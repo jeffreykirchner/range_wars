@@ -21,7 +21,6 @@ take_load_session_events(message_data)
         app.session_events = message_data.session_events;
 
         app.replay_current_period = 1;
-        app.replay_time_remaining = app.session.parameter_set.period_length;
 
         app.replay_load_world_state();
     }
@@ -32,15 +31,17 @@ take_load_session_events(message_data)
  */
 replay_load_world_state: function replay_load_world_state()
 {
-    let events = app.session_events[app.replay_current_period][app.replay_time_remaining];
+    let events = app.session_events[app.replay_current_period];
 
     for(let i in events)
     {
         if(events[i].type == "world_state")
         { 
-            app.session.world_state = JSON.parse(JSON.stringify(events[i].data));
-           
+            app.session.world_state = JSON.parse(JSON.stringify(events[i].data));           
             app.session.world_state["current_experiment_phase"] = "Done";
+
+            app.current_treatment = app.get_current_treatment().id;
+            app.current_group = 1;
 
             app.do_reload();  
 
@@ -71,11 +72,7 @@ replay_mode_play: function replay_mode_play()
 
     app.process_replay_events();
 
-    if(app.replay_time_remaining > 0)
-    {
-        app.replay_time_remaining--;
-    }
-    else if(app.replay_current_period == session.world_state.number_of_periods)
+    if(app.replay_current_period == app.session.world_state.number_of_periods)
     {
         //end of the session
         return;
@@ -83,8 +80,6 @@ replay_mode_play: function replay_mode_play()
     else
     {
         app.replay_current_period++;
-
-        app.replay_time_remaining = app.session.parameter_set.period_length;
     }
 
     app.replay_timeout = setTimeout(app.replay_mode_play, 1000);
@@ -99,10 +94,14 @@ reset_replay: function reset_replay()
     if (app.replay_timeout) clearTimeout(app.replay_timeout);
 
     app.replay_current_period = 1;
-    app.replay_time_remaining = app.session.parameter_set.period_length;
 
     app.replay_load_world_state();
-    app.the_feed = [];
+
+    app.the_feed = {};
+    for(let i in app.session.world_state.groups)
+    {
+        app.the_feed[i] = [];
+    }
     
 },
 
@@ -112,11 +111,10 @@ reset_replay: function reset_replay()
 process_replay_events: function process_replay_events(update_current_location = false)
 {
     let current_period = app.replay_current_period;
-    let time_remaining = app.replay_time_remaining;
 
-    for(let i in app.session_events[current_period][time_remaining])
+    for(let i in app.session_events[current_period])
     {   
-        let event =  app.session_events[current_period][time_remaining][i];
+        let event =  app.session_events[current_period][i];
 
         if(event.type == "target_location_update")
         {
@@ -140,48 +138,54 @@ process_replay_events: function process_replay_events(update_current_location = 
     }
 
     app.session.world_state["current_experiment_phase"] = "Done";
-    app.session.world_state["time_remaining"] = app.replay_time_remaining;
     app.session.world_state["current_period"] = app.replay_current_period;
 },
 
-/**
- * move avatars to their target location
- */
-move_avatars_to_current_location: function move_avatars_to_current_location()
-{
-    let current_period = app.replay_current_period;
-    let time_remaining = app.replay_time_remaining;
-
-    let event = app.session_events[current_period][time_remaining].target_locations;
-
-    for(let i in event.data.current_locations)
-    {
-        app.session.world_state.session_players[i].current_location = JSON.parse(JSON.stringify(event.data.current_locations[i]));
-    }
-    
-},
 
 /**
- * advance period
+ * advance period block
  */
 advance_period: function advance_period(direction)
 {
+    let current_period_block = app.session.world_state.current_period_block;
+    let parameter_set_periodblocks = app.session.parameter_set.parameter_set_periodblocks;
+    let parameter_set_periodblocks_order = app.session.parameter_set.parameter_set_periodblocks_order;
+
     if(direction == 1)
     {
-        if(app.replay_current_period < app.session.world_state.number_of_periods)
+        for(let i=0; i<parameter_set_periodblocks_order.length; i++)
         {
-            app.replay_current_period++;
+            if(parameter_set_periodblocks_order[i] == current_period_block)
+            {
+                if(i < parameter_set_periodblocks_order.length - 1)
+                {
+                    app.replay_current_period = parameter_set_periodblocks[parameter_set_periodblocks_order[i+1]].period_start;
+                }
+                else
+                {
+                    return;
+                }
+            }
         }
     }
     else
     {
-        if(app.replay_current_period > 1)
+        for(let i=0; i<parameter_set_periodblocks_order.length; i++)
         {
-            app.replay_current_period--;
+            if(parameter_set_periodblocks_order[i] == current_period_block)
+            {
+                if(i > 0 && i < parameter_set_periodblocks_order.length)
+                {
+                    app.replay_current_period = parameter_set_periodblocks[parameter_set_periodblocks_order[i-1]].period_start;
+                }
+                else
+                {
+                    return;
+                }
+            }
         }
+        
     }
-
-    app.replay_time_remaining = app.session.parameter_set.period_length;
 
     app.process_replay_events(true);
 },

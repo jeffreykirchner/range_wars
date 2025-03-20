@@ -59,7 +59,8 @@ def take_get_session(session_key):
 
     try:        
         session = Session.objects.get(session_key=session_key)
-        return session.json()
+        session_json = session.json()
+        return session_json
     except ObjectDoesNotExist:
         logger.warning(f"staff get_session session, not found: {session_key}")
         return {}

@@ -230,5 +230,20 @@ class TimerMixin():
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
         
+    async def force_advance_to_period(self, event):
+        '''
+        force advance period
+        '''
+        logger = logging.getLogger(__name__)
+        logger.info(f"force_advance_period {event}")
+
+        event_data = event["message_text"]
+
+        self.world_state_local["timer_history"][-1]["count"] -= 1
+        self.world_state_local["current_period"] = event_data["period_number"]
+
+        await self.continue_timer(self, event)
+
+        
     #async helpers
     

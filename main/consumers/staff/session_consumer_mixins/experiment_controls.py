@@ -50,8 +50,9 @@ class ExperimentControlsMixin():
                                                     type="world_state",
                                                     period_number=self.world_state_local["current_period"],
                                                     data=self.world_state_local))
-           
-        result = await sync_to_async(take_get_session, thread_sensitive=self.thread_sensitive)(self.connection_uuid)
+
+        session = await Session.objects.aget(id=self.session_id)
+        result = await sync_to_async(session.json, thread_sensitive=self.thread_sensitive)()
 
         await self.send_message(message_to_self=result, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)

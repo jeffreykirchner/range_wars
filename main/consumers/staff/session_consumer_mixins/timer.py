@@ -240,9 +240,26 @@ class TimerMixin():
         event_data = event["message_text"]
 
         self.world_state_local["timer_history"][-1]["count"] -= 1
+
+        session = await Session.objects.aget(id=self.session_id)
+        period_block = self.world_state_local["period_blocks"][str(self.world_state_local["current_period_block"])]
+
         self.world_state_local["current_period"] = event_data["period_number"]
 
-        await self.continue_timer(self, event)
+        new_current_session_period_id = self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-1]
+        new_current_session_period = self.world_state_local["session_periods"][str(new_current_session_period_id)]
+        new_period_block = self.world_state_local["period_blocks"][str(new_current_session_period["parameter_set_periodblock_id"])]
+        
+        self.world_state_local["current_round"] = new_current_session_period["round_number"]
+
+        self.world_state_local["current_period_block"] = new_current_session_period["parameter_set_periodblock_id"]
+
+        #check if the period block has changed
+        if new_period_block["id"] != period_block["id"]:
+            #set ranges for new period block
+            self.world_state_local = await sync_to_async(session.update_treatment)(self.world_state_local, self.parameter_set_local)
+
+        await self.continue_timer(event)
 
         
     #async helpers

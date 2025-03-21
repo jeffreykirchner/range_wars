@@ -325,7 +325,7 @@ class Session(models.Model):
         period_block = parameter_set["parameter_set_periodblocks"][str(world_state["current_period_block"])]
         treatment = parameter_set["parameter_set_treatments"][str(period_block["parameter_set_treatment"])]
         values = treatment["values"].split(",")
-        box_value = float(treatment["range_width"]) / len(values)
+        box_value = Decimal(treatment["range_width"]) / len(values)
 
         #reset revenues to zero for all values
         for i in world_state["session_players"]:
@@ -347,7 +347,7 @@ class Session(models.Model):
 
                 for p in players_in_range:
                     session_player = world_state["session_players"][str(p)]
-                    session_player["revenues"][values[t]] = 1/len(players_in_range) * box_value
+                    session_player["revenues"][values[t]] = Decimal(1/len(players_in_range)) * box_value
 
                     #store overlap totals
                     for o in players_in_range:
@@ -364,19 +364,19 @@ class Session(models.Model):
             session_player = world_state["session_players"][i]
             session_player["total_revenue"] = 0
             session_player["total_loss"] = 0
-            session_player["total_cost"] = (session_player["range_end"] - session_player["range_start"] + 1) * float(session_player["cost"]) * box_value
+            session_player["total_cost"] = (session_player["range_end"] - session_player["range_start"] + 1) * Decimal(session_player["cost"]) * box_value
             session_player["total_cost"] = round_half_away_from_zero(Decimal(session_player["total_cost"]), 2)
 
             for r in range(session_player["range_start"], session_player["range_end"]+1):
                 value = values[r]
                 revenue = session_player["revenues"][values[r]]
 
-                ajusted_revenue = float(value) * float(revenue)
+                ajusted_revenue = Decimal(value) * Decimal(revenue)
                 session_player["total_revenue"] += ajusted_revenue
 
                 #check for losses
-                if ajusted_revenue - (float(session_player["cost"]) * box_value) < 0:
-                    session_player["total_loss"] += (ajusted_revenue - (float(session_player["cost"]) * box_value))
+                if ajusted_revenue - (Decimal(session_player["cost"]) * box_value) < 0:
+                    session_player["total_loss"] += (ajusted_revenue - (Decimal(session_player["cost"]) * box_value))
 
             session_player["total_revenue"] = round_half_away_from_zero(Decimal(session_player["total_revenue"]), 2)
             session_player["total_profit"] = session_player["total_revenue"] - session_player["total_cost"]

@@ -232,7 +232,32 @@ class TestSubjectConsumer(TestCase):
         await communicator_staff.send_json_to(message)
         response = await communicator_staff.receive_json_from()
         
+        #submit inital ranges
+        for i in communicator_subject:
+            data = {"range_start": 0,       
+                    "range_end": 0}
+            
+            message = {'message_type' : 'range',
+                       'message_text' : data,
+                       'message_target' : 'group', }
 
+            await i.send_json_to(message)
+
+            response = await i.receive_json_from()
+            message_data = response['message']['message_data']
+            self.assertEqual(message_data['status'],'success')
+
+            response = await communicator_staff.receive_json_from()
+        
         session = await Session.objects.aget(title="2")
-        world_state = session.world_state
+        session_players = session.world_state["session_players"]
+
+        for i in session_players:
+
+            self.assertEqual(session_players[i]["range_start"], 0)
+            self.assertEqual(session_players[i]["range_end"], 0)
+
+            self.assertEqual(session_players[i]["total_cost"], '0.02')
+            self.assertEqual(session_players[i]["total_revenue"], '0.06')
+            self.assertEqual(session_players[i]["total_profit"], '0.04')
 

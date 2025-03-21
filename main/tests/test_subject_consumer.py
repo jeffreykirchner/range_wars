@@ -294,3 +294,67 @@ class TestSubjectConsumer(TestCase):
         self.assertEqual(session_player["total_revenue"], '0.54')
         self.assertEqual(session_player["total_profit"], '0.45')
 
+    @pytest.mark.asyncio
+    async def test_transfer_cents(self):
+        '''
+        test transfering cents
+        '''
+
+        #advance to period block 2
+        communicator_subject = []
+        communicator_staff = None
+
+        logger = logging.getLogger(__name__)
+        logger.info(f"called from test {sys._called_from_test}" )
+
+        communicator_subject, communicator_staff = await self.set_up_communicators(communicator_subject, communicator_staff)
+        communicator_subject, communicator_stff = await self.start_session(communicator_subject, communicator_staff)
+
+        #transfer funds when not enough
+        data = {"amount": 1,
+                "recipient": communicator_subject[1].scope["session_player_id"]};
+        
+        await communicator_subject[0].send_json_to({"message_type": "cents", 
+                                                    "message_text": data, 
+                                                    "message_target": "group"})
+        
+        response = await communicator_subject[0].receive_json_from()
+        message_data = response['message']['message_data']
+        self.assertEqual(message_data['status'],'fail')
+        self.assertEqual(message_data['error_message'], "Insufficient funds.")
+        response = await communicator_staff.receive_json_from()
+
+        #transfer funds when enough
+        await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
+        response = await communicator_staff.receive_json_from()
+        world_state = response['message']['message_data']
+
+        world_state["session_players"][str(communicator_subject[0].scope["session_player_id"])]["earnings"] = "100"
+        await communicator_staff.send_json_to({"message_type": "set_world_state_local", "message_text": {"world_state": world_state}})
+        response = await communicator_staff.receive_json_from()
+        world_state = response['message']['message_data']
+
+        self.assertEqual(world_state["session_players"][str(communicator_subject[0].scope["session_player_id"])]["earnings"], "100")
+
+        data = {"amount": 1,
+                "recipient": communicator_subject[1].scope["session_player_id"]};
+        
+        await communicator_subject[0].send_json_to({"message_type": "cents", 
+                                                    "message_text": data, 
+                                                    "message_target": "group"})
+        
+        response = await communicator_subject[0].receive_json_from()
+        message_data = response['message']['message_data']
+        self.assertEqual(message_data['status'],'success')
+        response = await communicator_staff.receive_json_from()
+
+        await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
+        response = await communicator_staff.receive_json_from()
+        world_state = response['message']['message_data']
+
+        self.assertEqual(world_state["session_players"][str(communicator_subject[0].scope["session_player_id"])]["earnings"], "99")
+        self.assertEqual(world_state["session_players"][str(communicator_subject[1].scope["session_player_id"])]["earnings"], "1")
+
+
+
+

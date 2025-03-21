@@ -272,6 +272,14 @@ class TimerMixin():
 
         await self.send_message(message_to_self=self.world_state_local, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
+        
+    async def set_world_state_local(self, event):
+        '''
+        set world state local
+        '''
+        self.world_state_local = event["message_text"]["world_state"]
+
+        await self.get_world_state_local(event)
 
         
     #async helpers

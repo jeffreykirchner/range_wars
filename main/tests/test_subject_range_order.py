@@ -19,7 +19,7 @@ from main.models import Session
 
 from main.routing import websocket_urlpatterns
 
-class TestSubjectConsumer(TestCase):
+class TestSubjectConsumer2(TestCase):
     fixtures = ['auth_user.json', 'main.json']
 
     user = None
@@ -33,7 +33,7 @@ class TestSubjectConsumer(TestCase):
 
         logger.info('setup tests')
 
-        self.session = Session.objects.get(title="2")
+        self.session = Session.objects.get(title="1")
         self.parameter_set_json = self.session.parameter_set.json()
 
     def tearDown(self):
@@ -93,20 +93,6 @@ class TestSubjectConsumer(TestCase):
         start session and advance past instructions
         '''
         logger = logging.getLogger(__name__)
-
-        #reset session
-        # message = {'message_type' : 'reset_experiment',
-        #            'message_text' : {},
-        #            'message_target' : 'self', }
-        # await communicator_staff.send_json_to(message)
-
-        # for i in communicator_subject:
-        #     response = await i.receive_json_from()
-        #     self.assertEqual(response['message']['message_type'],'update_reset_experiment')
-        #     message_data = response['message']['message_data']
-        #     self.assertEqual(message_data['value'],'success')
-        
-        # response = await communicator_staff.receive_json_from()
         
         # #start session
         message = {'message_type' : 'start_experiment',
@@ -149,59 +135,10 @@ class TestSubjectConsumer(TestCase):
 
         await self.communicator_staff.disconnect()
 
-        # for i in self.communicator_subject:
-        #     del i
-        
-        # del self.communicator_staff
-
     @pytest.mark.asyncio
-    async def test_chat_group(self):
+    async def test_range_centers(self):
         '''
-        test get session subject from consumer
-        '''        
-        communicator_subject = []
-        communicator_staff = None
-
-        logger = logging.getLogger(__name__)
-        logger.info(f"called from test {sys._called_from_test}" )
-
-        communicator_subject, communicator_staff = await self.set_up_communicators(communicator_subject, communicator_staff)
-        communicator_subject, communicator_staff = await self.start_session(communicator_subject, communicator_staff)
-
-        session = await Session.objects.aget(title="2")
-        world_state = session.world_state
-
-        #send chat
-        message = {'message_type' : 'chat',
-                   'message_text' : {'text': 'How do you do?',},
-                   'message_target' : 'group', 
-                  }
-        
-        session_player_target = world_state["session_players"][str(communicator_subject[0].scope["session_player_id"])]
-        await communicator_subject[0].send_json_to(message)
-
-        for i in communicator_subject:
-            session_player = world_state["session_players"][str(i.scope["session_player_id"])]
-
-            if session_player["group_number"] == session_player_target["group_number"]:
-                response = await i.receive_json_from()
-                message_data = response['message']['message_data']
-                self.assertEqual(message_data['status'],'success')
-                self.assertEqual(message_data['text'],'How do you do?')
-            else:
-                response = await i.receive_nothing()
-                self.assertTrue(response)
-        
-        #staff response
-        response = await communicator_staff.receive_json_from()
-        message_data = response['message']['message_data']
-        self.assertEqual(message_data['status'],'success')
-        self.assertEqual(message_data['text'],'How do you do?')
-    
-    @pytest.mark.asyncio
-    async def test_ranges(self):
-        '''
-        test allowable ranges
+        test allowable past centers
         '''
 
         #advance to period block 2
@@ -214,60 +151,9 @@ class TestSubjectConsumer(TestCase):
         communicator_subject, communicator_staff = await self.set_up_communicators(communicator_subject, communicator_staff)
         communicator_subject, communicator_staff = await self.start_session(communicator_subject, communicator_staff)
 
-        #start timer
-        message = {'message_type' : 'start_timer',
-                   'message_text' : {"action": "start"},
-                   'message_target' : 'self', 
-                  }
-        
-        await communicator_staff.send_json_to(message)
-        response = await communicator_staff.receive_json_from()
-
-        #force advance to period 6
-        message = {'message_type' : 'force_advance_to_period',
-                   'message_text' : {'period_number': 6,},
-                   'message_target' : 'self', 
-                  }
-        
-        await communicator_staff.send_json_to(message)
-        response = await communicator_staff.receive_json_from()
-        
-        #submit inital ranges
-        for i in communicator_subject:
-            data = {"range_start": 0,       
-                    "range_end": 0}
-            
-            message = {'message_type' : 'range',
-                       'message_text' : data,
-                       'message_target' : 'group', }
-
-            await i.send_json_to(message)
-
-            response = await i.receive_json_from()
-            message_data = response['message']['message_data']
-            self.assertEqual(message_data['status'],'success')
-
-            response = await communicator_staff.receive_json_from()
-        
-        await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
-        response = await communicator_staff.receive_json_from()
-        world_state = response['message']['message_data']
-
-        session_players = world_state["session_players"]
-
-        for i in session_players:
-
-            self.assertEqual(session_players[i]["range_start"], 0)
-            self.assertEqual(session_players[i]["range_end"], 0)
-
-            self.assertEqual(session_players[i]["total_cost"], '0.02')
-            self.assertEqual(session_players[i]["total_revenue"], '0.06')
-            self.assertEqual(session_players[i]["total_profit"], '0.04')
-
-        
-        #expand player 2 ranges
-        data = {"range_start": 0,       
-                "range_end": 4}
+        #move purple to left
+        data = {"range_start": 11,       
+                "range_end": 11}
             
         message = {'message_type' : 'range',
                    'message_text' : data,
@@ -281,16 +167,133 @@ class TestSubjectConsumer(TestCase):
 
         response = await communicator_staff.receive_json_from()
 
-        await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
+        #move purple to left shared center with red
+        data = {"range_start": 9,       
+                "range_end": 11}
+            
+        message = {'message_type' : 'range',
+                   'message_text' : data,
+                   'message_target' : 'group', }
+
+        await communicator_subject[1].send_json_to(message)
+
+        response = await communicator_subject[1].receive_json_from()
+        message_data = response['message']['message_data']
+        self.assertEqual(message_data['status'],'success')
+
         response = await communicator_staff.receive_json_from()
-        world_state = response['message']['message_data']
 
-        session_player = world_state["session_players"][str(communicator_subject[1].scope["session_player_id"])]
+        #try to move purple center past red's center
+        data = {"range_start": 8,       
+                "range_end": 11}
+                    
+        message = {'message_type' : 'range',
+                   'message_text' : data,
+                   'message_target' : 'group', }
 
-        self.assertEqual(session_player["range_start"], 0)
-        self.assertEqual(session_player["range_end"], 4)
+        await communicator_subject[1].send_json_to(message)
 
-        self.assertEqual(session_player["total_cost"], '0.09')
-        self.assertEqual(session_player["total_revenue"], '0.54')
-        self.assertEqual(session_player["total_profit"], '0.45')
+        response = await communicator_subject[1].receive_json_from()
+        message_data = response['message']['message_data']
+        self.assertEqual(message_data['status'],'fail')
+
+        response = await communicator_staff.receive_json_from()
+
+        #try to move red past center of purple
+        data = {"range_start": 10,       
+                "range_end": 11}
+                    
+        message = {'message_type' : 'range',
+                   'message_text' : data,
+                   'message_target' : 'group', }
+
+        await communicator_subject[0].send_json_to(message)
+
+        response = await communicator_subject[0].receive_json_from()
+        message_data = response['message']['message_data']
+        self.assertEqual(message_data['status'],'fail')
+
+        response = await communicator_staff.receive_json_from()
+    
+    @pytest.mark.asyncio
+    async def test_range_neighbors(self):
+        '''
+        test allowable range into non-neighbors
+        '''
+
+        #advance to period block 2
+        communicator_subject = []
+        communicator_staff = None
+
+        logger = logging.getLogger(__name__)
+        logger.info(f"called from test {sys._called_from_test}" )
+
+        communicator_subject, communicator_staff = await self.set_up_communicators(communicator_subject, communicator_staff)
+        communicator_subject, communicator_staff = await self.start_session(communicator_subject, communicator_staff)
+
+        #move red to right
+        data = {"range_start": 10,       
+                "range_end": 19}
+                    
+        message = {'message_type' : 'range',
+                   'message_text' : data,
+                   'message_target' : 'group', }
+
+        await communicator_subject[0].send_json_to(message)
+
+        response = await communicator_subject[0].receive_json_from()
+        message_data = response['message']['message_data']
+        self.assertEqual(message_data['status'],'success')
+
+        response = await communicator_staff.receive_json_from()
+
+        #move blue to left, next to red
+        data = {"range_start": 20,       
+                "range_end": 30}
+                    
+        message = {'message_type' : 'range',
+                   'message_text' : data,
+                   'message_target' : 'group', }
+
+        await communicator_subject[2].send_json_to(message)
+
+        response = await communicator_subject[2].receive_json_from()
+        message_data = response['message']['message_data']
+        self.assertEqual(message_data['status'],'success')
+
+        response = await communicator_staff.receive_json_from()
+
+        #try to move blue into red
+        data = {"range_start": 19,       
+                "range_end": 30}
+                    
+        message = {'message_type' : 'range',
+                   'message_text' : data,
+                   'message_target' : 'group', }
+
+        await communicator_subject[2].send_json_to(message)
+
+        response = await communicator_subject[2].receive_json_from()
+        message_data = response['message']['message_data']
+        self.assertEqual(message_data['status'],'fail')
+        self.assertEqual(message_data['error_message'],"Your range cannot overlap with Red's.")
+
+        response = await communicator_staff.receive_json_from()
+
+        #try to move red into blue
+        data = {"range_start": 10,       
+                "range_end": 20}
+                    
+        message = {'message_type' : 'range',
+                   'message_text' : data,
+                   'message_target' : 'group', }
+
+        await communicator_subject[0].send_json_to(message)
+
+        response = await communicator_subject[0].receive_json_from()
+        message_data = response['message']['message_data']
+        self.assertEqual(message_data['status'],'fail')
+        self.assertEqual(message_data['error_message'],"Your range cannot overlap with Blue's.")
+
+        response = await communicator_staff.receive_json_from()
 

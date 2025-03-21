@@ -235,7 +235,7 @@ class TimerMixin():
         force advance period
         '''
         logger = logging.getLogger(__name__)
-        logger.info(f"force_advance_period {event}")
+        # logger.info(f"force_advance_period {event}")
 
         event_data = event["message_text"]
 
@@ -260,6 +260,18 @@ class TimerMixin():
             self.world_state_local = await sync_to_async(session.update_treatment)(self.world_state_local, self.parameter_set_local)
 
         await self.continue_timer(event)
+
+    async def get_world_state_local(self, event):
+        '''
+        return world state local
+        '''
+
+        session = await Session.objects.aget(id=self.session_id)
+
+        self.world_state_local = await sync_to_async(session.update_revenues)(self.world_state_local, self.parameter_set_local)
+
+        await self.send_message(message_to_self=self.world_state_local, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
 
         
     #async helpers

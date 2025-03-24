@@ -62,7 +62,7 @@ let app = Vue.createApp({
 
                     current_selection_range : {start:null, end:null},    //the current selection range
                     range_update_success : false,                        //if true show success check mark for updating range
-                    show_range_update_button : true,                     //if true show update button
+                    // show_range_update_button : true,                     //if true show update button
 
                     notices_seen: [],
 
@@ -406,7 +406,7 @@ let app = Vue.createApp({
             app.notices_seen = [];
             app.chat_history = [];
 
-            app.show_range_update_button = true;
+            // app.show_range_update_button = true;
             app.range_update_success = false;
             app.send_cents_success = false;
         },
@@ -504,7 +504,7 @@ let app = Vue.createApp({
             //update any notices on screen
             app.update_notices();
 
-            app.show_range_update_button = true;
+            // app.show_range_update_button = true;
 
         },
 

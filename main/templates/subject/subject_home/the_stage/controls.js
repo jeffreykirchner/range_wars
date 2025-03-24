@@ -147,7 +147,7 @@ update_right_handle_position : function update_right_handle_position(){
  * pointer down on left handle
  */
 pixi_left_handle_pointerdown: function pixi_left_handle_pointerdown(event){
-    if(!app.show_range_update_button) return;
+    if(!app.show_contest_controls()) return;
     if(app.session.world_state.current_round == 1) return;
 
     pixi_left_handle.alpha = 0.5;
@@ -158,7 +158,7 @@ pixi_left_handle_pointerdown: function pixi_left_handle_pointerdown(event){
  * pointer down on right handle
  */
 pixi_right_handle_pointerdown: function pixi_right_handle_pointerdown(event){
-    if(!app.show_range_update_button) return;
+    if(!app.show_contest_controls()) return;
     if(app.session.world_state.current_round == 1) return;
     
     pixi_right_handle.alpha = 0.5;
@@ -255,8 +255,8 @@ pixi_container_main_pointermove: function pixi_container_main_pointermove(event)
 update_handle_visibility: function update_handle_visibility(){
     let period_block = app.get_current_period_block();
 
-    if(period_block.phase == 'play' ||
-       app.session.world_state.current_experiment_phase == 'Instructions')
+    if(app.show_contest_controls() &&
+       (period_block.phase == 'play' || app.session.world_state.current_experiment_phase == 'Instructions'))
     {
         pixi_left_handle.visible = true;
         pixi_right_handle.visible = true;
@@ -273,7 +273,7 @@ update_handle_visibility: function update_handle_visibility(){
  */
 send_range: function send_range(){
     let session_player = app.session.world_state.session_players[app.session_player.id];
-    let period_block = app.session.world_state.period_blocks[app.session.world_state.current_period_block];
+    let period_block = app.get_current_period_block();
 
     let data = {       
         range_start: app.current_selection_range.start,
@@ -299,7 +299,7 @@ send_range: function send_range(){
     }
     else
     {
-        if(period_block.phase=="start") app.show_range_update_button = false;
+        // if(period_block.phase=="start") app.show_range_update_button = false;
         app.range_update_error = null;
         app.working = true;
         app.send_message("range", data, "group");
@@ -311,10 +311,12 @@ send_range: function send_range(){
  */
 take_update_range: function take_update_range(message_data){
     app.working = false;
-    let period_block = app.session.world_state.period_blocks[app.session.world_state.current_period_block];
+    let period_block = app.get_current_period_block();
     
     if(message_data.status == "success")
     {
+        period_block.session_players[app.session_player.id.toString()].ready = true;
+
         //display success message
         if(period_block.phase=="play")
         {
@@ -343,6 +345,54 @@ take_update_instructions_range: function take_update_instructions_range(message_
     {
 
     }
+},
+
+/**
+ * true if transfer cents should be displayed
+ */
+show_contest_controls: function show_contest_controls()
+{
+    if(!app.session.started) return false;
+
+    // if(app.session.world_state.current_round > 1) return false;
+
+    let treatment = app.get_current_treatment();
+
+    if(!treatment.enable_contest) return false;
+
+    return true;
+},
+
+/**
+ * show ready to go button
+ */
+show_ready_button: function show_ready_button(){
+    if(!app.session.started) return false;
+
+    let treatment = app.get_current_treatment();
+
+    if(app.session.world_state.current_round != 1) return false;
+    if(!treatment.enable_ready_button) return false;
+
+    return true;
+},
+
+/**
+ * get range update button class
+ */
+get_ready_button_class: function get_ready_button_class(){
+
+    if(!app.session.started) return "";
+
+    let period_block = app.get_current_period_block();
+    let text = 'btn btn-success btn-lg';
+
+    if(app.pixi_tick_tock.value == "tick")
+    {
+        text = 'btn btn-outline-success btn-lg';
+    }
+    
+    return text;
 },
 
 /**
@@ -397,7 +447,7 @@ show_transfer_cents: function show_transfer_cents()
 {
     if(!app.session.started) return false;
 
-    if(app.session.world_state.current_round > 1) return false;
+    // if(app.session.world_state.current_round > 1) return false;
 
     let period_block = app.session.parameter_set.parameter_set_periodblocks[app.session.world_state.current_period_block];
     let treatment = app.session.parameter_set.parameter_set_treatments[period_block.parameter_set_treatment];
@@ -405,49 +455,4 @@ show_transfer_cents: function show_transfer_cents()
     if(!treatment.enable_transfer_cents) return false;
 
     return true;
-},
-
-/**
- * get range update button text
- */
-get_range_update_button_text: function get_range_update_button_text(){
-    if(!app.session.started) return "";
-
-    let period_block = app.session.world_state.period_blocks[app.session.world_state.current_period_block];
-
-    let text = 'Send Range <i class="fas fa-ruler-horizontal"></i>';
-
-    //if current round is 1
-    if(period_block.phase == "start")
-    {
-        text = 'Ready to Start';
-    }
-
-    return text;
-},
-
-/**
- * get range update button class
- */
-get_range_update_button_class: function get_range_update_button_class(){
-
-    if(!app.session.started) return "";
-
-    let period_block = app.session.world_state.period_blocks[app.session.world_state.current_period_block];
-    let text = 'btn btn-outline-primary btn-lg';
-
-    //if current round is 1
-    if(period_block.phase == "start")
-    {
-        if(app.pixi_tick_tock.value == "tick")
-        {
-            text = 'btn btn-outline-success btn-lg';
-        }
-        else
-        {
-            text = 'btn btn-success btn-lg';
-        }
-    }
-    
-    return text;
 },

@@ -160,14 +160,21 @@ class TimerMixin():
             if self.world_state_local["current_experiment_phase"] == ExperimentPhase.RUN :
 
                 if new_period_block and new_period_block["phase"] != "start":
+                    parameter_set_periodblock = self.parameter_set_local["parameter_set_periodblocks"][str(new_period_block["id"])]
+                    parameter_set_treatment = self.parameter_set_local["parameter_set_treatments"][str(parameter_set_periodblock["parameter_set_treatment"])]
+
+                    
                     for player_id in self.world_state_local["session_players"]:
                         player = self.world_state_local["session_players"][player_id]
-                        player["earnings"] = Decimal(player["earnings"]) + Decimal(player["total_profit"])
+                        if parameter_set_treatment["enable_contest"]:
+                            player["earnings"] = Decimal(player["earnings"]) + Decimal(player["total_profit"])
 
                         pbd = session.period_block_data[str(self.world_state_local["current_period_block"])]["session_players"][str(player_id)]
-                        pbd["total_revenue"] = Decimal(pbd["total_revenue"]) + Decimal(player["total_revenue"])
-                        pbd["total_cost"] = Decimal(pbd["total_cost"]) + Decimal(player["total_cost"])
-                        pbd["total_profit"] = Decimal(pbd["total_profit"]) + Decimal(player["total_profit"])
+
+                        if parameter_set_treatment["enable_contest"]:
+                            pbd["total_revenue"] = Decimal(pbd["total_revenue"]) + Decimal(player["total_revenue"])
+                            pbd["total_cost"] = Decimal(pbd["total_cost"]) + Decimal(player["total_cost"])
+                            pbd["total_profit"] = Decimal(pbd["total_profit"]) + Decimal(player["total_profit"])
                 
                     #store period block data
                     await session.asave(update_fields=["period_block_data"])
@@ -229,6 +236,58 @@ class TimerMixin():
 
         await self.send_message(message_to_self=event_data, message_to_group=None,
                                 message_type=event['type'], send_to_client=True, send_to_group=False)
+        
+    async def force_advance_to_period(self, event):
+        '''
+        force advance period
+        '''
+        logger = logging.getLogger(__name__)
+        # logger.info(f"force_advance_period {event}")
+
+        event_data = event["message_text"]
+
+        self.world_state_local["timer_history"][-1]["count"] -= 1
+
+        session = await Session.objects.aget(id=self.session_id)
+        period_block = self.world_state_local["period_blocks"][str(self.world_state_local["current_period_block"])]
+
+        self.world_state_local["current_period"] = event_data["period_number"]
+
+        new_current_session_period_id = self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-1]
+        new_current_session_period = self.world_state_local["session_periods"][str(new_current_session_period_id)]
+        new_period_block = self.world_state_local["period_blocks"][str(new_current_session_period["parameter_set_periodblock_id"])]
+        
+        self.world_state_local["current_round"] = new_current_session_period["round_number"]
+
+        self.world_state_local["current_period_block"] = new_current_session_period["parameter_set_periodblock_id"]
+
+        #check if the period block has changed
+        if new_period_block["id"] != period_block["id"]:
+            #set ranges for new period block
+            self.world_state_local = await sync_to_async(session.update_treatment)(self.world_state_local, self.parameter_set_local)
+
+        await self.continue_timer(event)
+
+    async def get_world_state_local(self, event):
+        '''
+        return world state local
+        '''
+
+        session = await Session.objects.aget(id=self.session_id)
+
+        self.world_state_local = await sync_to_async(session.update_revenues)(self.world_state_local, self.parameter_set_local)
+
+        await self.send_message(message_to_self=self.world_state_local, message_to_group=None,
+                                message_type=event['type'], send_to_client=True, send_to_group=False)
+        
+    async def set_world_state_local(self, event):
+        '''
+        set world state local
+        '''
+        self.world_state_local = event["message_text"]["world_state"]
+
+        await self.get_world_state_local(event)
+
         
     #async helpers
     

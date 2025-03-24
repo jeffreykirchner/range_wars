@@ -59,8 +59,17 @@ class ParameterSetTreatmentForm(forms.ModelForm):
                                               choices=((1, 'Yes'), (0, 'No')),
                                               widget=forms.Select(attrs={"v-model":"current_parameter_set_treatment.enable_transfer_cents",}))
 
+    enable_contest = forms.ChoiceField(label='Enable Contest',
+                                       choices=((1, 'Yes'), (0, 'No')),
+                                       widget=forms.Select(attrs={"v-model":"current_parameter_set_treatment.enable_contest",}))
+    
+    enable_ready_button = forms.ChoiceField(label='Enable Ready Button',
+                                            choices=((1, 'Yes'), (0, 'No')),
+                                            widget=forms.Select(attrs={"v-model":"current_parameter_set_treatment.enable_ready_button",}))
+
     class Meta:
         model=ParameterSetTreatment
         fields =['id_label_pst',  'range_width', 'range_height', 'scale_width',
-                 'range_height_ticks', 'values', 'costs', 'preserve_order', 'enable_chat', 'enable_transfer_cents']
+                 'range_height_ticks', 'values', 'costs', 
+                 'preserve_order', 'enable_chat', 'enable_transfer_cents', 'enable_contest', 'enable_ready_button']
     

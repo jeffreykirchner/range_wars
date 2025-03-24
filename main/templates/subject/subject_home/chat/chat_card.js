@@ -51,7 +51,7 @@ show_chat: function show_chat()
 {
     if(!app.session.started) return false;
 
-    if(app.session.world_state.current_round > 1) return false;
+    // if(app.session.world_state.current_round > 1) return false;
 
     let period_block = app.session.parameter_set.parameter_set_periodblocks[app.session.world_state.current_period_block];
     let treatment = app.session.parameter_set.parameter_set_treatments[period_block.parameter_set_treatment];

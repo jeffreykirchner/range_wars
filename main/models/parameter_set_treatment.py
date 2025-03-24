@@ -29,7 +29,9 @@ class ParameterSetTreatment(models.Model):
 
     preserve_order = models.BooleanField(verbose_name='Preserve Order', default=False)                        #preserve order of players on battle space
     enable_chat = models.BooleanField( verbose_name='Enable Chat', default=True)                              #if true enable chat
-    enable_transfer_cents = models.BooleanField(verbose_name='Enable Profit Transfer', default=True)           #if true enable chat
+    enable_transfer_cents = models.BooleanField(verbose_name='Enable Profit Transfer', default=True)          #if true enable chat
+    enable_contest = models.BooleanField(verbose_name='Enable Contest', default=True)                         #if true enable contest
+    enable_ready_button = models.BooleanField(verbose_name='Enable Ready Button', default=True)               #if true enable ready button
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
@@ -64,6 +66,8 @@ class ParameterSetTreatment(models.Model):
         self.preserve_order = True if new_ps.get("preserve_order") else False
         self.enable_chat = True if new_ps.get("enable_chat") else False
         self.enable_transfer_cents = True if new_ps.get("enable_transfer_cents") else False
+        self.enable_contest = True if new_ps.get("enable_contest") else False
+        self.enable_ready_button = True if new_ps.get("enable_ready_button") else False
 
         self.save()
         
@@ -112,6 +116,8 @@ class ParameterSetTreatment(models.Model):
             "preserve_order" : 1 if self.preserve_order else 0,
             "enable_chat" : 1 if self.enable_chat else 0,
             "enable_transfer_cents" : 1 if self.enable_transfer_cents else 0,
+            "enable_contest" : 1 if self.enable_contest else 0,
+            "enable_ready_button" : 1 if self.enable_ready_button else 0,
         }
     
     def get_json_for_subject(self, update_required=False):

@@ -103,8 +103,12 @@ do_test_mode_run: function do_test_mode_run()
             }
             else
             {
-                document.getElementById("send_chat_id").click();
-                go=false;
+                try{
+                    document.getElementById("send_chat_id").click();
+                    go=false;
+                }catch(e){
+                   // console.log(e);
+                }
             }
         }
     
@@ -163,7 +167,7 @@ test_mode_submit_range: function test_mode_submit_range()
 {
     if(app.working) return;
 
-    if(!app.show_range_update_button) return;
+    if(!app.show_contest_controls()) return;
 
     app.send_range();
 },

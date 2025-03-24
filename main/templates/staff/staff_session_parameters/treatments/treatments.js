@@ -28,7 +28,7 @@ send_remove_parameter_set_treatment: function send_remove_parameter_set_treatmen
 
     app.working = true;
     app.send_message("remove_parameterset_treatment", {"session_id" : app.session.id,
-                                                   "parameterset_treatment_id" : app.current_parameter_set_treatment.id,});
+                                                      "parameterset_treatment_id" : app.current_parameter_set_treatment.id,});
                                                    
 },
 
@@ -38,4 +38,13 @@ send_add_parameter_set_treatment: function send_add_parameter_set_treatment(trea
     app.working = true;
     app.send_message("add_parameterset_treatment", {"session_id" : app.session.id});
                                                    
+},
+
+/**
+ * duplicate the selected parameterset treatment
+ */
+send_duplicate_parameter_set_treatment: function send_duplicate_parameter_set_treatment(){
+    app.working = true;
+    app.send_message("duplicate_parameterset_treatment", {"session_id" : app.session.id,
+                                                          "parameterset_treatment_id" : app.current_parameter_set_treatment.id,});
 },

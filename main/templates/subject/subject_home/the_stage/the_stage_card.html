@@ -68,7 +68,7 @@
             <!-- transfer money -->
             <div class="col-4 text-center pb-2" 
                  style="border-style: solid; border-width: 1px;border-color: lightgray;"
-                 v-show="show_transfer_cents()">
+                 v-show="show_transfer_cents() && !show_ready_button()">
                 <div class="row">
                     <div class="col text-center">
                         
@@ -131,21 +131,19 @@
             </div>
 
             <!-- send updated range -->
-            <div class="col-4 text-center">
+            <div class="col-4 text-center" v-if="show_contest_controls() && !show_ready_button()">
                 <div class="row">
                     <div class="col-8 text-end">
-                        <button v-bind:class="get_range_update_button_class()"
-                            v-show="show_range_update_button"
+                        <button class="btn btn-outline-primary btn-lg"                         
                             type="button" 
                             id="send_range_id" 
                             title="Submit your updated range."
                             v-bind:disabled="reconnecting || working || session.started===false || session.world_state.finished"
                             v-on:click="send_range()">
 
-                            <span v-html="get_range_update_button_text()"></span>
+                            Send Range <i class="fas fa-ruler-horizontal"></i>
                         </button>
                         
-                        <span v-show="!show_range_update_button">Waiting for Others.</span>
                     </div>
                     <div class="col-4 text-start pt-3 ps-0">
                         <span v-if="range_update_success"><i class="fas fa-check fa-lg" style="color: #63E6BE;"></i></span>                        
@@ -157,12 +155,36 @@
                        [[range_update_error]]
                     </div>
                 </div>
+            </div>
 
+            <!-- ready to go on -->
+            <div class="col-4 text-center" v-if="show_ready_button()">
+                <div class="row">
+                    <div class="col-8 text-end">
+                        <button v-show="!get_current_period_block().session_players[session_player.id.toString()].ready"
+                            v-bind:class="get_ready_button_class()"                            
+                            type="button" 
+                            id="send_range_id" 
+                            title="Ready to go on."
+                            v-bind:disabled="reconnecting || working || session.started===false || session.world_state.finished"
+                            v-on:click="send_range()">
+
+                            Ready to Start
+                        </button>
+                        
+                        <span v-show="get_current_period_block().session_players[session_player.id.toString()].ready">Waiting for Others.</span>
+                    </div>                    
+                </div>                    
+            </div>
+
+            <!-- spacer -->
+            <div class="col-4 text-center" v-if="!show_contest_controls() && !show_ready_button()">
+                <span class="fs-3" v-if="!get_current_treatment().enable_contest">Revenue Bars Disabled</span>
             </div>
 
             <!-- send chat -->
             <div class="col-4">
-                <div class="row" v-if="show_chat()">
+                <div class="row" v-if="show_chat() && !show_ready_button()">
                     <div class="col-2 me-0 pe-1 text-end">
                         <button type="button" class="btn pe-0 btn-link" title="Show Help" v-on:click="send_load_help_doc_subject('Chat')">
                             <i class="far fa-question-circle"></i> 

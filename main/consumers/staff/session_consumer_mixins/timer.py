@@ -160,14 +160,21 @@ class TimerMixin():
             if self.world_state_local["current_experiment_phase"] == ExperimentPhase.RUN :
 
                 if new_period_block and new_period_block["phase"] != "start":
+                    parameter_set_periodblock = self.parameter_set_local["parameter_set_periodblocks"][str(new_period_block["id"])]
+                    parameter_set_treatment = self.parameter_set_local["parameter_set_treatments"][str(parameter_set_periodblock["parameter_set_treatment"])]
+
+                    
                     for player_id in self.world_state_local["session_players"]:
                         player = self.world_state_local["session_players"][player_id]
-                        player["earnings"] = Decimal(player["earnings"]) + Decimal(player["total_profit"])
+                        if parameter_set_treatment["enable_contest"]:
+                            player["earnings"] = Decimal(player["earnings"]) + Decimal(player["total_profit"])
 
                         pbd = session.period_block_data[str(self.world_state_local["current_period_block"])]["session_players"][str(player_id)]
-                        pbd["total_revenue"] = Decimal(pbd["total_revenue"]) + Decimal(player["total_revenue"])
-                        pbd["total_cost"] = Decimal(pbd["total_cost"]) + Decimal(player["total_cost"])
-                        pbd["total_profit"] = Decimal(pbd["total_profit"]) + Decimal(player["total_profit"])
+
+                        if parameter_set_treatment["enable_contest"]:
+                            pbd["total_revenue"] = Decimal(pbd["total_revenue"]) + Decimal(player["total_revenue"])
+                            pbd["total_cost"] = Decimal(pbd["total_cost"]) + Decimal(player["total_cost"])
+                            pbd["total_profit"] = Decimal(pbd["total_profit"]) + Decimal(player["total_profit"])
                 
                     #store period block data
                     await session.asave(update_fields=["period_block_data"])

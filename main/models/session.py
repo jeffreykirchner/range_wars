@@ -194,11 +194,11 @@ class Session(models.Model):
                             "session_periods":{str(i.id) : i.json() for i in self.session_periods.all()},
                             "session_periods_order" : list(self.session_periods.all().values_list('id', flat=True)),}
         
-        inventory = {str(i):0 for i in list(self.session_periods.all().values_list('id', flat=True))}
+        # inventory = {str(i):0 for i in list(self.session_periods.all().values_list('id', flat=True))}
 
         #session periods
-        for i in self.world_state["session_periods"]:
-            self.world_state["session_periods"][i]["consumption_completed"] = False
+        # for i in self.world_state["session_periods"]:
+        #     self.world_state["session_periods"][i]["consumption_completed"] = False
 
         #session players
         for i in self.session_players.prefetch_related('parameter_set_player').all().values('id', 
@@ -233,11 +233,16 @@ class Session(models.Model):
                                                          "phase":"start",
                                                          "session_players":{}}
             
+            parameter_set_period_block = parameter_set["parameter_set_periodblocks"][i]            
+            parameter_set_treatment = parameter_set["parameter_set_treatments"][str(parameter_set_period_block["parameter_set_treatment"])]
+            period_block_ws = self.world_state["period_blocks"][str(i)]
+
             #period block data
             self.period_block_data[str(i)] = {"session_players":{}}
 
             for p in self.world_state["session_players"]:
-                self.world_state["period_blocks"][str(i)]["session_players"][p] = {"ready":False}
+
+                period_block_ws["session_players"][p] = {"ready":False if parameter_set_treatment["enable_ready_button"] else True,}
 
                 self.period_block_data[str(i)]["session_players"][p] = {"cents_sent":{},
                                                                         "chat_messages_sent":0,
@@ -509,10 +514,10 @@ class Session(models.Model):
                                 session_player["range_start"],
                                 session_player["range_end"],
                                 session_player["range_middle"],
-                                session_player["total_cost"],
-                                session_player["total_revenue"],
-                                session_player["total_profit"],
-                                session_player["total_loss"]]
+                                session_player["total_cost"] if parameter_set_treatment["enable_contest"] else "",
+                                session_player["total_revenue"] if parameter_set_treatment["enable_contest"] else "",
+                                session_player["total_profit"] if parameter_set_treatment["enable_contest"] else "",
+                                session_player["total_loss"] if parameter_set_treatment["enable_contest"] else "",]
                     
                     for player_number, player_id in enumerate(world_state["session_players"]):
                         if player_id in session_player["overlaps"]:

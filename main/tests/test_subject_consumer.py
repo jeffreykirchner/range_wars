@@ -300,7 +300,6 @@ class TestSubjectConsumer(TestCase):
         test transfering cents
         '''
 
-        #advance to period block 2
         communicator_subject = []
         communicator_staff = None
 

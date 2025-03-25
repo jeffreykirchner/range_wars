@@ -179,7 +179,7 @@ update_treatment : function update_treatment(){
  */
 value_to_y : function value_to_y(value){
 
-    let unit_rate = axis_height / app.session.parameter_set.parameter_set_treatments[app.current_treatment].range_height;
+    let unit_rate = axis_height / app.session.parameter_set.parameter_set_treatments[app.current_treatment].scale_height;
 
     return value * unit_rate;
 

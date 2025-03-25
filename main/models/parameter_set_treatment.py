@@ -22,7 +22,7 @@ class ParameterSetTreatment(models.Model):
     scale_width = models.DecimalField(verbose_name='Scale Width', default=2, max_digits=7, decimal_places=4)           #scale width
     scale_height = models.DecimalField(verbose_name='Scale Height', default=2, max_digits=7, decimal_places=4)         #scale height
 
-    values = models.CharField(verbose_name='Values', max_length=1000, default="10,9,8,7,6,5,4,3,2,1")   
+    values = models.CharField(verbose_name='Values', max_length=5000, default="10,9,8,7,6,5,4,3,2,1")   
     values_count = models.IntegerField(verbose_name='Values Count', default=100)
 
     scale_height_ticks = models.IntegerField(verbose_name='Scale Height Ticks', default=10)                              #range height ticks

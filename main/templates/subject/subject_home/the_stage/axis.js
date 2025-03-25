@@ -70,7 +70,7 @@ setup_axis : function setup_axis(){
                      width: 2, });
 
         pixi_container_main.addChild(tick);
-
+        
         let tick_label = new PIXI.Text({text:y_value.toString(),style:axis_style});
         tick_label.anchor.set(1, 0.5);
         tick_label.position.set(y_axis_margin-tick_length-2, origin_y-y);
@@ -92,14 +92,17 @@ setup_axis : function setup_axis(){
 
         pixi_container_main.addChild(tick);
 
-        let tick_label = new PIXI.Text({text:i.toString(),
-                                        style:{fontFamily: 'Arial',
-                                               fontSize: 12,
-                                               fill: {color:'black'},
-                                               align: 'center'}});
-        tick_label.anchor.set(0.5, 0);
-        tick_label.position.set(x, origin_y+tick_length_x);
-        pixi_container_main.addChild(tick_label);
+        if(i % 10 == 0)
+        {
+            let tick_label = new PIXI.Text({text:i.toString(),
+                                            style:{fontFamily: 'Arial',
+                                                fontSize: 12,
+                                                fill: {color:'black'},
+                                                align: 'center'}});
+            tick_label.anchor.set(0.5, 0);
+            tick_label.position.set(x, origin_y+tick_length_x);
+            pixi_container_main.addChild(tick_label);
+        }
     }
 
 },

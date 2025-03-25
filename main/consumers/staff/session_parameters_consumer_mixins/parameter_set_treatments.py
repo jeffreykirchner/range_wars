@@ -89,6 +89,17 @@ def take_update_parameter_set_treatment(data):
     
     if form.is_valid():         
         form.save()              
+
+        #store evenly spaced values starting at range_height and dropping to zero
+        values = [str(parameter_set_treatment.range_height)]
+        step_value = parameter_set_treatment.range_height / (parameter_set_treatment.values_count - 1)
+        start_value = parameter_set_treatment.range_height
+        for i in range(1, parameter_set_treatment.values_count):
+            start_value -= step_value
+            values.append(str(round(start_value,4)))
+        parameter_set_treatment.values = ','.join(values)
+        parameter_set_treatment.save()
+
         parameter_set_treatment.parameter_set.update_json_fk(update_treatments=True)
 
         return {"value" : "success"}                      

@@ -16,10 +16,10 @@ class ParameterSetTreatment(models.Model):
     
     id_label_pst = models.CharField(verbose_name='ID Label', max_length=30, default="Name Here")      #id label shown on screen to subjects
 
-    range_width = models.DecimalField(verbose_name='Range Width', default=2, max_digits=5, decimal_places=2)             #range width
-    range_height = models.DecimalField(verbose_name='Range Height', default=2, max_digits=5, decimal_places=2)           #range height
+    range_width = models.DecimalField(verbose_name='Range Width', default=2, max_digits=7, decimal_places=4)             #range width
+    range_height = models.DecimalField(verbose_name='Range Height', default=2, max_digits=7, decimal_places=4)           #range height
     
-    scale_width = models.DecimalField(verbose_name='Scale Width', default=2, max_digits=5, decimal_places=2)           #scale width
+    scale_width = models.DecimalField(verbose_name='Scale Width', default=2, max_digits=7, decimal_places=4)           #scale width
 
     values = models.CharField(verbose_name='Values', max_length=1000, default="10,9,8,7,6,5,4,3,2,1")                     #Values for each box
 

@@ -1,6 +1,7 @@
 import logging
 
 from asgiref.sync import sync_to_async
+from decimal import Decimal
 
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -98,8 +99,37 @@ def take_update_parameter_set_treatment(data):
             start_value -= step_value
             values.append(str(round(start_value,4)))
         parameter_set_treatment.values = ','.join(values)
-        parameter_set_treatment.save()
+        
 
+        #calculate costs based on percent of total revenue
+        box_value_w = Decimal(parameter_set_treatment.range_width) / parameter_set_treatment.values_count
+        total_revenue = 0
+        for i in range(0, parameter_set_treatment.values_count):
+            value = Decimal(values[i])
+            revenue = value * box_value_w
+            total_revenue += revenue
+
+        parameter_set_treatment.costs = ','.join([str(-1) for _ in range(4)])
+
+        cost_parameter = Decimal(0)
+        for i in range(1000):
+            #get cumulative box values
+            total_cost = 0
+            for i in values:
+                if Decimal(i) > cost_parameter:
+                    total_cost += cost_parameter
+                else:
+                    total_cost += Decimal(i)
+
+            #calcuate percentage of total revenue
+            if total_cost / total_revenue >= parameter_set_treatment.cost_percent:
+                cost_parameter = round(cost_parameter, 2)
+                parameter_set_treatment.costs = ','.join([str(cost_parameter) for _ in range(4)])
+                break
+
+            cost_parameter += Decimal(0.01)
+
+        parameter_set_treatment.save()
         parameter_set_treatment.parameter_set.update_json_fk(update_treatments=True)
 
         return {"value" : "success"}                      

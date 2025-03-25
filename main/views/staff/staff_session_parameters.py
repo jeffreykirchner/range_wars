@@ -138,14 +138,14 @@ def takeFileUpload(f, session):
 
     message = ""
 
-    try:
-        if v[0]=="{":
-            return upload_parameter_set(v, session)
-        else:
-            message = "Invalid file format."
-    except Exception as e:
-        message = f"Failed to load file: {e}"
-        logger.warning(message)       
+    # try:
+    if v[0]=="{":
+        return upload_parameter_set(v, session)
+    else:
+        message = "Invalid file format."
+    # except Exception as e:
+    #     message = f"Failed to load file: {e}"
+    #     logger.warning(message)       
 
     return JsonResponse({"session" : session.json(),
                          "message" : message,

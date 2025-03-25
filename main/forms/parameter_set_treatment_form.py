@@ -55,9 +55,15 @@ class ParameterSetTreatmentForm(forms.ModelForm):
                                                                     "step":"1",
                                                                     "min":"1"}))
     
-    costs = forms.CharField(label='Costs',
-                            widget=forms.TextInput(attrs={"v-model":"current_parameter_set_treatment.costs",
-                                                          "autocomplete":"off",}))
+    # costs = forms.CharField(label='Costs',
+    #                         widget=forms.TextInput(attrs={"v-model":"current_parameter_set_treatment.costs",
+    #                                                       "autocomplete":"off",}))
+    
+    cost_percent = forms.DecimalField(label='Cost Percent',
+                                        min_value=0,
+                                        widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_treatment.cost_percent",
+                                                                        "step":"1",
+                                                                        "min":"0"}))
     
     preserve_order = forms.ChoiceField(label='Preserve Order',
                                       choices=((1, 'Yes'), (0, 'No')),
@@ -82,6 +88,6 @@ class ParameterSetTreatmentForm(forms.ModelForm):
     class Meta:
         model=ParameterSetTreatment
         fields =['id_label_pst',  'range_width', 'range_height', 'scale_width', 'scale_height',
-                 'scale_height_ticks', 'values_count', 'costs', 
+                 'scale_height_ticks', 'values_count', 'cost_percent', 
                  'preserve_order', 'enable_chat', 'enable_transfer_cents', 'enable_contest', 'enable_ready_button']
     

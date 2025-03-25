@@ -121,6 +121,11 @@ get_parameter_set_player_from_player_id: function get_parameter_set_player_from_
  */
 get_current_treatment: function get_current_treatment()
 {
+    if(!app.session.started)
+    {
+        return null;
+    }
+    
     let parameter_set_period_block = app.get_current_parameter_set_period_block();    
     return app.session.parameter_set.parameter_set_treatments[parameter_set_period_block.parameter_set_treatment];
 },

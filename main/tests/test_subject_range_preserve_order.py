@@ -14,11 +14,12 @@ from asgiref.sync import async_to_sync
 
 from django.test import TestCase
 
+
 from main.models import Session
 
 from main.routing import websocket_urlpatterns
 
-class TestSubjectConsumer3(TestCase):
+class TestSubjectConsumer2(TestCase):
     fixtures = ['auth_user.json', 'main.json']
 
     user = None
@@ -149,24 +150,6 @@ class TestSubjectConsumer3(TestCase):
         communicator_subject, communicator_staff = await self.set_up_communicators(communicator_subject, communicator_staff)
         communicator_subject, communicator_staff = await self.start_session(communicator_subject, communicator_staff)
 
-        #start timer
-        message = {'message_type' : 'start_timer',
-            'message_text' : {"action": "start"},
-            'message_target' : 'self', 
-            }
-        
-        await communicator_staff.send_json_to(message)
-        response = await communicator_staff.receive_json_from()
-
-        #force advance to period 11
-        message = {'message_type' : 'force_advance_to_period',
-                   'message_text' : {'period_number':11,},
-                   'message_target' : 'self', 
-                  }
-        
-        await communicator_staff.send_json_to(message)
-        response = await communicator_staff.receive_json_from()
-
         #move purple to left
         data = {"range_start": 11,       
                 "range_end": 11}
@@ -211,7 +194,7 @@ class TestSubjectConsumer3(TestCase):
 
         response = await communicator_subject[1].receive_json_from()
         message_data = response['message']['message_data']
-        self.assertEqual(message_data['status'],'success')
+        self.assertEqual(message_data['status'],'fail')
 
         response = await communicator_staff.receive_json_from()
 
@@ -227,7 +210,7 @@ class TestSubjectConsumer3(TestCase):
 
         response = await communicator_subject[0].receive_json_from()
         message_data = response['message']['message_data']
-        self.assertEqual(message_data['status'],'success')
+        self.assertEqual(message_data['status'],'fail')
 
         response = await communicator_staff.receive_json_from()
     
@@ -245,24 +228,6 @@ class TestSubjectConsumer3(TestCase):
 
         communicator_subject, communicator_staff = await self.set_up_communicators(communicator_subject, communicator_staff)
         communicator_subject, communicator_staff = await self.start_session(communicator_subject, communicator_staff)
-
-        #start timer
-        message = {'message_type' : 'start_timer',
-            'message_text' : {"action": "start"},
-            'message_target' : 'self', 
-            }
-        
-        await communicator_staff.send_json_to(message)
-        response = await communicator_staff.receive_json_from()
-
-        #force advance to period 11
-        message = {'message_type' : 'force_advance_to_period',
-                   'message_text' : {'period_number':11,},
-                   'message_target' : 'self', 
-                  }
-        
-        await communicator_staff.send_json_to(message)
-        response = await communicator_staff.receive_json_from()
 
         #move red to right
         data = {"range_start": 10,       
@@ -308,7 +273,7 @@ class TestSubjectConsumer3(TestCase):
 
         response = await communicator_subject[2].receive_json_from()
         message_data = response['message']['message_data']
-        self.assertEqual(message_data['status'],'success')
+        self.assertEqual(message_data['status'],'fail')
         self.assertEqual(message_data['error_message'],"Your range cannot overlap with Red's.")
 
         response = await communicator_staff.receive_json_from()
@@ -325,7 +290,7 @@ class TestSubjectConsumer3(TestCase):
 
         response = await communicator_subject[0].receive_json_from()
         message_data = response['message']['message_data']
-        self.assertEqual(message_data['status'],'success')
+        self.assertEqual(message_data['status'],'fail')
         self.assertEqual(message_data['error_message'],"Your range cannot overlap with Blue's.")
 
         response = await communicator_staff.receive_json_from()

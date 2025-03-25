@@ -60,8 +60,9 @@ setup_axis : function setup_axis(){
 
     for(let i=0; i<=treatment.range_height_ticks; i++)
     {
+        let y_value = treatment.range_height * i / treatment.range_height_ticks;
         let tick = new PIXI.Graphics();
-        let y = app.value_to_y(i);
+        let y = app.value_to_y(y_value);
 
         tick.moveTo(y_axis_margin, origin_y-y);
         tick.lineTo(y_axis_margin-tick_length, origin_y-y);
@@ -70,7 +71,7 @@ setup_axis : function setup_axis(){
 
         pixi_container_main.addChild(tick);
 
-        let tick_label = new PIXI.Text({text:i.toString(),style:axis_style});
+        let tick_label = new PIXI.Text({text:y_value.toString(),style:axis_style});
         tick_label.anchor.set(1, 0.5);
         tick_label.position.set(y_axis_margin-tick_length-2, origin_y-y);
         pixi_container_main.addChild(tick_label);

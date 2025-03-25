@@ -117,9 +117,9 @@ def take_update_parameter_set_treatment(data):
             total_cost = 0
             for i in values:
                 if Decimal(i) > cost_parameter:
-                    total_cost += cost_parameter
+                    total_cost += cost_parameter*box_value_w
                 else:
-                    total_cost += Decimal(i)
+                    total_cost += Decimal(i)*box_value_w
 
             #calcuate percentage of total revenue
             if total_cost / total_revenue >= parameter_set_treatment.cost_percent:

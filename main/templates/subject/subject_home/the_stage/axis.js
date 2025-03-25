@@ -50,17 +50,17 @@ setup_axis : function setup_axis(){
     // x_label.position.set(y_axis_margin + axis_width/2, app.canvas_height - 23);
     // pixi_container_main.addChild(x_label);
 
-    let y_label = new PIXI.Text({text:"Value",style:axis_style});
-    y_label.position.set(3, other_margin + axis_height/2);
+    let y_label = new PIXI.Text({text:"Value (¢)",style:axis_style});
+    y_label.position.set(1, other_margin + axis_height/2);
     y_label.rotation = -Math.PI/2;
     pixi_container_main.addChild(y_label);
 
     //y axis ticks
     let tick_length = 5;
 
-    for(let i=0; i<=treatment.range_height_ticks; i++)
+    for(let i=0; i<=treatment.scale_height_ticks; i++)
     {
-        let y_value = treatment.range_height * i / treatment.range_height_ticks;
+        let y_value = treatment.scale_height * i / treatment.scale_height_ticks;
         let tick = new PIXI.Graphics();
         let y = app.value_to_y(y_value);
 

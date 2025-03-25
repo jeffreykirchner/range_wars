@@ -20,11 +20,12 @@ class ParameterSetTreatment(models.Model):
     range_height = models.DecimalField(verbose_name='Range Height', default=2, max_digits=7, decimal_places=4)           #range height
     
     scale_width = models.DecimalField(verbose_name='Scale Width', default=2, max_digits=7, decimal_places=4)           #scale width
+    scale_height = models.DecimalField(verbose_name='Scale Height', default=2, max_digits=7, decimal_places=4)         #scale height
 
     values = models.CharField(verbose_name='Values', max_length=1000, default="10,9,8,7,6,5,4,3,2,1")   
     values_count = models.IntegerField(verbose_name='Values Count', default=100)
 
-    range_height_ticks = models.IntegerField(verbose_name='Range Height Ticks', default=10)                              #range height ticks
+    scale_height_ticks = models.IntegerField(verbose_name='Scale Height Ticks', default=10)                              #range height ticks
 
     costs = models.CharField(verbose_name='Costs', max_length=100, default="0,0,0,0")    #costs for each Vertex
 
@@ -57,11 +58,12 @@ class ParameterSetTreatment(models.Model):
         self.range_height = new_ps.get("range_height")
 
         self.scale_width = new_ps.get("scale_width")
+        self.scale_height = new_ps.get("scale_height")
 
         self.values = new_ps.get("values")
         self.values_count = new_ps.get("values_count")
 
-        self.range_height_ticks = new_ps.get("range_height_ticks")
+        self.scale_height_ticks = new_ps.get("scale_height_ticks")
 
         self.costs = new_ps.get("costs")
 
@@ -108,11 +110,12 @@ class ParameterSetTreatment(models.Model):
             "range_height" : self.range_height,
 
             "scale_width" : self.scale_width,
+            "scale_height" : self.scale_height,
 
             "values" : self.values,
             "values_count" : self.values_count,
 
-            "range_height_ticks" : self.range_height_ticks ,
+            "scale_height_ticks" : self.scale_height_ticks ,
 
             "costs" : self.costs,
 

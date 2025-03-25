@@ -28,6 +28,7 @@ class ParameterSetTreatment(models.Model):
     scale_height_ticks = models.IntegerField(verbose_name='Scale Height Ticks', default=10)                              #range height ticks
 
     costs = models.CharField(verbose_name='Costs', max_length=100, default="0,0,0,0")    #costs for each Vertex
+    cost_percent = models.DecimalField(verbose_name='Scale Width', default=2, max_digits=7, decimal_places=4) 
 
     preserve_order = models.BooleanField(verbose_name='Preserve Order', default=False)                        #preserve order of players on battle space
     enable_chat = models.BooleanField( verbose_name='Enable Chat', default=True)                              #if true enable chat
@@ -60,12 +61,13 @@ class ParameterSetTreatment(models.Model):
         self.scale_width = new_ps.get("scale_width")
         self.scale_height = new_ps.get("scale_height")
 
-        self.values = new_ps.get("values")
-        self.values_count = new_ps.get("values_count")
+        self.values = new_ps.get("values", "")
+        self.values_count = new_ps.get("values_count", 100)
 
         self.scale_height_ticks = new_ps.get("scale_height_ticks")
 
         self.costs = new_ps.get("costs")
+        self.cost_percent = new_ps.get("cost_percent", 0.5)
 
         self.preserve_order = True if new_ps.get("preserve_order") else False
         self.enable_chat = True if new_ps.get("enable_chat") else False
@@ -118,6 +120,7 @@ class ParameterSetTreatment(models.Model):
             "scale_height_ticks" : self.scale_height_ticks ,
 
             "costs" : self.costs,
+            "cost_percent" : self.cost_percent,
 
             "preserve_order" : 1 if self.preserve_order else 0,
             "enable_chat" : 1 if self.enable_chat else 0,

@@ -21,7 +21,8 @@ class ParameterSetTreatment(models.Model):
     
     scale_width = models.DecimalField(verbose_name='Scale Width', default=2, max_digits=7, decimal_places=4)           #scale width
 
-    values = models.CharField(verbose_name='Values', max_length=1000, default="10,9,8,7,6,5,4,3,2,1")                     #Values for each box
+    values = models.CharField(verbose_name='Values', max_length=1000, default="10,9,8,7,6,5,4,3,2,1")   
+    values_count = models.IntegerField(verbose_name='Values Count', default=100)
 
     range_height_ticks = models.IntegerField(verbose_name='Range Height Ticks', default=10)                              #range height ticks
 
@@ -58,6 +59,7 @@ class ParameterSetTreatment(models.Model):
         self.scale_width = new_ps.get("scale_width")
 
         self.values = new_ps.get("values")
+        self.values_count = new_ps.get("values_count")
 
         self.range_height_ticks = new_ps.get("range_height_ticks")
 
@@ -108,6 +110,7 @@ class ParameterSetTreatment(models.Model):
             "scale_width" : self.scale_width,
 
             "values" : self.values,
+            "values_count" : self.values_count,
 
             "range_height_ticks" : self.range_height_ticks ,
 

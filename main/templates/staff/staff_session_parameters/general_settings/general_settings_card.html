@@ -44,7 +44,15 @@
             <div class="col text-start">
                 <span v-if="parameter_set.prolific_mode">Yes</span><span v-else>No</span>                
             </div>  
-        </div>  
+        </div> 
+        <div class="row">
+            <div class="col-7 text-end">
+                {{parameter_set_form.inheritance_window.label}}:                
+            </div>
+            <div class="col text-start">
+                [[parameter_set.inheritance_window]]               
+            </div>  
+        </div> 
         <div class="row">
             <div class="col-7 text-end">
                 {{parameter_set_form.test_mode.label}}:                

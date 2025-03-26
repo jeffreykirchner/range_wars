@@ -29,6 +29,8 @@ class ParameterSet(models.Model):
     prolific_mode = models.BooleanField(default=False, verbose_name="Prolific Mode")                          #put study into prolific mode
     prolific_completion_link = models.CharField(max_length = 1000, default = '', verbose_name = 'Forward to Prolific after sesison', blank=True, null=True) #at the completion of the study forward subjects to link
 
+    inheritance_window = models.IntegerField(verbose_name='Inheritance Window', default=10)                    #number of periods to average for inheritance
+
     reconnection_limit = models.IntegerField(verbose_name='Limit Subject Screen Reconnection Trys', default=25)       #limit subject screen reconnection trys
 
     test_mode = models.BooleanField(default=False, verbose_name='Test Mode')                                #if true subject screens will do random auto testing
@@ -64,6 +66,8 @@ class ParameterSet(models.Model):
 
             self.prolific_mode = True if new_ps.get("prolific_mode", False) else False
             self.prolific_completion_link = new_ps.get("prolific_completion_link", None)
+
+            self.inheritance_window = new_ps.get("inheritance_window", 10)
 
             self.reconnection_limit = new_ps.get("reconnection_limit", None)
 
@@ -188,6 +192,8 @@ class ParameterSet(models.Model):
 
         self.json_for_session["prolific_mode"] = 1 if self.prolific_mode else 0
         self.json_for_session["prolific_completion_link"] = self.prolific_completion_link
+
+        self.json_for_session["inheritance_window"] = self.inheritance_window
         
         self.json_for_session["reconnection_limit"] = self.reconnection_limit
 

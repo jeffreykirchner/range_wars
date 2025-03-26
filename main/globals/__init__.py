@@ -6,7 +6,7 @@ from .round_half_away_from_zero import round_up
 
 from .send_email import send_mass_email_service
 
-from .sessions import ChatTypes
 from .sessions import ExperimentPhase
+from .sessions import PeriodblockInheritance
 
 from .validate_input import is_positive_integer

@@ -34,6 +34,7 @@ from main.models import ParameterSet
 from main.globals import ExperimentPhase
 from main.globals import round_half_away_from_zero
 from main.globals import round_up
+from main.globals import PeriodblockInheritance
 
 #experiment sessoin
 class Session(models.Model):
@@ -288,6 +289,14 @@ class Session(models.Model):
         '''
         update treatment
         '''
+
+        #previous period block if any
+        previous_period_block = None
+        if self.world_state_local["current_period"] > 1:
+            previous_session_period_id = self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-1]
+            previous_session_period = self.world_state_local["session_periods"][str(previous_session_period_id)]
+            previous_period_block = self.world_state_local["period_blocks"][str(previous_session_period["parameter_set_periodblock_id"])]
+        
         
         # world_state = self.world_state
         # parameter_set = self.parameter_set.json()
@@ -304,9 +313,17 @@ class Session(models.Model):
 
             session_player["cost"] = costs[parameter_set_player_group["position"]-1]
             session_player["revenues"] = {str(i): 0 for i in treatment["values"].split(",")}
-            session_player["range_start"] = parameter_set_player_group["start_box"]
-            session_player["range_end"] = parameter_set_player_group["start_box"]
-            session_player["range_middle"] =  (Decimal(session_player["range_start"]) + Decimal(session_player["range_end"]) + 1) / 2
+
+            if treatment["inheritance"] == PeriodblockInheritance.PRESET or not previous_period_block:
+                session_player["range_start"] = parameter_set_player_group["start_box"]
+                session_player["range_end"] = parameter_set_player_group["start_box"]
+                session_player["range_middle"] =  (Decimal(session_player["range_start"]) + Decimal(session_player["range_end"]) + 1) / 2
+            elif treatment["inheritance"] == PeriodblockInheritance.COPY:
+                #keep range the same
+                pass
+            elif treatment["inheritance"] == PeriodblockInheritance.MIDPOINT:
+                #calc mid point from previous period block
+                pass
 
             #setup groups
             if str(parameter_set_player_group["group_number"]) not in world_state["groups"]:

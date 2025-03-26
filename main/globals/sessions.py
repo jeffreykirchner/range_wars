@@ -7,13 +7,6 @@ from django.utils.translation import gettext_lazy as _
 
 import main
 
-class ChatTypes(models.TextChoices):
-    '''
-    chat types
-    '''
-    ALL = 'All', _('All')
-    INDIVIDUAL = 'Individual', _('Individual')
-
 class ExperimentPhase(models.TextChoices):
     '''
     experiment phases
@@ -22,3 +15,11 @@ class ExperimentPhase(models.TextChoices):
     RUN = 'Run', _('Run')
     NAMES = 'Names', _('Names')
     DONE = 'Done', _('Done')
+
+class PeriodblockInheritance(models.TextChoices):
+    '''
+    periodlbock inheritance
+    '''
+    PRESET = 'Preset', _('Preset')
+    COPY =  'Copy', _('Copy')
+    MIDPOINT = 'Midpoint', _('Midpoint')

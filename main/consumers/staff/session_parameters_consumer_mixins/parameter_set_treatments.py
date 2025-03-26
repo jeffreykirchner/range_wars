@@ -112,9 +112,10 @@ def take_update_parameter_set_treatment(data):
         parameter_set_treatment.costs = ','.join([str(-1) for _ in range(4)])
 
         cost_parameter = Decimal(0)
-        for i in range(1000):
+        total_cost =  Decimal(0)
+        for i in range(5000):
             #get cumulative box values
-            total_cost = 0
+            total_cost =  Decimal(0)
             for i in values:
                 if Decimal(i) > cost_parameter:
                     total_cost += cost_parameter*box_value_w
@@ -123,11 +124,14 @@ def take_update_parameter_set_treatment(data):
 
             #calcuate percentage of total revenue
             if total_cost / total_revenue >= parameter_set_treatment.cost_percent:
-                cost_parameter = round(cost_parameter, 2)
+                cost_parameter = round(cost_parameter, 3)
                 parameter_set_treatment.costs = ','.join([str(cost_parameter) for _ in range(4)])
                 break
 
-            cost_parameter += Decimal(0.01)
+            cost_parameter += Decimal(0.001)
+
+        parameter_set_treatment.cost_area = total_cost
+        parameter_set_treatment.revenue_area = total_revenue
 
         parameter_set_treatment.save()
         parameter_set_treatment.parameter_set.update_json_fk(update_treatments=True)

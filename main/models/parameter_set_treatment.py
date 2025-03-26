@@ -28,7 +28,10 @@ class ParameterSetTreatment(models.Model):
     scale_height_ticks = models.IntegerField(verbose_name='Scale Height Ticks', default=10)                              #range height ticks
 
     costs = models.CharField(verbose_name='Costs', max_length=100, default="0,0,0,0")    #costs for each Vertex
-    cost_percent = models.DecimalField(verbose_name='Scale Width', default=2, max_digits=7, decimal_places=4) 
+    cost_percent = models.DecimalField(verbose_name='Scale Width', default=0.1, max_digits=7, decimal_places=4) 
+
+    cost_area = models.DecimalField(verbose_name='Cost Area', default=0, max_digits=8, decimal_places=4)
+    revenue_area = models.DecimalField(verbose_name='Revenue Area', default=0, max_digits=8, decimal_places=4)
 
     preserve_order = models.BooleanField(verbose_name='Preserve Order', default=False)                        #preserve order of players on battle space
     enable_chat = models.BooleanField( verbose_name='Enable Chat', default=True)                              #if true enable chat
@@ -58,8 +61,8 @@ class ParameterSetTreatment(models.Model):
         self.range_width = new_ps.get("range_width")
         self.range_height = new_ps.get("range_height")
 
-        self.scale_width = new_ps.get("scale_width")
-        self.scale_height = new_ps.get("scale_height")
+        self.scale_width = new_ps.get("scale_width", 2)
+        self.scale_height = new_ps.get("scale_height", 2)
 
         self.values = new_ps.get("values", "")
         self.values_count = new_ps.get("values_count", 100)
@@ -68,6 +71,9 @@ class ParameterSetTreatment(models.Model):
 
         self.costs = new_ps.get("costs")
         self.cost_percent = new_ps.get("cost_percent", 0.5)
+
+        self.cost_area = new_ps.get("cost_area", 0)
+        self.revenue_area = new_ps.get("revenue_area", 0)
 
         self.preserve_order = True if new_ps.get("preserve_order") else False
         self.enable_chat = True if new_ps.get("enable_chat") else False
@@ -121,6 +127,9 @@ class ParameterSetTreatment(models.Model):
 
             "costs" : self.costs,
             "cost_percent" : self.cost_percent,
+
+            "cost_area" : self.cost_area,
+            "revenue_area" : self.revenue_area,
 
             "preserve_order" : 1 if self.preserve_order else 0,
             "enable_chat" : 1 if self.enable_chat else 0,

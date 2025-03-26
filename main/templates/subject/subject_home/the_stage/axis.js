@@ -71,7 +71,7 @@ setup_axis : function setup_axis(){
 
         pixi_container_main.addChild(tick);
         
-        let tick_label = new PIXI.Text({text:y_value.toString(),style:axis_style});
+        let tick_label = new PIXI.Text({text:y_value.toFixed(2),style:axis_style});
         tick_label.anchor.set(1, 0.5);
         tick_label.position.set(y_axis_margin-tick_length-2, origin_y-y);
         pixi_container_main.addChild(tick_label);

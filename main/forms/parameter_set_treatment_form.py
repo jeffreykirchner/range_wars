@@ -61,9 +61,11 @@ class ParameterSetTreatmentForm(forms.ModelForm):
     
     cost_percent = forms.DecimalField(label='Cost Percent',
                                         min_value=0,
+                                        max_value=1,
                                         widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_treatment.cost_percent",
-                                                                        "step":"1",
-                                                                        "min":"0"}))
+                                                                        "step":"0.1",
+                                                                        "min":"0",
+                                                                        "max":"1"}))
     
     preserve_order = forms.ChoiceField(label='Preserve Order',
                                       choices=((1, 'Yes'), (0, 'No')),

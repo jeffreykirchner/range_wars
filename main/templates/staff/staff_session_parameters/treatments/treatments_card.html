@@ -33,22 +33,25 @@
                                     Values
                                 </th>
                                 <th scope="col" class = "m-1 p-1">
-                                    Costs
+                                    Cost<br>Lines
+                                </th>
+                                <th scope="col" class = "m-1 p-1">
+                                    Areas
                                 </th>  
                                 <th scope="col" class = "m-1 p-1">
-                                    Preserve Order
+                                    Preserve<br>Order
                                 </th>  
                                 <th scope="col" class = "m-1 p-1">
-                                    Enable Chat
+                                    Enable<br>Chat
                                 </th>
                                 <th scope="col" class = "m-1 p-1">
-                                    Enable Transfer of Profits
+                                    Enable Profit<br>Transfer 
                                 </th>
                                 <th scope="col" class = "m-1 p-1">
-                                    Enable Contest
+                                    Enable<br>Contest
                                 </th>
                                 <th scope="col" class = "m-1 p-1">
-                                    Enable Ready Button
+                                    Enable Ready<br>Button
                                 </th>
                             </tr>
                         </thead>
@@ -76,6 +79,10 @@
                                 <td v-on:click="show_edit_parameter_set_treatment(p)" 
                                     class="player_table_cell">
                                     [[temp_p.costs]]
+                                </td>
+                                <td v-on:click="show_edit_parameter_set_treatment(p)" 
+                                    class="player_table_cell">
+                                    [[temp_p.revenue_area]] Rev<br>[[temp_p.cost_area]] Cost
                                 </td>
                                 <td v-on:click="show_edit_parameter_set_treatment(p)" 
                                     class="player_table_cell">

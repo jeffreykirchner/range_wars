@@ -103,7 +103,7 @@ def take_update_parameter_set_treatment(data):
 
         #calculate costs based on percent of total revenue
         box_value_w = Decimal(parameter_set_treatment.range_width) / parameter_set_treatment.values_count
-        total_revenue = 0
+        total_revenue = Decimal(0)
         for i in range(0, parameter_set_treatment.values_count):
             value = Decimal(values[i])
             revenue = value * box_value_w
@@ -111,24 +111,27 @@ def take_update_parameter_set_treatment(data):
 
         parameter_set_treatment.costs = ','.join([str(-1) for _ in range(4)])
 
-        cost_parameter = Decimal(0)
-        total_cost =  Decimal(0)
-        for i in range(5000):
-            #get cumulative box values
-            total_cost =  cost_parameter*box_value_w*len(values)
-            # for i in values:
-            #     if Decimal(i) > cost_parameter:
-            #         total_cost += cost_parameter*box_value_w
-            #     else:
-            #         total_cost += Decimal(i)*box_value_w
+        cost_parameter =  (total_revenue * Decimal(parameter_set_treatment.cost_percent)) / Decimal(parameter_set_treatment.range_width)
+        cost_parameter = round(cost_parameter, 4)
+        total_cost =   Decimal(parameter_set_treatment.range_width) * cost_parameter
+        parameter_set_treatment.costs = ','.join([str(cost_parameter) for _ in range(4)])
 
-            #calcuate percentage of total revenue
-            if total_cost / total_revenue >= parameter_set_treatment.cost_percent:
-                cost_parameter = round(cost_parameter, 4)
-                parameter_set_treatment.costs = ','.join([str(cost_parameter) for _ in range(4)])
-                break
+        # for i in range(5000):
+        #     #get cumulative box values
+        #     total_cost =  cost_parameter*box_value_w*len(values)
+        #     # for i in values:
+        #     #     if Decimal(i) > cost_parameter:
+        #     #         total_cost += cost_parameter*box_value_w
+        #     #     else:
+        #     #         total_cost += Decimal(i)*box_value_w
 
-            cost_parameter += Decimal(0.0001)
+        #     #calcuate percentage of total revenue
+        #     if total_cost / total_revenue >= parameter_set_treatment.cost_percent:
+        #         cost_parameter = round(cost_parameter, 4)
+        #         parameter_set_treatment.costs = ','.join([str(cost_parameter) for _ in range(4)])
+        #         break
+
+        #     cost_parameter += Decimal(0.0001)
 
         parameter_set_treatment.cost_area = total_cost
         parameter_set_treatment.revenue_area = total_revenue

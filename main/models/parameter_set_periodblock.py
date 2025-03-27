@@ -50,7 +50,7 @@ class ParameterSetPeriodblock(models.Model):
         self.period_start = new_ps.get("period_start")
         self.period_end = new_ps.get("period_end")
 
-        self.inheritance = new_ps.get("inheritance", TreatmentInheritance.PRESET)
+        self.inheritance = new_ps.get("inheritance", PeriodblockInheritance.PRESET)
 
         help_doc_id = new_ps.get("help_doc", None)
         if help_doc_id:

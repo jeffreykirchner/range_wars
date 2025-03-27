@@ -115,20 +115,20 @@ def take_update_parameter_set_treatment(data):
         total_cost =  Decimal(0)
         for i in range(5000):
             #get cumulative box values
-            total_cost =  Decimal(0)
-            for i in values:
-                if Decimal(i) > cost_parameter:
-                    total_cost += cost_parameter*box_value_w
-                else:
-                    total_cost += Decimal(i)*box_value_w
+            total_cost =  cost_parameter*box_value_w*len(values)
+            # for i in values:
+            #     if Decimal(i) > cost_parameter:
+            #         total_cost += cost_parameter*box_value_w
+            #     else:
+            #         total_cost += Decimal(i)*box_value_w
 
             #calcuate percentage of total revenue
             if total_cost / total_revenue >= parameter_set_treatment.cost_percent:
-                cost_parameter = round(cost_parameter, 3)
+                cost_parameter = round(cost_parameter, 4)
                 parameter_set_treatment.costs = ','.join([str(cost_parameter) for _ in range(4)])
                 break
 
-            cost_parameter += Decimal(0.001)
+            cost_parameter += Decimal(0.0001)
 
         parameter_set_treatment.cost_area = total_cost
         parameter_set_treatment.revenue_area = total_revenue

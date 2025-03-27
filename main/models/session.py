@@ -292,10 +292,10 @@ class Session(models.Model):
 
         #previous period block if any
         previous_period_block = None
-        if self.world_state_local["current_period"] > 1:
-            previous_session_period_id = self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-1]
-            previous_session_period = self.world_state_local["session_periods"][str(previous_session_period_id)]
-            previous_period_block = self.world_state_local["period_blocks"][str(previous_session_period["parameter_set_periodblock_id"])]
+        if world_state["current_period"] > 1:
+            previous_session_period_id = world_state["session_periods_order"][world_state["current_period"]-1]
+            previous_session_period = world_state["session_periods"][str(previous_session_period_id)]
+            previous_period_block = world_state["period_blocks"][str(previous_session_period["parameter_set_periodblock_id"])]
         
         
         # world_state = self.world_state
@@ -314,14 +314,14 @@ class Session(models.Model):
             session_player["cost"] = costs[parameter_set_player_group["position"]-1]
             session_player["revenues"] = {str(i): 0 for i in treatment["values"].split(",")}
 
-            if treatment["inheritance"] == PeriodblockInheritance.PRESET or not previous_period_block:
+            if period_block["inheritance"] == PeriodblockInheritance.PRESET or not previous_period_block:
                 session_player["range_start"] = parameter_set_player_group["start_box"]
                 session_player["range_end"] = parameter_set_player_group["start_box"]
                 session_player["range_middle"] =  (Decimal(session_player["range_start"]) + Decimal(session_player["range_end"]) + 1) / 2
-            elif treatment["inheritance"] == PeriodblockInheritance.COPY:
+            elif period_block["inheritance"] == PeriodblockInheritance.COPY:
                 #keep range the same
                 pass
-            elif treatment["inheritance"] == PeriodblockInheritance.MIDPOINT:
+            elif period_block["inheritance"] == PeriodblockInheritance.MIDPOINT:
                 #calc mid point from previous period block
                 pass
 

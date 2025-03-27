@@ -62,7 +62,7 @@ class TimerMixin():
         
         # logger.info(f"start_timer complete {event}")
 
-    async def continue_timer(self, event):
+    async def continue_timer(self, event, force_advance=False):
         '''
         continue to next second of the experiment
         '''
@@ -98,7 +98,7 @@ class TimerMixin():
             if self.world_state_local["timer_history"][-1]["count"] == math.floor(ts.seconds):
                 send_update = False
 
-            if send_update:
+            if send_update or force_advance:
                 ts = datetime.now() - datetime.strptime(self.world_state_local["timer_history"][-1]["time"],"%Y-%m-%dT%H:%M:%S.%f")
 
                 self.world_state_local["timer_history"][-1]["count"] = math.floor(ts.seconds)
@@ -152,7 +152,7 @@ class TimerMixin():
                             #set ranges for new period block
                             self.world_state_local = await sync_to_async(session.update_treatment)(self.world_state_local, self.parameter_set_local)
 
-        if send_update:
+        if send_update or force_advance:
             
             self.world_state_local = await sync_to_async(session.update_revenues)(self.world_state_local, self.parameter_set_local)
 
@@ -251,6 +251,12 @@ class TimerMixin():
         session = await Session.objects.aget(id=self.session_id)
         period_block = self.world_state_local["period_blocks"][str(self.world_state_local["current_period_block"])]
 
+        #store period block data
+        summary_data = {"session_players": self.world_state_local["session_players"]}
+
+        await SessionPeriod.objects.filter(session=session, period_number=self.world_state_local["current_period"]) \
+                                          .aupdate(summary_data=summary_data)
+
         self.world_state_local["current_period"] = event_data["period_number"]
 
         new_current_session_period_id = self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-1]
@@ -266,7 +272,7 @@ class TimerMixin():
             #set ranges for new period block
             self.world_state_local = await sync_to_async(session.update_treatment)(self.world_state_local, self.parameter_set_local)
 
-        await self.continue_timer(event)
+        await self.continue_timer(event, force_advance=True)
 
     async def get_world_state_local(self, event):
         '''

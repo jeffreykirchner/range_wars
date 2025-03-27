@@ -19,7 +19,7 @@ from main.models import Session
 
 from main.routing import websocket_urlpatterns
 
-class TestSubjectConsumer(TestCase):
+class TestSubjectPeriodblock(TestCase):
     fixtures = ['auth_user.json', 'main.json']
 
     user = None
@@ -33,7 +33,7 @@ class TestSubjectConsumer(TestCase):
 
         logger.info('setup tests')
 
-        self.session = Session.objects.get(title="T2")
+        self.session = Session.objects.get(title="T1")
         self.parameter_set_json = self.session.parameter_set.json()
 
     def tearDown(self):
@@ -155,7 +155,7 @@ class TestSubjectConsumer(TestCase):
         # del self.communicator_staff
 
     @pytest.mark.asyncio
-    async def test_chat_group(self):
+    async def test_inheritance_copy_forward(self):
         '''
         test get session subject from consumer
         '''        
@@ -168,43 +168,68 @@ class TestSubjectConsumer(TestCase):
         communicator_subject, communicator_staff = await self.set_up_communicators(communicator_subject, communicator_staff)
         communicator_subject, communicator_staff = await self.start_session(communicator_subject, communicator_staff)
 
-        session = await Session.objects.aget(title="2")
-        world_state = session.world_state
-
-        #send chat
-        message = {'message_type' : 'chat',
-                   'message_text' : {'text': 'How do you do?',},
-                   'message_target' : 'group', 
-                  }
+        #start timer
+        message = {'message_type' : 'start_timer',
+            'message_text' : {"action": "start"},
+            'message_target' : 'self', 
+            }
         
-        session_player_target = world_state["session_players"][str(communicator_subject[0].scope["session_player_id"])]
-        await communicator_subject[0].send_json_to(message)
-
-        for i in communicator_subject:
-            session_player = world_state["session_players"][str(i.scope["session_player_id"])]
-
-            if session_player["group_number"] == session_player_target["group_number"]:
-                response = await i.receive_json_from()
-                message_data = response['message']['message_data']
-                self.assertEqual(message_data['status'],'success')
-                self.assertEqual(message_data['text'],'How do you do?')
-            else:
-                response = await i.receive_nothing()
-                self.assertTrue(response)
-        
-        #staff response
+        await communicator_staff.send_json_to(message)
         response = await communicator_staff.receive_json_from()
-        message_data = response['message']['message_data']
-        self.assertEqual(message_data['status'],'success')
-        self.assertEqual(message_data['text'],'How do you do?')
+
+        #set period block to play
+        await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
+        response = await communicator_staff.receive_json_from()
+        world_state = response['message']['message_data']
+
+        world_state["period_blocks"][str(world_state["current_period_block"])]["phase"] = "play"
+
+        await communicator_staff.send_json_to({"message_type": "set_world_state_local", "message_text": {"world_state": world_state}})
+        response = await communicator_staff.receive_json_from()
+        world_state = response['message']['message_data']
+
+        #force to next period block, storing summary data
+        for i in range(11):
+            message = {'message_type' : 'force_advance_to_period',
+                        'message_text' : {'period_number':i+1,},
+                        'message_target' : 'self', 
+                       }
+            
+            await communicator_staff.send_json_to(message)
+            response = await communicator_staff.receive_json_from()
+        
+        session_period = await self.session.session_periods.aget(period_number=1)
+        self.assertNotEqual(session_period.summary_data.get("session_players", None), None)
+        
+        #range copied forward
+        await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
+        response = await communicator_staff.receive_json_from()
+        world_state = response['message']['message_data']
+
+        self.assertEqual(world_state["current_period"], 11)
+
+        session_player = world_state["session_players"][str(communicator_subject[0].scope["session_player_id"])]
+        self.assertEqual(session_player["range_start"], 10)
+        self.assertEqual(session_player["range_end"], 10)
+        
+        session_player = world_state["session_players"][str(communicator_subject[1].scope["session_player_id"])]
+        self.assertEqual(session_player["range_start"], 20)
+        self.assertEqual(session_player["range_end"], 20)
+
+        session_player = world_state["session_players"][str(communicator_subject[2].scope["session_player_id"])]
+        self.assertEqual(session_player["range_start"], 30)
+        self.assertEqual(session_player["range_end"], 30)
+
+        session_player = world_state["session_players"][str(communicator_subject[3].scope["session_player_id"])]
+        self.assertEqual(session_player["range_start"], 40)
+        self.assertEqual(session_player["range_end"], 40)
+
     
     @pytest.mark.asyncio
-    async def test_ranges(self):
+    async def test_inheritance_mid_point(self):
         '''
-        test allowable ranges
-        '''
-
-        #advance to period block 2
+        test get session subject from consumer
+        '''        
         communicator_subject = []
         communicator_staff = None
 
@@ -216,143 +241,78 @@ class TestSubjectConsumer(TestCase):
 
         #start timer
         message = {'message_type' : 'start_timer',
-                   'message_text' : {"action": "start"},
-                   'message_target' : 'self', 
-                  }
+            'message_text' : {"action": "start"},
+            'message_target' : 'self', 
+            }
         
         await communicator_staff.send_json_to(message)
         response = await communicator_staff.receive_json_from()
 
-        #force advance to period 6
-        message = {'message_type' : 'force_advance_to_period',
-                   'message_text' : {'period_number': 6,},
-                   'message_target' : 'self', 
-                  }
-        
-        await communicator_staff.send_json_to(message)
-        response = await communicator_staff.receive_json_from()
-        
-        #submit inital ranges
-        for i in communicator_subject:
-            data = {"range_start": 0,       
-                    "range_end": 0}
-            
-            message = {'message_type' : 'range',
-                       'message_text' : data,
-                       'message_target' : 'group', }
-
-            await i.send_json_to(message)
-
-            response = await i.receive_json_from()
-            message_data = response['message']['message_data']
-            self.assertEqual(message_data['status'],'success')
-
-            response = await communicator_staff.receive_json_from()
-        
+        #set period block to play
         await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
         response = await communicator_staff.receive_json_from()
         world_state = response['message']['message_data']
 
-        session_players = world_state["session_players"]
+        world_state["period_blocks"][str(world_state["current_period_block"])]["phase"] = "play"
 
-        for i in session_players:
-
-            self.assertEqual(session_players[i]["range_start"], 0)
-            self.assertEqual(session_players[i]["range_end"], 0)
-
-            self.assertEqual(session_players[i]["total_cost"], '0.01')
-            self.assertEqual(session_players[i]["total_revenue"], '0.04')
-            self.assertEqual(session_players[i]["total_profit"], '0.03')
-
-        
-        #expand player 2 ranges
-        data = {"range_start": 0,       
-                "range_end": 4}
-            
-        message = {'message_type' : 'range',
-                   'message_text' : data,
-                   'message_target' : 'group', }
-
-        await communicator_subject[1].send_json_to(message)
-
-        response = await communicator_subject[1].receive_json_from()
-        message_data = response['message']['message_data']
-        self.assertEqual(message_data['status'],'success')
-
-        response = await communicator_staff.receive_json_from()
-
-        await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
-        response = await communicator_staff.receive_json_from()
-        world_state = response['message']['message_data']
-
-        session_player = world_state["session_players"][str(communicator_subject[1].scope["session_player_id"])]
-
-        self.assertEqual(session_player["range_start"], 0)
-        self.assertEqual(session_player["range_end"], 4)
-
-        self.assertEqual(session_player["total_cost"], '0.05')
-        self.assertEqual(session_player["total_revenue"], '0.75')
-        self.assertEqual(session_player["total_profit"], '0.70')
-
-    @pytest.mark.asyncio
-    async def test_transfer_cents(self):
-        '''
-        test transfering cents
-        '''
-
-        communicator_subject = []
-        communicator_staff = None
-
-        logger = logging.getLogger(__name__)
-        logger.info(f"called from test {sys._called_from_test}" )
-
-        communicator_subject, communicator_staff = await self.set_up_communicators(communicator_subject, communicator_staff)
-        communicator_subject, communicator_stff = await self.start_session(communicator_subject, communicator_staff)
-
-        #transfer funds when not enough
-        data = {"amount": 1,
-                "recipient": communicator_subject[1].scope["session_player_id"]};
-        
-        await communicator_subject[0].send_json_to({"message_type": "cents", 
-                                                    "message_text": data, 
-                                                    "message_target": "group"})
-        
-        response = await communicator_subject[0].receive_json_from()
-        message_data = response['message']['message_data']
-        self.assertEqual(message_data['status'],'fail')
-        self.assertEqual(message_data['error_message'], "Insufficient funds.")
-        response = await communicator_staff.receive_json_from()
-
-        #transfer funds when enough
-        await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
-        response = await communicator_staff.receive_json_from()
-        world_state = response['message']['message_data']
-
-        world_state["session_players"][str(communicator_subject[0].scope["session_player_id"])]["earnings"] = "100"
         await communicator_staff.send_json_to({"message_type": "set_world_state_local", "message_text": {"world_state": world_state}})
         response = await communicator_staff.receive_json_from()
         world_state = response['message']['message_data']
 
-        self.assertEqual(world_state["session_players"][str(communicator_subject[0].scope["session_player_id"])]["earnings"], "100")
-
-        data = {"amount": 1,
-                "recipient": communicator_subject[1].scope["session_player_id"]};
+        #force to next period block, storing summary data
+        for i in range(11):
+            message = {'message_type' : 'force_advance_to_period',
+                        'message_text' : {'period_number':i+1,},
+                        'message_target' : 'self', 
+                       }
+            
+            await communicator_staff.send_json_to(message)
+            response = await communicator_staff.receive_json_from()
         
-        await communicator_subject[0].send_json_to({"message_type": "cents", 
-                                                    "message_text": data, 
-                                                    "message_target": "group"})
+        session_period = await self.session.session_periods.aget(period_number=1)
+        self.assertNotEqual(session_period.summary_data.get("session_players", None), None)
         
-        response = await communicator_subject[0].receive_json_from()
-        message_data = response['message']['message_data']
-        self.assertEqual(message_data['status'],'success')
-        response = await communicator_staff.receive_json_from()
-
+        #range copied forward
         await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
         response = await communicator_staff.receive_json_from()
         world_state = response['message']['message_data']
 
-        self.assertEqual(world_state["session_players"][str(communicator_subject[0].scope["session_player_id"])]["earnings"], "99")
-        self.assertEqual(world_state["session_players"][str(communicator_subject[1].scope["session_player_id"])]["earnings"], "1")
+        self.assertEqual(world_state["current_period"], 11)
+
+        #check averages
+        for i in range(11, 21):
+
+            await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
+            response = await communicator_staff.receive_json_from()
+            world_state = response['message']['message_data']
+
+            session_player = world_state["session_players"][str(communicator_subject[0].scope["session_player_id"])]
+            session_player["range_start"] = 10
+            session_player["range_end"] = i+10
+
+            await communicator_staff.send_json_to({"message_type": "set_world_state_local", "message_text": {"world_state": world_state}})
+            response = await communicator_staff.receive_json_from()
+
+            message = {'message_type' : 'force_advance_to_period',
+                        'message_text' : {'period_number':i+1,},
+                        'message_target' : 'self', 
+                       }
+            
+            await communicator_staff.send_json_to(message)
+            response = await communicator_staff.receive_json_from()
+        
+        #range copied forward
+        await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
+        response = await communicator_staff.receive_json_from()
+        world_state = response['message']['message_data']
+
+        self.assertEqual(world_state["current_period"], 21)
+
+        session_player = world_state["session_players"][str(communicator_subject[0].scope["session_player_id"])]
+        self.assertEqual(session_player["range_start"], 17)
+        self.assertEqual(session_player["range_end"], 17)
+        self.assertEqual(session_player["position"], 1)
+
 
 
 

@@ -96,7 +96,7 @@ do_test_mode_run: function do_test_mode_run()
     if(go)
         if(app.chat_text != "")
         {
-            if(!app.show_chat())
+            if(!app.show_chat() || app.show_ready_button())
             {
                 app.chat_text = "";
                 go = false;
@@ -115,7 +115,7 @@ do_test_mode_run: function do_test_mode_run()
     if(app.session.world_state.finished) return;
         
     if(go)
-        switch (app.random_number(1, 4)){
+        switch (app.random_number(1, 5)){
             case 1:
                 app.do_test_mode_chat();
                 break;            
@@ -128,6 +128,9 @@ do_test_mode_run: function do_test_mode_run()
             case 4:
                 app.test_mode_submit_range();
                 break;
+            case 5:
+                app.test_mode_ready_button();
+                break;
         }
 },
 
@@ -135,7 +138,9 @@ do_test_mode_run: function do_test_mode_run()
  * test mode chat
  */
 do_test_mode_chat: function do_test_mode_chat(){
+    app.chat_text = "";
     if(!app.show_chat()) return;
+    if(app.show_ready_button()) return;
     if(app.working) return;
 
     app.chat_text = app.random_string(5, 20);
@@ -161,13 +166,26 @@ test_mode_move_range: function test_mode_move_range()
 },
 
 /**
- * test mode move submit range
+ * test mode submit range
  */
 test_mode_submit_range: function test_mode_submit_range()
 {
     if(app.working) return;
 
     if(!app.show_contest_controls()) return;
+
+    app.send_range();
+},
+
+/**
+ * test mode press ready to go on button
+ */
+test_mode_ready_button: function test_mode_ready_button()
+{
+    if(app.working) return;
+
+    if(!app.show_ready_button()) return;
+    if(app.get_current_period_block().session_players[app.session_player.id.toString()].ready) return;
 
     app.send_range();
 },

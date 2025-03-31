@@ -212,7 +212,7 @@
                     </div>
                 </div>
 
-                <div class="row" v-if="show_chat()">
+                <div class="row" v-if="show_chat() && !show_ready_button()">
                     <div class="col text-end pe-4 text-secondary">
                         [[chat_text.length]]/100
                     </div>

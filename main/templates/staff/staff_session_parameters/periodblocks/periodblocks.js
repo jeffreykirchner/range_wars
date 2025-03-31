@@ -39,3 +39,12 @@ send_add_parameter_set_periodblock: function send_add_parameter_set_periodblock(
     app.send_message("add_parameterset_periodblock", {"session_id" : app.session.id});
                                                    
 },
+
+/**
+ * duplicate the selected parameterset periodblock
+ */
+send_duplicate_parameter_set_periodblock: function send_duplicate_parameter_set_periodblock(){
+    app.working = true;
+    app.send_message("duplicate_parameterset_periodblock", {"session_id" : app.session.id,
+                                                            "parameterset_periodblock_id" : app.current_parameter_set_periodblock.id,});
+},

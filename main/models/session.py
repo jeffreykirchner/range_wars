@@ -349,12 +349,18 @@ class Session(models.Model):
             #setup groups
             if str(parameter_set_player_group["group_number"]) not in world_state["groups"]:
                 world_state["groups"][str(parameter_set_player_group["group_number"])] = []
-            
-            world_state["group_map"][str(parameter_set_player_group["group_number"]) + "-" + str(parameter_set_player_group["position"])] = i
+
+            if period_block["inheritance"] == PeriodblockInheritance.PRESET or not previous_period_block:     
+                #load new position from parameters       
+                world_state["group_map"][str(parameter_set_player_group["group_number"]) + "-" + str(parameter_set_player_group["position"])] = i
+                session_player["position"] = parameter_set_player_group["position"]
+            else:
+                #keep current position
+                world_state["group_map"][str(parameter_set_player_group["group_number"]) + "-" + str(session_player["position"])] = i
 
             world_state["groups"][str(parameter_set_player_group["group_number"])].append(int(i))
             session_player["group_number"] = parameter_set_player_group["group_number"]
-            session_player["position"] = parameter_set_player_group["position"]
+            
         
         return world_state
 

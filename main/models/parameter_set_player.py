@@ -63,6 +63,7 @@ class ParameterSetPlayer(models.Model):
                 parameter_set_player_group.parameter_set_period_block_id = int(new_parameter_set_periodblocks_map[str(pg)])
                 parameter_set_player_group.group_number = new_parameter_set_player_group["group_number"]
                 parameter_set_player_group.position = new_parameter_set_player_group["position"]
+                parameter_set_player_group.start_box = new_parameter_set_player_group["start_box"]
 
                 parameter_set_player_group.save()
 

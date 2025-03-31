@@ -14,7 +14,7 @@ class ParameterSetTreatment(models.Model):
 
     parameter_set = models.ForeignKey(ParameterSet, on_delete=models.CASCADE, related_name="parameter_set_treatments")
     
-    id_label_pst = models.CharField(verbose_name='ID Label', max_length=30, default="Name Here")      #id label shown on screen to subjects
+    id_label_pst = models.CharField(verbose_name='ID Label', max_length=100, default="Name Here")      #id label shown on screen to subjects
 
     range_width = models.DecimalField(verbose_name='Range Width', default=2, max_digits=7, decimal_places=4)             #range width
     range_height = models.DecimalField(verbose_name='Range Height', default=2, max_digits=7, decimal_places=4)           #range height

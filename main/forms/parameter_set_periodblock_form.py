@@ -8,6 +8,8 @@ from main.models import ParameterSetTreatment
 from main.models import ParameterSetPeriodblock
 from main.models import HelpDocsSubject
 
+from main.globals import PeriodblockInheritance
+
 class ParameterSetPeriodblockForm(forms.ModelForm):
     '''
     parameterset periodblock edit form
@@ -29,6 +31,10 @@ class ParameterSetPeriodblockForm(forms.ModelForm):
                                                                     "step":"1",
                                                                     "min":"1"}))
     
+    inheritance = forms.ChoiceField(label='Inheritance',
+                                    choices=PeriodblockInheritance.choices,
+                                    widget=forms.Select(attrs={"v-model":"current_parameter_set_periodblock.inheritance",}))
+
     help_doc = forms.ModelChoiceField(label='Optional Help Doc Pop-Up',
                                              required=False,
                                              queryset=HelpDocsSubject.objects.none(),
@@ -36,5 +42,5 @@ class ParameterSetPeriodblockForm(forms.ModelForm):
     
     class Meta:
         model=ParameterSetPeriodblock
-        fields =[ 'parameter_set_treatment', 'period_start', 'period_end', 'help_doc',]
+        fields =[ 'parameter_set_treatment', 'period_start', 'period_end', 'inheritance', 'help_doc', 'inheritance']
     

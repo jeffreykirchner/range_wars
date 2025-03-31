@@ -9,6 +9,8 @@ from main.models import ParameterSet
 from main.models import ParameterSetTreatment
 from main.models import HelpDocsSubject
 
+from main.globals import PeriodblockInheritance
+
 import main
 
 class ParameterSetPeriodblock(models.Model):
@@ -22,6 +24,8 @@ class ParameterSetPeriodblock(models.Model):
 
     period_start = models.IntegerField(verbose_name='Period Start', default=1)         #starting period
     period_end = models.IntegerField(verbose_name='Period End', default=1)             #ending period
+
+    inheritance = models.CharField(verbose_name='Inheritance', max_length=30, choices=PeriodblockInheritance.choices, default=PeriodblockInheritance.PRESET)
 
     timestamp = models.DateTimeField(auto_now_add=True)
     updated= models.DateTimeField(auto_now=True)
@@ -45,6 +49,8 @@ class ParameterSetPeriodblock(models.Model):
 
         self.period_start = new_ps.get("period_start")
         self.period_end = new_ps.get("period_end")
+
+        self.inheritance = new_ps.get("inheritance", PeriodblockInheritance.PRESET)
 
         help_doc_id = new_ps.get("help_doc", None)
         if help_doc_id:
@@ -92,6 +98,8 @@ class ParameterSetPeriodblock(models.Model):
 
             "period_start" : self.period_start,
             "period_end" : self.period_end,
+
+            "inheritance" : self.inheritance,
 
         }
     

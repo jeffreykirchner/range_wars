@@ -91,5 +91,5 @@ class ParameterSetTreatmentForm(forms.ModelForm):
         model=ParameterSetTreatment
         fields =['id_label_pst',  'range_width', 'range_height', 'scale_width', 'scale_height',
                  'scale_height_ticks', 'values_count', 'cost_percent', 
-                 'preserve_order', 'enable_chat', 'enable_transfer_cents', 'enable_contest', 'enable_ready_button']
+                 'preserve_order', 'enable_chat', 'enable_transfer_cents', 'enable_contest', 'enable_ready_button',]
     

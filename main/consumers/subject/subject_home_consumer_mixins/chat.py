@@ -10,7 +10,6 @@ from django.core.serializers.json import DjangoJSONEncoder
 from main.models import Session
 from main.models import SessionPlayer
 
-from main.globals import ChatTypes
 from main.decorators import check_message_for_me
 
 import main

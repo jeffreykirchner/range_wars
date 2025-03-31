@@ -26,11 +26,18 @@
             </div>
             <div class="modal-footer">
                 <button type="button"
+                        class="btn btn-outline-success"
+                        title="Duplicate period block."
+                        v-on:click = "send_duplicate_parameter_set_periodblock()"
+                        v-bind:disabled="reconnecting || working">
+                    Duplicate Period Block <i class="far fa-clone"></i>
+                </button>
+                <button type="button"
                         class="btn btn-outline-danger"
                         title="Remove periodblock from parameter set."
                         v-on:click = "send_remove_parameter_set_periodblock()"
                         v-bind:disabled="reconnecting || working">
-                    Delete periodblock <i class="far fa-trash-alt"></i>
+                    Delete Period Block <i class="far fa-trash-alt"></i>
                 </button>
                 <button type="button"
                         class="btn btn-outline-primary"

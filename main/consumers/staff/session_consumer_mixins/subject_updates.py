@@ -228,13 +228,13 @@ class SubjectUpdatesMixin():
         #check if range is valid given the currrent treatment
         if status == "success":
             if treatment["preserve_order"]:
-                group_number = parameter_set_player_group["group_number"]
-                position = parameter_set_player_group["position"]
+                group_number = session_player["group_number"]
+                position = session_player["position"]
 
-                left_1_session_player_id = self.world_state_local["group_map"].get(str(group_number) + "-" + str(position-1))
-                left_2_session_player_id = self.world_state_local["group_map"].get(str(group_number) + "-" + str(position-2))
-                right_1_session_player_id = self.world_state_local["group_map"].get(str(group_number) + "-" + str(position+1))
-                right_2_session_player_id = self.world_state_local["group_map"].get(str(group_number) + "-" + str(position+2))
+                left_1_session_player_id = self.world_state_local["group_map"].get(str(group_number) + "-" + str(position-1), None)
+                left_2_session_player_id = self.world_state_local["group_map"].get(str(group_number) + "-" + str(position-2), None)
+                right_1_session_player_id = self.world_state_local["group_map"].get(str(group_number) + "-" + str(position+1), None)
+                right_2_session_player_id = self.world_state_local["group_map"].get(str(group_number) + "-" + str(position+2), None)
                 
                 #check if start range is <= left 2 range end
                 if left_2_session_player_id:

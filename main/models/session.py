@@ -339,7 +339,7 @@ class Session(models.Model):
                         group_positions[str(p)] = session_player["range_start"]
 
                     #sort group positions
-                    sorted_group_positions = sorted(group_positions.items(), key=lambda x:(x[1], random.random()))
+                    sorted_group_positions = sorted(group_positions.items(), key=lambda x:(x[0], random.random()))
                     
                     #update group positions
                     for position, player_id in enumerate(sorted_group_positions):

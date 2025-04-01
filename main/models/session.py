@@ -184,10 +184,7 @@ class Session(models.Model):
         #     self.world_state["session_periods"][i]["consumption_completed"] = False
 
         #session players
-        for i in self.session_players.prefetch_related('parameter_set_player').all().values('id', 
-                                                                                            'parameter_set_player__start_x',
-                                                                                            'parameter_set_player__start_y',
-                                                                                            'parameter_set_player__id' ):
+        for i in self.session_players.prefetch_related('parameter_set_player').all().values('id', 'parameter_set_player__id'):
             v = {}
 
             v['range_start'] = 1

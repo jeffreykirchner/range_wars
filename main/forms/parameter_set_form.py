@@ -13,11 +13,11 @@ class ParameterSetForm(forms.ModelForm):
     Parameterset edit form
     '''
 
-    period_length = forms.IntegerField(label='Period Length (sec)',
-                                       min_value=1,
-                                       widget=forms.NumberInput(attrs={"v-model":"parameter_set.period_length",
-                                                                       "step":"1",
-                                                                       "min":"250"}))
+    # period_length = forms.IntegerField(label='Period Length (sec)',
+    #                                    min_value=1,
+    #                                    widget=forms.NumberInput(attrs={"v-model":"parameter_set.period_length",
+    #                                                                    "step":"1",
+    #                                                                    "min":"250"}))
     
     show_instructions = forms.ChoiceField(label='Show Instructions',
                                           choices=((1, 'Yes'), (0,'No' )),
@@ -57,8 +57,7 @@ class ParameterSetForm(forms.ModelForm):
 
     class Meta:
         model=ParameterSet
-        fields =['period_length',
-                 'show_instructions',
+        fields =['show_instructions',
                  'survey_required', 'survey_link', 'prolific_mode', 'prolific_completion_link', 'reconnection_limit',
                  'inheritance_window', 'test_mode']
 

@@ -226,9 +226,9 @@ class TestSubjectPeriodblock(TestCase):
 
     
     @pytest.mark.asyncio
-    async def test_inheritance_mid_point(self):
+    async def test_inheritance_mid_point_average(self):
         '''
-        test get session subject from consumer
+        test get mid point average calcuation
         '''        
         communicator_subject = []
         communicator_staff = None
@@ -279,7 +279,7 @@ class TestSubjectPeriodblock(TestCase):
 
         self.assertEqual(world_state["current_period"], 11)
 
-        #check averages
+        #update positions for period block 2
         for i in range(11, 21):
 
             await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
@@ -301,7 +301,7 @@ class TestSubjectPeriodblock(TestCase):
             await communicator_staff.send_json_to(message)
             response = await communicator_staff.receive_json_from()
         
-        #range copied forward
+        #mid point calculation
         await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
         response = await communicator_staff.receive_json_from()
         world_state = response['message']['message_data']
@@ -311,6 +311,121 @@ class TestSubjectPeriodblock(TestCase):
         session_player = world_state["session_players"][str(communicator_subject[0].scope["session_player_id"])]
         self.assertEqual(session_player["range_start"], 17)
         self.assertEqual(session_player["range_end"], 17)
+        self.assertEqual(session_player["position"], 1)
+
+    @pytest.mark.asyncio
+    async def test_inheritance_mid_point_position(self):
+        '''
+        test midpoint position calculation for session players
+        '''        
+        communicator_subject = []
+        communicator_staff = None
+
+        logger = logging.getLogger(__name__)
+        logger.info(f"called from test {sys._called_from_test}" )
+
+        communicator_subject, communicator_staff = await self.set_up_communicators(communicator_subject, communicator_staff)
+        communicator_subject, communicator_staff = await self.start_session(communicator_subject, communicator_staff)
+
+        #start timer
+        message = {'message_type' : 'start_timer',
+            'message_text' : {"action": "start"},
+            'message_target' : 'self', 
+            }
+        
+        await communicator_staff.send_json_to(message)
+        response = await communicator_staff.receive_json_from()
+
+        #set period block to play
+        await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
+        response = await communicator_staff.receive_json_from()
+        world_state = response['message']['message_data']
+
+        world_state["period_blocks"][str(world_state["current_period_block"])]["phase"] = "play"
+
+        await communicator_staff.send_json_to({"message_type": "set_world_state_local", "message_text": {"world_state": world_state}})
+        response = await communicator_staff.receive_json_from()
+        world_state = response['message']['message_data']
+
+        #force to next period block, storing summary data
+        for i in range(11):
+            message = {'message_type' : 'force_advance_to_period',
+                        'message_text' : {'period_number':i+1,},
+                        'message_target' : 'self', 
+                       }
+            
+            await communicator_staff.send_json_to(message)
+            response = await communicator_staff.receive_json_from()
+        
+        session_period = await self.session.session_periods.aget(period_number=1)
+        self.assertNotEqual(session_period.summary_data.get("session_players", None), None)
+        
+        #range copied forward
+        await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
+        response = await communicator_staff.receive_json_from()
+        world_state = response['message']['message_data']
+
+        self.assertEqual(world_state["current_period"], 11)
+
+        #update positions for period block 2
+        for i in range(11, 21):
+
+            await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
+            response = await communicator_staff.receive_json_from()
+            world_state = response['message']['message_data']
+
+            session_player = world_state["session_players"][str(communicator_subject[0].scope["session_player_id"])]
+            session_player["range_start"] = 40
+            session_player["range_end"] = 40
+
+            session_player = world_state["session_players"][str(communicator_subject[1].scope["session_player_id"])]
+            session_player["range_start"] = 30
+            session_player["range_end"] = 30
+
+            session_player = world_state["session_players"][str(communicator_subject[2].scope["session_player_id"])]
+            session_player["range_start"] = 20
+            session_player["range_end"] = 20
+
+            session_player = world_state["session_players"][str(communicator_subject[3].scope["session_player_id"])]
+            session_player["range_start"] = 10
+            session_player["range_end"] = 10
+
+            await communicator_staff.send_json_to({"message_type": "set_world_state_local", "message_text": {"world_state": world_state}})
+            response = await communicator_staff.receive_json_from()
+
+            message = {'message_type' : 'force_advance_to_period',
+                        'message_text' : {'period_number':i+1,},
+                        'message_target' : 'self', 
+                       }
+            
+            await communicator_staff.send_json_to(message)
+            response = await communicator_staff.receive_json_from()
+        
+        #midpoint calculation
+        await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
+        response = await communicator_staff.receive_json_from()
+        world_state = response['message']['message_data']
+
+        self.assertEqual(world_state["current_period"], 21)
+
+        session_player = world_state["session_players"][str(communicator_subject[0].scope["session_player_id"])]
+        self.assertEqual(session_player["range_start"], 40)
+        self.assertEqual(session_player["range_end"], 40)
+        self.assertEqual(session_player["position"], 4)
+
+        session_player = world_state["session_players"][str(communicator_subject[1].scope["session_player_id"])]
+        self.assertEqual(session_player["range_start"], 30)
+        self.assertEqual(session_player["range_end"], 30)
+        self.assertEqual(session_player["position"], 3)
+
+        session_player = world_state["session_players"][str(communicator_subject[2].scope["session_player_id"])]
+        self.assertEqual(session_player["range_start"], 20)
+        self.assertEqual(session_player["range_end"], 20)
+        self.assertEqual(session_player["position"], 2)
+
+        session_player = world_state["session_players"][str(communicator_subject[3].scope["session_player_id"])]
+        self.assertEqual(session_player["range_start"], 10)
+        self.assertEqual(session_player["range_end"], 10)
         self.assertEqual(session_player["position"], 1)
 
 

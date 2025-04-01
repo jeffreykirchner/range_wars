@@ -53,6 +53,18 @@ class ParameterSetPeriodblocksMixin():
 
         await self.send_message(message_to_self=message_data, message_to_group=None,
                                 message_type="update_parameter_set", send_to_client=True, send_to_group=False)
+        
+    async def duplicate_parameterset_periodblock(self, event):
+        '''
+        duplicate a parameterset periodblock
+        '''
+
+        message_data = {}
+        message_data["status"] = await take_duplicate_parameterset_periodblock(event["message_text"])
+        message_data["parameter_set"] = await take_get_parameter_set(event["message_text"]["session_id"])
+
+        await self.send_message(message_to_self=message_data, message_to_group=None,
+                                message_type="update_parameter_set", send_to_client=True, send_to_group=False)
 
 @sync_to_async
 def take_update_parameter_set_periodblock(data):
@@ -78,7 +90,7 @@ def take_update_parameter_set_periodblock(data):
     # logger.info(f'form_data_dict : {form_data_dict}')
 
     form = ParameterSetPeriodblockForm(form_data_dict, instance=parameter_set_periodblock)
-    form.fields["parameter_set_treatment"].queryset = session.parameter_set.parameter_set_treatments.all()
+    form.fields["parameter_set_periodblock"].queryset = session.parameter_set.parameter_set_periodblocks.all()
     try:
         form.fields["help_doc"].queryset = session.parameter_set.parameter_set_players.first().instruction_set.help_docs_subject.all()
     except AttributeError:
@@ -142,7 +154,7 @@ def take_add_parameterset_periodblock(data):
     if parameter_set_periodblock_last:
         parameter_set_periodblock.period_start = parameter_set_periodblock_last.period_end + 1
         parameter_set_periodblock.period_end = parameter_set_periodblock.period_start + 1
-        parameter_set_periodblock.parameter_set_treatment = parameter_set_periodblock_last.parameter_set_treatment
+        parameter_set_periodblock.parameter_set_periodblock = parameter_set_periodblock_last.parameter_set_periodblock
     
     parameter_set_periodblock.save()
     
@@ -156,6 +168,44 @@ def take_add_parameterset_periodblock(data):
 
     session.parameter_set.update_json_fk(update_periodblocks=True,
                                          update_players=True)
+
+    return {"value" : "success"}
+
+@sync_to_async
+def take_duplicate_parameterset_periodblock(data):
+    '''
+    duplicate parameter treatment to the parameter set
+    '''
+    logger = logging.getLogger(__name__) 
+    # logger.info(f"Add parameterset player: {data}")
+
+    session_id = data["session_id"]
+
+    try:        
+        session = Session.objects.get(id=session_id)
+        parameter_set = session.parameter_set
+    except ObjectDoesNotExist:
+        logger.warning(f"take_duplicate_parameterset_periodblock player, not found ID: {session_id}")
+        return {"value" : "fail"}
+    
+    parameter_set_periodblock_source = ParameterSetPeriodblock.objects.get(id=data["parameterset_periodblock_id"])
+    parameter_set_periodblock_last = ParameterSetPeriodblock.objects.filter(parameter_set=parameter_set).last()
+
+    parameter_set_periodblock = ParameterSetPeriodblock()
+    parameter_set_periodblock.parameter_set = parameter_set
+    
+    parameter_set_periodblock.from_dict(parameter_set_periodblock_source.json())    
+    parameter_set_periodblock.parameter_set_treatment = parameter_set_periodblock_source.parameter_set_treatment
+
+    #set start and end period
+    if parameter_set_periodblock_last:
+        parameter_set_periodblock.period_start = parameter_set_periodblock_last.period_end + 1
+        parameter_set_periodblock.period_end = parameter_set_periodblock.period_start + parameter_set_periodblock_source.period_end - parameter_set_periodblock_source.period_start
+       
+   
+    parameter_set_periodblock.save()
+        
+    parameter_set.update_json_fk(update_periodblocks=True)
 
     return {"value" : "success"}
     

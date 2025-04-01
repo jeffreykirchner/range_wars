@@ -111,11 +111,11 @@ def take_update_parameter_set_treatment(data):
 
         parameter_set_treatment.costs = ','.join([str(-1) for _ in range(4)])
 
-        cost_parameter =  (total_revenue * Decimal(parameter_set_treatment.cost_percent)) / Decimal(parameter_set_treatment.range_width)
+        cost_parameter =   Decimal(parameter_set_treatment.cost_percent) * box_value_w
         cost_parameter = round(cost_parameter, 4)
-        total_cost =   Decimal(parameter_set_treatment.range_width) * cost_parameter
+        total_cost =   Decimal(parameter_set_treatment.values_count) * cost_parameter
         parameter_set_treatment.costs = ','.join([str(cost_parameter) for _ in range(4)])
-
+        
         # for i in range(5000):
         #     #get cumulative box values
         #     total_cost =  cost_parameter*box_value_w*len(values)

@@ -90,7 +90,7 @@ def take_update_parameter_set_periodblock(data):
     # logger.info(f'form_data_dict : {form_data_dict}')
 
     form = ParameterSetPeriodblockForm(form_data_dict, instance=parameter_set_periodblock)
-    form.fields["parameter_set_periodblock"].queryset = session.parameter_set.parameter_set_periodblocks.all()
+    form.fields["parameter_set_treatment"].queryset = session.parameter_set.parameter_set_treatments.all()
     try:
         form.fields["help_doc"].queryset = session.parameter_set.parameter_set_players.first().instruction_set.help_docs_subject.all()
     except AttributeError:
@@ -202,10 +202,18 @@ def take_duplicate_parameterset_periodblock(data):
         parameter_set_periodblock.period_start = parameter_set_periodblock_last.period_end + 1
         parameter_set_periodblock.period_end = parameter_set_periodblock.period_start + parameter_set_periodblock_source.period_end - parameter_set_periodblock_source.period_start
        
-   
     parameter_set_periodblock.save()
+
+    for p in session.parameter_set.parameter_set_players.all():
+        parameter_set_player_group_last = main.models.ParameterSetPlayerGroup.objects.filter(parameter_set_player=p).last()
+        parameter_set_player_group = main.models.ParameterSetPlayerGroup.objects.create(parameter_set_player=p, 
+                                                                                        parameter_set_period_block=parameter_set_periodblock)
+       
+        if parameter_set_player_group_last:
+            parameter_set_player_group.from_dict(parameter_set_player_group_last.json())
         
-    parameter_set.update_json_fk(update_periodblocks=True)
+    parameter_set.update_json_fk(update_periodblocks=True,
+                                 update_players=True)
 
     return {"value" : "success"}
     

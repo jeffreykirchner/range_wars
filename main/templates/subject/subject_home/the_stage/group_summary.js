@@ -60,10 +60,16 @@ setup_group_summary : function setup_group_summary(){
     scaler = (box.width-margin*2) / (max_cost + max_profit);
     center_x = max_cost * scaler + margin;
 
+    //check for minimum label clearance
     if(center_x > box.width - text_profit.width - margin)
     {
         scaler = (box.width - text_profit.width - margin) / center_x * scaler;
         center_x = max_cost * scaler + margin;
+    }
+    else if(text_cost.width + margin>center_x)
+    {
+        scaler = (box.width-text_cost.width-margin*2) / (max_cost + max_profit);
+        center_x = max_cost * scaler + text_cost.width + margin;
     }
 
     //move sub captions

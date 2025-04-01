@@ -420,7 +420,7 @@ class Session(models.Model):
             session_player["total_revenue"] = 0
             session_player["total_loss"] = 0
             session_player["total_cost"] = (session_player["range_end"] - session_player["range_start"] + 1) * Decimal(session_player["cost"]) * box_value
-            session_player["total_cost"] = round_half_away_from_zero(Decimal(session_player["total_cost"]), 2)
+            session_player["total_cost"] = round_half_away_from_zero(Decimal(session_player["total_cost"]), 3)
 
             for r in range(session_player["range_start"], session_player["range_end"]+1):
                 value = values[r]
@@ -433,7 +433,7 @@ class Session(models.Model):
                 if ajusted_revenue - (Decimal(session_player["cost"]) * box_value) < 0:
                     session_player["total_loss"] += (ajusted_revenue - (Decimal(session_player["cost"]) * box_value))
 
-            session_player["total_revenue"] = round_half_away_from_zero(Decimal(session_player["total_revenue"]), 2)
+            session_player["total_revenue"] = round_half_away_from_zero(Decimal(session_player["total_revenue"]), 3)
             session_player["total_profit"] = session_player["total_revenue"] - session_player["total_cost"]
         
         return world_state

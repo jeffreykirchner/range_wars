@@ -413,6 +413,21 @@ class TestSubjectPeriodblock(TestCase):
         self.assertEqual(session_player["range_end"], 40)
         self.assertEqual(session_player["position"], 4)
 
+        session_player = world_state["session_players"][str(communicator_subject[1].scope["session_player_id"])]
+        self.assertEqual(session_player["range_start"], 30)
+        self.assertEqual(session_player["range_end"], 30)
+        self.assertEqual(session_player["position"], 3)
+
+        session_player = world_state["session_players"][str(communicator_subject[2].scope["session_player_id"])]
+        self.assertEqual(session_player["range_start"], 20)
+        self.assertEqual(session_player["range_end"], 20)
+        self.assertEqual(session_player["position"], 2)
+
+        session_player = world_state["session_players"][str(communicator_subject[3].scope["session_player_id"])]
+        self.assertEqual(session_player["range_start"], 10)
+        self.assertEqual(session_player["range_end"], 10)
+        self.assertEqual(session_player["position"], 1)
+
 
 
 

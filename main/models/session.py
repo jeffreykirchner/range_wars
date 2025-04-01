@@ -287,7 +287,6 @@ class Session(models.Model):
         treatment = parameter_set["parameter_set_treatments"][str(period_block["parameter_set_treatment"])]
         costs = treatment["costs"].split(",")
         
-
         if period_block["inheritance"] == PeriodblockInheritance.MIDPOINT:
             #calc new locations and positions
 
@@ -323,12 +322,13 @@ class Session(models.Model):
                     group_positions[str(p)] = session_player["range_start"]
 
                 #sort group positions
-                sorted_group_positions = sorted(group_positions.items(), key=lambda x:(x[0], random.random()))
+                sorted_group_positions = sorted(group_positions.items(), key=lambda x:(x[1], random.random()))
                 
                 #update group positions
                 for position, player_id in enumerate(sorted_group_positions):
                     session_player = world_state["session_players"][player_id[0]]                        
                     session_player["position"] = position + 1
+
         elif period_block["inheritance"] == PeriodblockInheritance.PRESET:
             world_state["groups"] = {}
         

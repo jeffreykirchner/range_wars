@@ -286,7 +286,52 @@ class Session(models.Model):
         period_block = parameter_set["parameter_set_periodblocks"][str(world_state["current_period_block"])]
         treatment = parameter_set["parameter_set_treatments"][str(period_block["parameter_set_treatment"])]
         costs = treatment["costs"].split(",")
-        world_state["groups"] = {}
+        
+
+        if period_block["inheritance"] == PeriodblockInheritance.MIDPOINT:
+            #calc new locations and positions
+
+            periods_numbers = [i for i in range(world_state["current_period"]-parameter_set["inheritance_window"], world_state["current_period"])]
+            session_periods = self.session_periods.filter(period_number__in=periods_numbers)
+
+            average_position = {i : 0 for i in world_state["session_players"]}
+
+            for session_period in session_periods:
+                summary_data = session_period.summary_data
+                
+                for session_player_id in summary_data["session_players"]:
+                    session_player = summary_data["session_players"][session_player_id]
+                    v = (session_player["range_end"] + session_player["range_start"]) / 2
+                    average_position[session_player_id] += v
+                
+            for session_player in average_position:
+                average_position[session_player] /= len(periods_numbers)
+
+            for session_player_id in average_position:
+                session_player = world_state["session_players"][session_player_id]
+                session_player["range_start"] = int(average_position[session_player_id])
+                session_player["range_end"] = int(average_position[session_player_id])
+                session_player["range_middle"] = (Decimal(session_player["range_start"]) + Decimal(session_player["range_end"]) + 1) / 2
+                
+            #change positions based on average position
+            for g in world_state["groups"]:
+                group = world_state["groups"][g]
+                group_positions = {}
+
+                for p in group:
+                    session_player = world_state["session_players"][str(p)]
+                    group_positions[str(p)] = session_player["range_start"]
+
+                #sort group positions
+                sorted_group_positions = sorted(group_positions.items(), key=lambda x:(x[0], random.random()))
+                
+                #update group positions
+                for position, player_id in enumerate(sorted_group_positions):
+                    session_player = world_state["session_players"][player_id[0]]                        
+                    session_player["position"] = position + 1
+        elif period_block["inheritance"] == PeriodblockInheritance.PRESET:
+            world_state["groups"] = {}
+        
         world_state["group_map"] = {}      #maps group number and position to session player id 
 
         for i in world_state["session_players"]:
@@ -299,67 +344,30 @@ class Session(models.Model):
             session_player["revenues"] = {str(i): 0 for i in treatment["values"].split(",")}
            
             if period_block["inheritance"] == PeriodblockInheritance.PRESET or not previous_period_block:
+
+                #setup groups
+                session_player["group_number"] = parameter_set_player_group["group_number"]
+                if str(session_player["group_number"]) not in world_state["groups"]:
+                    world_state["groups"][str(session_player["group_number"])] = []
+
+                world_state["groups"][str(session_player["group_number"])].append(int(i))
+
+                world_state["group_map"][str(session_player["group_number"]) + "-" + str(parameter_set_player_group["position"])] = i
+                
+                #position
+                session_player["position"] = parameter_set_player_group["position"]
+
+                #ranges
                 session_player["range_start"] = parameter_set_player_group["start_box"]
                 session_player["range_end"] = parameter_set_player_group["start_box"]
                 session_player["range_middle"] =  (Decimal(session_player["range_start"]) + Decimal(session_player["range_end"]) + 1) / 2
-            elif period_block["inheritance"] == PeriodblockInheritance.COPY:
+            
+            elif period_block["inheritance"] == PeriodblockInheritance.COPY or period_block["inheritance"] == PeriodblockInheritance.MIDPOINT:
                 #keep range the same
-                pass
-            elif period_block["inheritance"] == PeriodblockInheritance.MIDPOINT:
-                #calc mid point from previous period block
-                periods_numbers = [i for i in range(world_state["current_period"]-parameter_set["inheritance_window"], world_state["current_period"])]
-                session_periods = self.session_periods.filter(period_number__in=periods_numbers)
-
-                average_position = {i : 0 for i in world_state["session_players"]}
-
-                for session_period in session_periods:
-                    summary_data = session_period.summary_data
-                    
-                    for session_player_id in summary_data["session_players"]:
-                        session_player = summary_data["session_players"][session_player_id]
-                        v = (session_player["range_end"] + session_player["range_start"]) / 2
-                        average_position[session_player_id] += v
-                    
-                for session_player in average_position:
-                    average_position[session_player] /= len(periods_numbers)
-
-                for session_player_id in average_position:
-                    session_player = world_state["session_players"][session_player_id]
-                    session_player["range_start"] = int(average_position[session_player_id])
-                    session_player["range_end"] = int(average_position[session_player_id])
-                    session_player["range_middle"] = (Decimal(session_player["range_start"]) + Decimal(session_player["range_end"]) + 1) / 2
-                    
-                #change positions based on average position
-                for g in world_state["groups"]:
-                    group = world_state["groups"][g]
-                    group_positions = {}
-
-                    for p in group:
-                        session_player = world_state["session_players"][str(p)]
-                        group_positions[str(p)] = session_player["range_start"]
-
-                    #sort group positions
-                    sorted_group_positions = sorted(group_positions.items(), key=lambda x:(x[0], random.random()))
-                    
-                    #update group positions
-                    for position, player_id in enumerate(sorted_group_positions):
-                        session_player = world_state["session_players"][player_id[0]]                        
-                        session_player["position"] = position + 1
-
-            #setup groups
-            if str(parameter_set_player_group["group_number"]) not in world_state["groups"]:
-                world_state["groups"][str(parameter_set_player_group["group_number"])] = []
-
-            if period_block["inheritance"] == PeriodblockInheritance.PRESET or not previous_period_block:     
-                #load new position from parameters       
-                world_state["group_map"][str(parameter_set_player_group["group_number"]) + "-" + str(parameter_set_player_group["position"])] = i
-                session_player["position"] = parameter_set_player_group["position"]
-            else:
-                #keep current position
-                world_state["group_map"][str(parameter_set_player_group["group_number"]) + "-" + str(session_player["position"])] = i
-
-            world_state["groups"][str(parameter_set_player_group["group_number"])].append(int(i))
-            session_player["group_number"] = parameter_set_player_group["group_number"]
+                world_state["group_map"][str(session_player["group_number"]) + "-" + str(session_player["position"])] = i
+                         
+            # world_state["groups"][str(parameter_set_player_group["group_number"])].append(int(i))
+            # session_player["group_number"] = parameter_set_player_group["group_number"]
             
         
         return world_state

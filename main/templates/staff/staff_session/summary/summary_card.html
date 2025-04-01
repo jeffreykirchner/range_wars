@@ -30,6 +30,21 @@
                 </span>
             </div>
         </div>  
+
+        <div class="row">
+            <div class="col text-end pe-1">
+                Period Block:
+            </div>
+            <div class="col text-start ps-1">
+                <span v-if="session.started">
+                    [[get_current_parameter_set_period_block().period_start]] to [[get_current_parameter_set_period_block().period_end]]
+                </span>
+                <span v-else>
+                    ---
+                </span>
+            </div>
+        </div>
+        
         <div class="row">
             <div class="col text-end pe-1">
                 Treatment:
@@ -54,6 +69,7 @@
                 </span>
             </div>
         </div> 
+
         <div class="row">
             <div class="col text-end pe-1">
                 Group:

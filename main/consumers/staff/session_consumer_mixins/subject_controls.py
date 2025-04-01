@@ -92,9 +92,6 @@ class SubjectControlsMixin():
 
         session_player = self.world_state_local["session_players"][str(player_id)]
         parameter_set_player = self.parameter_set_local["parameter_set_players"][str(session_player["parameter_set_player_id"])]
-
-        session_player["current_location"] = {"x" : parameter_set_player["start_x"], "y" : parameter_set_player["start_y"]}
-        session_player["target_location"] = session_player["current_location"]
         
         result = {"value" : "success", 
                   "new_location" : session_player["current_location"], 

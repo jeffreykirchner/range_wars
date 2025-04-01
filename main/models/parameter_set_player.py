@@ -21,8 +21,6 @@ class ParameterSetPlayer(models.Model):
     id_label = models.CharField(verbose_name='ID Label', max_length=20, default="1")      #id label shown on screen to subjects
     player_number = models.IntegerField(verbose_name='Player number', default=0)          #player number, from 1 to N 
 
-    start_x = models.IntegerField(verbose_name='Start Location X', default=50)                #starting location x and y
-    start_y = models.IntegerField(verbose_name='Start Location Y', default=50)
     hex_color = models.CharField(verbose_name='Hex Color', max_length = 30, default="0x000000") #color of player
 
     timestamp = models.DateTimeField(auto_now_add=True)
@@ -44,8 +42,6 @@ class ParameterSetPlayer(models.Model):
 
         self.id_label = new_ps.get("id_label")
         self.player_number = new_ps.get("player_number")
-        self.start_x = new_ps.get("start_x")
-        self.start_y = new_ps.get("start_y")
         self.hex_color = new_ps.get("hex_color")
 
         self.save()
@@ -102,8 +98,6 @@ class ParameterSetPlayer(models.Model):
 
             "player_number" : self.player_number,
             "id_label" : self.id_label,
-            "start_x" : self.start_x,
-            "start_y" : self.start_y,
             "hex_color" : self.hex_color,
 
             "parameter_set_player_groups" : {str(p.parameter_set_period_block.id) : p.json() for p in self.parameter_set_player_groups_a.all()}

@@ -38,12 +38,11 @@
                                 <th>
                                     Period Blocks:
                                 </th>  
-                                <th scope="col" class = "m-1 p-1"
+                                <th scope="col" class = "text-nowrap m-1 p-1"
                                     v-for="(pb, index) in parameter_set.parameter_set_periodblocks_order" 
                                             v-bind:key="pb"
                                             :set="temp_pb=parameter_set.parameter_set_periodblocks[pb]">
-                                    [[temp_pb.period_start]] - [[temp_pb.period_end]]
-                                    
+                                   [[temp_pb.period_start]]<br>↓<br>[[temp_pb.period_end]]
                                 </th>          
                             </tr>
                         </thead>
@@ -81,9 +80,11 @@
                                     v-on:click="show_edit_parameter_set_player_group(p, pb)"
                                     class="player_table_cell">
                                     <span v-if="temp_p.parameter_set_player_groups[pb]">
-                                        G[[temp_p.parameter_set_player_groups[pb].group_number]] 
-                                        P[[temp_p.parameter_set_player_groups[pb].position]] 
-                                        B[[temp_p.parameter_set_player_groups[pb].start_box]] 
+                                        <span v-if="parameter_set.parameter_set_periodblocks[pb].inheritance=='Preset'">
+                                            G[[temp_p.parameter_set_player_groups[pb].group_number]]<br>
+                                            P[[temp_p.parameter_set_player_groups[pb].position]]<br>
+                                            B[[temp_p.parameter_set_player_groups[pb].start_box]] 
+                                        </span>
                                     </span>
                                     <span v-else class="text-danger">
                                         <i class="fas fa-exclamation-triangle"></i>                                         

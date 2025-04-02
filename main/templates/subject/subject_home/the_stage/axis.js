@@ -1,5 +1,8 @@
 setup_axis : function setup_axis(){
 
+
+    if(!app.current_treatment) return;
+
     let treatment = app.session.parameter_set.parameter_set_treatments[app.current_treatment];
     let values = treatment.values.split(",");
 

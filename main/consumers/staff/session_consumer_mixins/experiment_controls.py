@@ -188,11 +188,31 @@ def take_start_experiment(session_id, data):
     #session_id = data["session_id"]   
     session = Session.objects.get(id=session_id)
 
-    if not session.started:
-        session.start_experiment()
-
     value = "success"
-    
+
+    if session.parameter_set.parameter_set_periodblocks_a.count() == 0:
+        value = "fail" 
+    else:
+        # check for overlapping period blocks
+        for p in session.parameter_set.parameter_set_periodblocks_a.all():
+           if session.parameter_set.parameter_set_periodblocks_a.exclude(id=p.id) \
+                                                 .filter(period_start__lte=p.period_end)\
+                                                 .filter(period_start__gte=p.period_start).exists():
+                value = "fail"
+                break
+        
+        #check no treatments
+        if session.parameter_set.parameter_set_periodblocks_a.filter(parameter_set_treatment=None).exists():
+            value = "fail"
+
+    if value == "success":
+        if session.parameter_set.parameter_set_players.count() == 0:
+            value = "fail"
+
+    if value == "success":
+        if not session.started:
+            session.start_experiment()
+
     return {"value" : value, 
             "session" : session.json()}
 

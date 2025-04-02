@@ -2,6 +2,8 @@
  * setup boxes for the current treatment
  */
 setup_treatment : function setup_treatment(){
+    if(!app.current_treatment) return;
+
     let treatment = app.session.parameter_set.parameter_set_treatments[app.current_treatment];
     let values = treatment.values.split(",");
     let parameter_set_players = app.session.parameter_set.parameter_set_players;
@@ -58,6 +60,8 @@ setup_treatment : function setup_treatment(){
  * update the boxes for the current treatment
  */
 update_treatment : function update_treatment(){
+    if(!app.current_treatment) return;
+    
     let values = app.session.parameter_set.parameter_set_treatments[app.current_treatment].values.split(",");
     let parameter_set_players = app.session.parameter_set.parameter_set_players;
     let parameter_set_players_order = app.session.parameter_set.parameter_set_players_order;

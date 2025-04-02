@@ -599,7 +599,7 @@ class Session(models.Model):
             writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
             top_row = ["Session ID", "Period Block", "Treatment", "Client #", "Group", "Position", "Label", 
-                       "Chat Count", "Total Revenue", "Total Cost", "Total Profit"]
+                       "Chat Count", "Total Revenue", "Total Cost", "Total Profit", "Range Start Begin", "Range End Begin", "Range Start End", "Range End End"]
 
             for player_number, player_id in enumerate(self.world_state["session_players"]):
                 top_row.append(f'Cents Sent #{player_number+1}')
@@ -613,8 +613,16 @@ class Session(models.Model):
                 parameter_set_periodblock = parameter_set["parameter_set_periodblocks"][str(period_block_id)]
                 parameter_set_treatment = parameter_set["parameter_set_treatments"][str(parameter_set_periodblock["parameter_set_treatment"])]
 
+                session_period_start = self.session_periods.get(period_number=parameter_set_periodblock["period_start"])
+                session_period_end = self.session_periods.get(period_number=parameter_set_periodblock["period_end"])
+
+                session_players_start = session_period_start.summary_data["session_players"]
+                session_players_end = session_period_end.summary_data["session_players"]
+
                 for player_number, player_id in enumerate(period_block["session_players"]):
                     session_player = period_block["session_players"][player_id]
+                    session_player_start = session_players_start[str(player_id)]
+                    session_player_end = session_players_end[str(player_id)]
                     parameter_set_player = parameter_set["parameter_set_players"][str(self.world_state["session_players"][player_id]["parameter_set_player_id"])]
                     parameter_set_player_group = parameter_set_player["parameter_set_player_groups"][str(parameter_set_periodblock["id"])]
 
@@ -622,13 +630,17 @@ class Session(models.Model):
                                 f'{parameter_set_periodblock["period_start"]} to {parameter_set_periodblock["period_end"]}',
                                 parameter_set_treatment["id_label_pst"],
                                 player_number+1,      
-                                parameter_set_player_group["group_number"],
-                                parameter_set_player_group["position"],
+                                session_player_start["group_number"],
+                                session_player_start["position"],
                                 parameter_set_player["id_label"],
                                 session_player["chat_messages_sent"],
                                 session_player["total_revenue"],
                                 session_player["total_cost"],
-                                session_player["total_profit"]]
+                                session_player["total_profit"],
+                                session_player_start["range_start"],
+                                session_player_start["range_end"],
+                                session_player_end["range_start"],
+                                session_player_end["range_end"],]
                     
                     for player_number, player_id in enumerate(self.world_state["session_players"]):
                         if player_id in session_player["cents_sent"]:

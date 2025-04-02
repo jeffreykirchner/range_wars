@@ -68,7 +68,7 @@
             <!-- transfer money -->
             <div class="col-4 text-center pb-2" 
                  style="border-style: solid; border-width: 1px;border-color: lightgray;"
-                 v-show="show_transfer_cents() && !show_ready_button()">
+                 v-show="show_transfer_cents()">
                 <div class="row">
                     <div class="col text-center">
                         
@@ -115,7 +115,7 @@
                                     type="button" 
                                     id="id_start_send_cents" 
                                     title="Send cents to another person."
-                                    v-bind:disabled="reconnecting || working || session.started===false || session.world_state.finished"
+                                    v-bind:disabled="reconnecting || working || session.started===false || session.world_state.finished || show_ready_button()"
                                     v-on:click="send_cents()">[[send_cents_button_text]]</button>
                     </div>   
                     <div class="col-auto pt-2 ps-0">
@@ -184,7 +184,7 @@
 
             <!-- send chat -->
             <div class="col-4">
-                <div class="row" v-if="show_chat() && !show_ready_button()">
+                <div class="row" v-if="show_chat()">
                     <div class="col-2 me-0 pe-1 text-end">
                         <button type="button" class="btn pe-0 btn-link" title="Show Help" v-on:click="send_load_help_doc_subject('Chat')">
                             <i class="far fa-question-circle"></i> 
@@ -206,13 +206,13 @@
                                     type="button" 
                                     id="send_chat_id" 
                                     title="Send your chat message."
-                                    v-bind:disabled="reconnecting || working || session.started===false || session.world_state.finished"
+                                    v-bind:disabled="reconnecting || working || session.started===false || session.world_state.finished || show_ready_button()"
                                     v-on:click="send_chat()">Chat <i class="far fa-comments"></i></button>
                         </div>
                     </div>
                 </div>
 
-                <div class="row" v-if="show_chat() && !show_ready_button()">
+                <div class="row" v-if="show_chat()">
                     <div class="col text-end pe-4 text-secondary">
                         [[chat_text.length]]/100
                     </div>

@@ -60,10 +60,10 @@
                             id="id_current_treatment"
                             v-on:change="update_current_treatment()"
                             >
-                        <option v-for="option in session.parameter_set.parameter_set_treatments" 
-                            :key="option.id"
-                            :value="option.id">
-                        [[option.id_label_pst]]
+                        <option v-for="option in session.parameter_set.parameter_set_treatments_order" 
+                            :key="option"
+                            :value="option">
+                        [[session.parameter_set.parameter_set_treatments[option].id_label_pst]]
                         </option>
                     </select>
                 </span>

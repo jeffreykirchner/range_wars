@@ -82,10 +82,11 @@ update_treatment : function update_treatment(){
 
         //find number if group members in this box
         let group_members_in_box = [];
+        let counter = 0;
         for(let p in current_group_memebers)
         {
             let session_player = session_players[current_group_memebers[p]];
-            if(session_player.revenues[value] > 0)
+            if(session_player.range_start <= i && session_player.range_end >= i)
             {
                 group_members_in_box.push(p);
             }

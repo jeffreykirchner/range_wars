@@ -102,7 +102,7 @@ def take_update_parameter_set_treatment(data):
         
 
         #calculate costs based on percent of total revenue
-        box_value_w = Decimal(parameter_set_treatment.range_width) / parameter_set_treatment.values_count
+        box_value_w = Decimal(parameter_set_treatment.range_width) / Decimal(parameter_set_treatment.values_count)
         total_revenue = Decimal(0)
         for i in range(0, parameter_set_treatment.values_count):
             value = Decimal(values[i])
@@ -111,9 +111,9 @@ def take_update_parameter_set_treatment(data):
 
         parameter_set_treatment.costs = ','.join([str(-1) for _ in range(4)])
 
-        cost_parameter =   Decimal(parameter_set_treatment.cost_percent) * box_value_w
+        cost_parameter = Decimal(parameter_set_treatment.cost_percent) * box_value_w
         cost_parameter = round(cost_parameter, 4)
-        total_cost =   Decimal(parameter_set_treatment.values_count) * cost_parameter
+        total_cost = Decimal(parameter_set_treatment.range_width) * cost_parameter
         parameter_set_treatment.costs = ','.join([str(cost_parameter) for _ in range(4)])
         
         # for i in range(5000):

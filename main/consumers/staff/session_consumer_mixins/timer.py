@@ -115,6 +115,7 @@ class TimerMixin():
                 
                 current_session_period_id = self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-1]
                 current_session_period = self.world_state_local["session_periods"][str(current_session_period_id)]
+                
                 period_block = self.world_state_local["period_blocks"][str(self.world_state_local["current_period_block"])]
                 new_period_block = None
 
@@ -157,9 +158,19 @@ class TimerMixin():
             self.world_state_local = await sync_to_async(session.update_revenues)(self.world_state_local, self.parameter_set_local)
 
             #add period earnings to session players
-            if self.world_state_local["current_experiment_phase"] == ExperimentPhase.RUN :
+            if self.world_state_local["current_experiment_phase"] == ExperimentPhase.RUN:
 
-                if new_period_block and new_period_block["phase"] != "start":
+                current_session_period_id = self.world_state_local["session_periods_order"][self.world_state_local["current_period"]-1]
+                current_session_period = self.world_state_local["session_periods"][str(current_session_period_id)]
+                new_period_block = self.world_state_local["period_blocks"][str(current_session_period["parameter_set_periodblock_id"])]
+
+                if new_period_block and \
+                   new_period_block["phase"] != "start" and \
+                   current_session_period["payments_made"] == False:
+                    
+                    #set payments made to true
+                    current_session_period["payments_made"] = True
+
                     parameter_set_periodblock = self.parameter_set_local["parameter_set_periodblocks"][str(new_period_block["id"])]
                     parameter_set_treatment = self.parameter_set_local["parameter_set_treatments"][str(parameter_set_periodblock["parameter_set_treatment"])]
 
@@ -171,7 +182,7 @@ class TimerMixin():
 
                         pbd = session.period_block_data[str(self.world_state_local["current_period_block"])]["session_players"][str(player_id)]
 
-                        if parameter_set_treatment["enable_contest"]:
+                        if parameter_set_treatment["enable_contest"]:                            
                             pbd["total_revenue"] = Decimal(pbd["total_revenue"]) + Decimal(player["total_revenue"])
                             pbd["total_cost"] = Decimal(pbd["total_cost"]) + Decimal(player["total_cost"])
                             pbd["total_profit"] = Decimal(pbd["total_profit"]) + Decimal(player["total_profit"])

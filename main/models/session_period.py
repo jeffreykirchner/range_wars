@@ -47,5 +47,6 @@ class SessionPeriod(models.Model):
             "period_number" : self.period_number,
             "round_number" : self.round_number,
             "parameter_set_periodblock_id" : self.parameter_set_periodblock.id if self.parameter_set_periodblock else None,
+            "payments_made" : False,
         }
         

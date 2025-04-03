@@ -626,7 +626,10 @@ class Session(models.Model):
                 session_period_end = self.session_periods.get(period_number=parameter_set_periodblock["period_end"])
 
                 session_players_start = session_period_start.summary_data["session_players"]
-                session_players_end = session_period_end.summary_data["session_players"]
+                session_players_end = session_period_end.summary_data.get("session_players", None)
+
+                if not session_players_end:
+                    break
 
                 for player_number, player_id in enumerate(period_block["session_players"]):
                     session_player = period_block["session_players"][player_id]

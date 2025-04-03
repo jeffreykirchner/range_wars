@@ -111,8 +111,7 @@ def take_update_parameter_set_treatment(data):
 
         parameter_set_treatment.costs = ','.join([str(-1) for _ in range(4)])
 
-        cost_parameter = Decimal(parameter_set_treatment.cost_percent) * box_value_w
-        cost_parameter = round(cost_parameter, 4)
+        cost_parameter = parameter_set_treatment.cost_percent
         total_cost = Decimal(parameter_set_treatment.range_width) * cost_parameter
         parameter_set_treatment.costs = ','.join([str(cost_parameter) for _ in range(4)])
         

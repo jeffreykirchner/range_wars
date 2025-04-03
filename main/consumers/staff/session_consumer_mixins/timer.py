@@ -163,9 +163,9 @@ class TimerMixin():
                     parameter_set_periodblock = self.parameter_set_local["parameter_set_periodblocks"][str(new_period_block["id"])]
                     parameter_set_treatment = self.parameter_set_local["parameter_set_treatments"][str(parameter_set_periodblock["parameter_set_treatment"])]
 
-                    
                     for player_id in self.world_state_local["session_players"]:
                         player = self.world_state_local["session_players"][player_id]
+
                         if parameter_set_treatment["enable_contest"]:
                             player["earnings"] = Decimal(player["earnings"]) + Decimal(player["total_profit"])
 

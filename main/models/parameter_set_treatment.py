@@ -122,6 +122,7 @@ class ParameterSetTreatment(models.Model):
 
             "values" : self.values,
             "values_count" : self.values_count,
+            # "values_order" : self.values.split(","),
 
             "scale_height_ticks" : self.scale_height_ticks ,
 

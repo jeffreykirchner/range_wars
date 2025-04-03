@@ -380,7 +380,7 @@ class Session(models.Model):
         period_block = parameter_set["parameter_set_periodblocks"][str(world_state["current_period_block"])]
         treatment = parameter_set["parameter_set_treatments"][str(period_block["parameter_set_treatment"])]
         values = treatment["values"].split(",")
-        box_value = Decimal(treatment["range_width"]) / len(values)
+        box_value = Decimal(treatment["range_width"]) / Decimal(len(values))
 
         #reset revenues to zero for all values
         for i in world_state["session_players"]:
@@ -415,26 +415,35 @@ class Session(models.Model):
                         session_player["overlaps"][str(o)] += 1
         
         #update total revenue for each player
-        for i in world_state["session_players"]:
-            session_player = world_state["session_players"][i]
-            session_player["total_revenue"] = 0
-            session_player["total_loss"] = 0
-            session_player["total_cost"] = (session_player["range_end"] - session_player["range_start"] + 1) * Decimal(session_player["cost"]) * box_value
-            session_player["total_cost"] = round_half_away_from_zero(Decimal(session_player["total_cost"]), 3)
+        if treatment["enable_contest"]:
+            for i in world_state["session_players"]:
+                session_player = world_state["session_players"][i]
+                session_player["total_revenue"] = Decimal(0)
+                session_player["total_loss"] = Decimal(0)
+                session_player["total_cost"] = Decimal(session_player["range_end"] - session_player["range_start"] + 1) * Decimal(session_player["cost"]) * box_value
+                session_player["total_cost"] = round_half_away_from_zero(Decimal(session_player["total_cost"]), 3)
 
-            for r in range(session_player["range_start"], session_player["range_end"]+1):
-                value = values[r]
-                revenue = session_player["revenues"][values[r]]
+                for r in range(session_player["range_start"], session_player["range_end"]+1):
+                    value = values[r]
+                    revenue = session_player["revenues"][values[r]]
 
-                ajusted_revenue = Decimal(value) * Decimal(revenue)
-                session_player["total_revenue"] += ajusted_revenue
+                    ajusted_revenue = Decimal(value) * Decimal(revenue) 
+                    session_player["revenues"][values[r]] = round_half_away_from_zero(ajusted_revenue, 3)               
+                    session_player["total_revenue"] += ajusted_revenue
 
-                #check for losses
-                if ajusted_revenue - (Decimal(session_player["cost"]) * box_value) < 0:
-                    session_player["total_loss"] += (ajusted_revenue - (Decimal(session_player["cost"]) * box_value))
+                    #check for losses
+                    if ajusted_revenue - (Decimal(session_player["cost"]) * box_value) < 0:
+                        session_player["total_loss"] += (ajusted_revenue - (Decimal(session_player["cost"]) * box_value))
 
-            session_player["total_revenue"] = round_half_away_from_zero(Decimal(session_player["total_revenue"]), 3)
-            session_player["total_profit"] = session_player["total_revenue"] - session_player["total_cost"]
+                session_player["total_loss"] = round_half_away_from_zero(Decimal(session_player["total_loss"]), 3)
+                session_player["total_revenue"] = round_half_away_from_zero(Decimal(session_player["total_revenue"]), 3)
+                session_player["total_profit"] = round_half_away_from_zero(session_player["total_revenue"] - session_player["total_cost"],3)
+        else:
+            for i in world_state["session_players"]:
+                session_player = world_state["session_players"][i]
+                session_player["total_loss"] = 0
+                session_player["total_profit"] = 0
+                session_player["total_revenue"] = 0
         
         return world_state
 
@@ -566,7 +575,7 @@ class Session(models.Model):
                                 session_player["range_middle"],
                                 session_player["total_cost"] if parameter_set_treatment["enable_contest"] else "",
                                 session_player["total_revenue"] if parameter_set_treatment["enable_contest"] else "",
-                                session_player["total_profit"] if parameter_set_treatment["enable_contest"] else "",
+                                session_player["total_profit"],
                                 session_player["total_loss"] if parameter_set_treatment["enable_contest"] else "",]
                     
                     for player_number, player_id in enumerate(world_state["session_players"]):

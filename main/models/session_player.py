@@ -109,8 +109,13 @@ class SessionPlayer(models.Model):
         for i in instruction_pages:
             i["text_html"] = self.process_instruction_text(i["text_html"])
 
+        help_docs_subject = [i.json() for i in self.parameter_set_player.instruction_set.help_docs_subject.all()]
+        for i in help_docs_subject:
+            i["text"] = self.process_instruction_text(i["text"])
+
         instructions = self.parameter_set_player.instruction_set.json()
         instructions["instruction_pages"] = instruction_pages
+        instructions["help_docs_subject"] = help_docs_subject
 
         return instructions
     

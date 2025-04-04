@@ -33,7 +33,7 @@ class TestSubjectConsumer(TestCase):
 
         logger.info('setup tests')
 
-        self.session = Session.objects.get(title="T2")
+        self.session = Session.objects.get(title="T1")
         self.parameter_set_json = self.session.parameter_set.json()
 
     def tearDown(self):
@@ -168,8 +168,9 @@ class TestSubjectConsumer(TestCase):
         communicator_subject, communicator_staff = await self.set_up_communicators(communicator_subject, communicator_staff)
         communicator_subject, communicator_staff = await self.start_session(communicator_subject, communicator_staff)
 
-        session = await Session.objects.aget(title="2")
-        world_state = session.world_state
+        await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
+        response = await communicator_staff.receive_json_from()
+        world_state = response['message']['message_data']
 
         #send chat
         message = {'message_type' : 'chat',
@@ -223,9 +224,9 @@ class TestSubjectConsumer(TestCase):
         await communicator_staff.send_json_to(message)
         response = await communicator_staff.receive_json_from()
 
-        #force advance to period 6
+        #force advance to period 11
         message = {'message_type' : 'force_advance_to_period',
-                   'message_text' : {'period_number': 6,},
+                   'message_text' : {'period_number': 11,},
                    'message_target' : 'self', 
                   }
         
@@ -260,9 +261,9 @@ class TestSubjectConsumer(TestCase):
             self.assertEqual(session_players[i]["range_start"], 0)
             self.assertEqual(session_players[i]["range_end"], 0)
 
-            self.assertEqual(session_players[i]["total_cost"], '0.01')
-            self.assertEqual(session_players[i]["total_revenue"], '0.04')
-            self.assertEqual(session_players[i]["total_profit"], '0.03')
+            self.assertEqual(session_players[i]["total_cost"], '0.009')
+            self.assertEqual(session_players[i]["total_revenue"], '0.045')
+            self.assertEqual(session_players[i]["total_profit"], '0.036')
 
         
         #expand player 2 ranges
@@ -290,9 +291,9 @@ class TestSubjectConsumer(TestCase):
         self.assertEqual(session_player["range_start"], 0)
         self.assertEqual(session_player["range_end"], 4)
 
-        self.assertEqual(session_player["total_cost"], '0.05')
-        self.assertEqual(session_player["total_revenue"], '0.75')
-        self.assertEqual(session_player["total_profit"], '0.70')
+        self.assertEqual(session_player["total_cost"], '0.045')
+        self.assertEqual(session_player["total_revenue"], '0.747')
+        self.assertEqual(session_player["total_profit"], '0.702')
 
     @pytest.mark.asyncio
     async def test_transfer_cents(self):

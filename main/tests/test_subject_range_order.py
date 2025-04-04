@@ -32,7 +32,7 @@ class TestSubjectConsumer3(TestCase):
 
         logger.info('setup tests')
 
-        self.session = Session.objects.get(title="1")
+        self.session = Session.objects.get(title="T1")
         self.parameter_set_json = self.session.parameter_set.json()
 
     def tearDown(self):
@@ -255,14 +255,21 @@ class TestSubjectConsumer3(TestCase):
         await communicator_staff.send_json_to(message)
         response = await communicator_staff.receive_json_from()
 
-        #force advance to period 11
-        message = {'message_type' : 'force_advance_to_period',
-                   'message_text' : {'period_number':11,},
-                   'message_target' : 'self', 
-                  }
+        #force advance to period 21
+        # for i in range(21):
+        #     message = {'message_type' : 'force_advance_to_period',
+        #                 'message_text' : {'period_number':i+1,},
+        #                 'message_target' : 'self', 
+        #                }
+            
+        #     await communicator_staff.send_json_to(message)
+        #     response = await communicator_staff.receive_json_from()
         
-        await communicator_staff.send_json_to(message)
-        response = await communicator_staff.receive_json_from()
+        # await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
+        # response = await communicator_staff.receive_json_from()
+        # world_state = response['message']['message_data']
+
+        # self.assertEqual(world_state["current_period"], 21)
 
         #move red to right
         data = {"range_start": 10,       
@@ -308,7 +315,7 @@ class TestSubjectConsumer3(TestCase):
 
         response = await communicator_subject[2].receive_json_from()
         message_data = response['message']['message_data']
-        self.assertEqual(message_data['status'],'success')
+        self.assertEqual(message_data['status'],'fail')
         self.assertEqual(message_data['error_message'],"Your range cannot overlap with Red's.")
 
         response = await communicator_staff.receive_json_from()
@@ -325,7 +332,7 @@ class TestSubjectConsumer3(TestCase):
 
         response = await communicator_subject[0].receive_json_from()
         message_data = response['message']['message_data']
-        self.assertEqual(message_data['status'],'success')
+        self.assertEqual(message_data['status'],'fail')
         self.assertEqual(message_data['error_message'],"Your range cannot overlap with Blue's.")
 
         response = await communicator_staff.receive_json_from()

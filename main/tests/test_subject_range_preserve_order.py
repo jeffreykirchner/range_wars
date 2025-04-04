@@ -33,7 +33,7 @@ class TestSubjectConsumer2(TestCase):
 
         logger.info('setup tests')
 
-        self.session = Session.objects.get(title="1")
+        self.session = Session.objects.get(title="T1")
         self.parameter_set_json = self.session.parameter_set.json()
 
     def tearDown(self):

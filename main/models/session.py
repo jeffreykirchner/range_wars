@@ -611,7 +611,10 @@ class Session(models.Model):
                        "Chat Count", "Total Revenue", "Total Cost", "Total Profit", "Range Start Begin", "Range End Begin", "Range Start End", "Range End End"]
 
             for player_number, player_id in enumerate(self.world_state["session_players"]):
-                top_row.append(f'Cents Sent #{player_number+1}')
+                top_row.append(f'Cents Sent to #{player_number+1}')
+            
+            for player_number, player_id in enumerate(self.world_state["session_players"]):
+                top_row.append(f'Cents Received from #{player_number+1}')
             
             writer.writerow(top_row)
 
@@ -654,9 +657,18 @@ class Session(models.Model):
                                 session_player_end["range_start"],
                                 session_player_end["range_end"],]
                     
-                    for player_number, player_id in enumerate(self.world_state["session_players"]):
-                        if player_id in session_player["cents_sent"]:
-                            temp_row.append(session_player["cents_sent"][player_id])
+                    # add cents sent to other players in this period block
+                    for player_number, pid in enumerate(self.world_state["session_players"]):
+                        if pid in session_player["cents_sent"]:
+                            temp_row.append(-session_player["cents_sent"][pid])
+                        else:
+                            temp_row.append("")
+
+                    # add cents received from other players in this period block
+                    for player_number, pid in enumerate(self.world_state["session_players"]):
+                        if str(player_id) in period_block["session_players"][str(pid)]["cents_sent"]:
+                            # this player sent cents to the current player, so add it here
+                            temp_row.append(period_block["session_players"][str(pid)]["cents_sent"][str(player_id)])
                         else:
                             temp_row.append("")
 

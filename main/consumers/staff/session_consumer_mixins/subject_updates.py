@@ -206,6 +206,7 @@ class SubjectUpdatesMixin():
 
         if status == "success":
             period_block = self.parameter_set_local["parameter_set_periodblocks"][str(self.world_state_local["current_period_block"])] 
+            period_block_ws = self.world_state_local["period_blocks"][str(self.world_state_local["current_period_block"])]
             treatment =  self.parameter_set_local["parameter_set_treatments"][str(period_block["parameter_set_treatment"])]
             values = treatment["values"].split(",")
             session_player = self.world_state_local["session_players"][str(player_id)]
@@ -227,7 +228,7 @@ class SubjectUpdatesMixin():
 
         #check if range is valid given the currrent treatment
         if status == "success":
-            if treatment["preserve_order"]:
+            if treatment["preserve_order"] and period_block_ws["session_players"][str(player_id)]["ready"]:
                 group_number = session_player["group_number"]
                 position = session_player["position"]
 
@@ -272,9 +273,9 @@ class SubjectUpdatesMixin():
                   "error_message": error_message}
         
         if status == "success":
-            period_block = self.world_state_local["period_blocks"][str(self.world_state_local["current_period_block"])]
             
-            period_block["session_players"][str(player_id)]["ready"] = True
+            
+            period_block_ws["session_players"][str(player_id)]["ready"] = True
 
             session_player["range_start"] = range_start
             session_player["range_end"] = range_end

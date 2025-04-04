@@ -361,8 +361,8 @@ class SubjectUpdatesMixin():
         if status == "success":
             session_player_recipient = self.world_state_local["session_players"][str(recipient)]
 
-            session_player_source["earnings"] = Decimal(session_player_source["earnings"]) - amount
-            session_player_recipient["earnings"] = Decimal(session_player_recipient["earnings"]) + amount
+            session_player_source["earnings"] = Decimal(session_player_source["earnings"]) - Decimal(amount)
+            session_player_recipient["earnings"] = Decimal(session_player_recipient["earnings"]) + Decimal(amount)
 
             parameter_set_player_source = self.parameter_set_local["parameter_set_players"][str(session_player_source["parameter_set_player_id"])]
             parameter_set_player_recipient = self.parameter_set_local["parameter_set_players"][str(session_player_recipient["parameter_set_player_id"])]

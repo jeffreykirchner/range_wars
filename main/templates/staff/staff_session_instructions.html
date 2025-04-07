@@ -22,8 +22,15 @@
     </div>
 </div>
 <div class="row d-print-none mb-4">
-    <div class="col">
+    <div class="col-auto mr-4">
         Player: {{session_player.parameter_set_player.id_label}}</a>
+    </div>
+    <div class="col">
+        {%if filled%}
+            <a href="/staff-session-instructions/{{session_player.id}}/0/">Clear Variables</a>       
+        {%else%}
+            <a href="/staff-session-instructions/{{session_player.id}}/1/">Fill Variables</a>       
+        {%endif%}
     </div>
 </div>
 

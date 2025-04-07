@@ -123,6 +123,26 @@ class TestSubjectConsumer3(TestCase):
            
         response = await communicator_staff.receive_json_from()
 
+        #press ready to start button
+        await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
+        response = await communicator_staff.receive_json_from()
+        world_state = response['message']['message_data']
+
+        for i in communicator_subject:
+            session_player = world_state["session_players"][str(i.scope["session_player_id"])]
+
+            data = {"range_start": session_player["range_start"],       
+                    "range_end": session_player["range_end"]}
+            
+            message = {'message_type' : 'range',
+                       'message_text' : data,
+                       'message_target' : 'group', }
+
+            await i.send_json_to(message)
+            response = await i.receive_json_from()
+            message_data = response['message']['message_data']
+            self.assertEqual(message_data['status'],'success')
+
         return communicator_subject, communicator_staff
     
     async def close_communicators(self):

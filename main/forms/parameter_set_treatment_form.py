@@ -59,7 +59,7 @@ class ParameterSetTreatmentForm(forms.ModelForm):
     #                         widget=forms.TextInput(attrs={"v-model":"current_parameter_set_treatment.costs",
     #                                                       "autocomplete":"off",}))
     
-    cost_percent = forms.DecimalField(label='Cost Parameter (Unit Cost = C * (Range Width/Values Count))',
+    cost_percent = forms.DecimalField(label='Cost Y Intercept',
                                         min_value=0,
                                         max_value=1,
                                         widget=forms.NumberInput(attrs={"v-model":"current_parameter_set_treatment.cost_percent",

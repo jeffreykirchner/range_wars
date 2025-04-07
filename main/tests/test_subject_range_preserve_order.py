@@ -109,7 +109,7 @@ class TestSubjectConsumer2(TestCase):
             message_data = response['message']['message_data']
             self.assertEqual(message_data['value'],'success')
         
-        # #advance past instructions
+        ##advance past instructions
         message = {'message_type' : 'next_phase',
                    'message_text' : {},
                    'message_target' : 'self',}
@@ -124,16 +124,38 @@ class TestSubjectConsumer2(TestCase):
            
         response = await communicator_staff.receive_json_from()
 
+        #press ready to start button
+        await communicator_staff.send_json_to({"message_type": "get_world_state_local", "message_text": {}})
+        response = await communicator_staff.receive_json_from()
+        world_state = response['message']['message_data']
+
+        for i in communicator_subject:
+            session_player = world_state["session_players"][str(i.scope["session_player_id"])]
+
+            data = {"range_start": session_player["range_start"],       
+                    "range_end": session_player["range_end"]}
+            
+            message = {'message_type' : 'range',
+                       'message_text' : data,
+                       'message_target' : 'group', }
+
+            await i.send_json_to(message)
+            response = await i.receive_json_from()
+            message_data = response['message']['message_data']
+            self.assertEqual(message_data['status'],'success')
+
         return communicator_subject, communicator_staff
     
-    async def close_communicators(self):
+    async def close_communicators(self, communicator_subject, communicator_staff):
         '''
         close the socket communicators
         '''
-        for i in self.communicator_subject:
+        for i in communicator_subject:
             await i.disconnect()
 
-        await self.communicator_staff.disconnect()
+        await communicator_staff.disconnect()
+
+        return communicator_subject, communicator_staff
 
     @pytest.mark.asyncio
     async def test_range_centers(self):
@@ -195,12 +217,13 @@ class TestSubjectConsumer2(TestCase):
         response = await communicator_subject[1].receive_json_from()
         message_data = response['message']['message_data']
         self.assertEqual(message_data['status'],'fail')
+        self.assertEqual(message_data['error_message'],"Your mid-range cannot be lower than Red's.")
 
         response = await communicator_staff.receive_json_from()
 
         #try to move red past center of purple
         data = {"range_start": 10,       
-                "range_end": 11}
+                "range_end": 12}
                     
         message = {'message_type' : 'range',
                    'message_text' : data,
@@ -213,7 +236,7 @@ class TestSubjectConsumer2(TestCase):
         self.assertEqual(message_data['status'],'fail')
 
         response = await communicator_staff.receive_json_from()
-    
+
     @pytest.mark.asyncio
     async def test_range_neighbors(self):
         '''
@@ -294,4 +317,6 @@ class TestSubjectConsumer2(TestCase):
         self.assertEqual(message_data['error_message'],"Your range cannot overlap with Blue's.")
 
         response = await communicator_staff.receive_json_from()
+
+        communicator_subject, communicator_staff = await self.close_communicators(communicator_subject, communicator_staff)
 

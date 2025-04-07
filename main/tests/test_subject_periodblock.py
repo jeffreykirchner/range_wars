@@ -408,6 +408,7 @@ class TestSubjectPeriodblock(TestCase):
 
         self.assertEqual(world_state["current_period"], 21)
 
+        #group 1
         session_player = world_state["session_players"][str(communicator_subject[0].scope["session_player_id"])]
         self.assertEqual(session_player["range_start"], 40)
         self.assertEqual(session_player["range_end"], 40)
@@ -427,6 +428,27 @@ class TestSubjectPeriodblock(TestCase):
         self.assertEqual(session_player["range_start"], 10)
         self.assertEqual(session_player["range_end"], 10)
         self.assertEqual(session_player["position"], 1)
+
+        #group 2
+        session_player = world_state["session_players"][str(communicator_subject[4].scope["session_player_id"])]
+        self.assertEqual(session_player["range_start"], 0)
+        self.assertEqual(session_player["range_end"], 0)
+        self.assertEqual(session_player["position"], 1)
+
+        session_player = world_state["session_players"][str(communicator_subject[5].scope["session_player_id"])]
+        self.assertEqual(session_player["range_start"], 1)
+        self.assertEqual(session_player["range_end"], 1)
+        self.assertEqual(session_player["position"], 2)
+
+        session_player = world_state["session_players"][str(communicator_subject[6].scope["session_player_id"])]
+        self.assertEqual(session_player["range_start"], 2)
+        self.assertEqual(session_player["range_end"], 2)
+        self.assertEqual(session_player["position"], 3)
+
+        session_player = world_state["session_players"][str(communicator_subject[7].scope["session_player_id"])]
+        self.assertEqual(session_player["range_start"], 3)
+        self.assertEqual(session_player["range_end"], 3)
+        self.assertEqual(session_player["position"], 4)
 
 
 

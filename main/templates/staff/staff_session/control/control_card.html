@@ -3,7 +3,9 @@
         <span class="align-middle">Control</span>       
             
         <span class="float-end">
-            <button type="button" class="btn btn-link ms-4" title="Show Help Doc" v-on:click="send_load_help_doc('Staff Control')">
+            <span v-if="working"><i class="fas fa-spinner fa-spin"></i></span>
+
+            <button type="button" class="btn btn-link ms-1" title="Show Help Doc" v-on:click="send_load_help_doc('Staff Control')">
                 <i class="far fa-question-circle"></i> 
             </button>
         </span>

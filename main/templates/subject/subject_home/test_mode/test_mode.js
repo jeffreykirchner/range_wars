@@ -151,16 +151,18 @@ do_test_mode_chat: function do_test_mode_chat(){
  */
 test_mode_move_range: function test_mode_move_range()
 {
+    let temp_box = pixi_boxes[app.random_number(0, pixi_boxes.length - 1)].box; 
+
     if(app.random_number(1, 2) == 1)
     {
-        app.pixi_left_handle_pointerdown(null);
-        app.pixi_left_handle_drag(app.random_number(0, axis_width));
+        app.pixi_left_handle_pointerdown(null);        
+        app.pixi_left_handle_drag(temp_box.x + (temp_box.width / 2)); // move to the middle of a random box
         app.pixi_container_main_pointerup(null);
     }
     else
     {
         app.pixi_right_handle_pointerdown(null);
-        app.pixi_right_handle_drag(app.random_number(0, axis_width));
+        app.pixi_right_handle_drag(temp_box.x + (temp_box.width / 2)); // move to the middle of a random box
         app.pixi_container_main_pointerup(null);
     }    
 },

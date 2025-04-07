@@ -96,7 +96,7 @@ class SessionPlayer(models.Model):
         
         main.models.SessionPlayerPeriod.objects.bulk_create(session_player_periods)
 
-    def get_instruction_set(self):
+    def get_instruction_set(self, fill=True):
         '''
         return a proccessed list of instructions to the subject
         '''
@@ -106,12 +106,15 @@ class SessionPlayer(models.Model):
 
         instruction_pages = [i.json() for i in self.parameter_set_player.instruction_set.instructions.all()]
  
-        for i in instruction_pages:
-            i["text_html"] = self.process_instruction_text(i["text_html"])
+        if fill:
+            for i in instruction_pages:
+                i["text_html"] = self.process_instruction_text(i["text_html"])
 
         help_docs_subject = [i.json() for i in self.parameter_set_player.instruction_set.help_docs_subject.all()]
-        for i in help_docs_subject:
-            i["text"] = self.process_instruction_text(i["text"])
+
+        if fill:
+            for i in help_docs_subject:
+                i["text"] = self.process_instruction_text(i["text"])
 
         instructions = self.parameter_set_player.instruction_set.json()
         instructions["instruction_pages"] = instruction_pages

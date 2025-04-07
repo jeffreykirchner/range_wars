@@ -33,7 +33,7 @@ class StaffSessionInstructions(SingleObjectMixin, View):
         instruction_set = []
 
         if session_player:
-            instruction_set = session_player.get_instruction_set()
+            instruction_set = session_player.get_instruction_set(fill=kwargs["fill"])
 
         return render(request=request,
                       template_name=self.template_name,
@@ -41,4 +41,5 @@ class StaffSessionInstructions(SingleObjectMixin, View):
                                "id" : session_player.session.id,
                                "instruction_set" : instruction_set,
                                "session_player" : session_player,
+                               "filled" : kwargs["fill"],
                                "session" : session_player.session})

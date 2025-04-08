@@ -310,7 +310,7 @@ let app = Vue.createApp({
             if(app.session.started)
             {
                 let session_period_id = world_state.session_periods_order[world_state.current_period-1];
-                let session_period = app.session.session_periods[session_period_id];
+                let session_period = world_state.session_periods[session_period_id];
                 let parameter_set_periodblock = app.session.parameter_set.parameter_set_periodblocks[session_period.parameter_set_periodblock_id];
                 
                 app.current_treatment = app.get_current_treatment().id;
@@ -418,7 +418,7 @@ let app = Vue.createApp({
             if(world_state.current_round == 1 && world_state.current_period > 1)
             {
                 let session_period_id = world_state.session_periods_order[world_state.current_period-1];
-                let session_period = app.session.session_periods[session_period_id];
+                let session_period = world_state.session_periods[session_period_id];
                 let parameter_set_periodblock = app.session.parameter_set.parameter_set_periodblocks[session_period.parameter_set_periodblock_id];
                 
                 app.current_treatment = app.get_current_treatment().id;

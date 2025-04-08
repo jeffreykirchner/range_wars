@@ -800,8 +800,8 @@ class Session(models.Model):
             "started":self.started,
             "id_string":self.id_string,
             "parameter_set":self.parameter_set.json(),
-            "session_periods":{i.id : i.json() for i in self.session_periods.all()},
-            "session_periods_order" : list(self.session_periods.all().values_list('id', flat=True)),
+            # "session_periods":{i.id : i.json() for i in self.session_periods.all()},
+            # "session_periods_order" : list(self.session_periods.all().values_list('id', flat=True)),
             "session_players":{i.id : i.json(False) for i in self.session_players.all()},
             "session_players_order" : list(self.session_players.all().values_list('id', flat=True)),
             "invitation_text" : self.invitation_text,
@@ -825,8 +825,8 @@ class Session(models.Model):
             "session_players":{i.id : i.json_for_subject(session_player) for i in self.session_players.all()},
             "session_players_order" : list(self.session_players.all().values_list('id', flat=True)),
 
-            "session_periods":{i.id : i.json() for i in self.session_periods.all()},
-            "session_periods_order" : list(self.session_periods.all().values_list('id', flat=True)),
+            # "session_periods":{i.id : i.json() for i in self.session_periods.all()},
+            # "session_periods_order" : list(self.session_periods.all().values_list('id', flat=True)),
 
             "world_state" : self.world_state,
         }

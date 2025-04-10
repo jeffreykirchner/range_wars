@@ -179,7 +179,8 @@
 
             <!-- spacer -->
             <div class="col-4 text-center" v-if="session.started && !show_contest_controls() && !show_ready_button()">
-                <span class="fs-3" v-if="!get_current_treatment().enable_contest">Revenue Bars Disabled</span>
+                <div class="fs-3" v-if="!get_current_treatment().enable_contest">Revenue Bars Disabled</div>
+                <div class="fs-3" v-if="get_current_treatment().enable_chat">Chat Enabled</div>
             </div>
 
             <!-- send chat -->

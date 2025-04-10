@@ -57,8 +57,15 @@ setup_group_summary : function setup_group_summary(){
         max_profit = Math.max(max_profit, player.total_profit);
     }
 
-    scaler = (box.width-margin*2) / (max_cost + max_profit);
-    center_x = max_cost * scaler + margin;
+    if(max_cost + max_profit > 0)
+    {
+        scaler = (box.width-margin*2) / (max_cost + max_profit);
+        center_x = max_cost * scaler + margin;
+    }
+    else
+    {
+        center_x = box.width / 2;
+    }
 
     //check for minimum label clearance
     if(center_x > box.width - text_profit.width - margin)

@@ -444,6 +444,7 @@ class Session(models.Model):
                 session_player["total_loss"] = 0
                 session_player["total_profit"] = 0
                 session_player["total_revenue"] = 0
+                session_player["total_cost"] = 0
         
         return world_state
 

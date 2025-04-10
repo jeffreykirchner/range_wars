@@ -113,6 +113,9 @@ do_test_mode_run: function do_test_mode_run()
         }
     
     if(app.session.world_state.finished) return;
+    
+    //close help doc modal if open
+    app.help_modal.hide();
         
     if(go)
         switch (app.random_number(1, 5)){

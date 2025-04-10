@@ -225,7 +225,7 @@ class SubjectUpdatesMixin():
                 status = "fail"
                 error_message = "Invalid range."
                 logger.warning(f"take_range: invalid range, {event_data}")
-
+        
         #check if range is valid given the currrent treatment
         if status == "success":
             if treatment["preserve_order"] and period_block_ws["session_players"][str(player_id)]["ready"]:
@@ -274,17 +274,17 @@ class SubjectUpdatesMixin():
         
         if status == "success":
             
-            
             period_block_ws["session_players"][str(player_id)]["ready"] = True
-
-            session_player["range_start"] = range_start
-            session_player["range_end"] = range_end
-            session_player["range_middle"] = range_middle
+            
+            if treatment["enable_contest"]:
+                session_player["range_start"] = range_start
+                session_player["range_end"] = range_end
+                session_player["range_middle"] = range_middle
 
             result["player_id"] = player_id
-            result["range_start"] = range_start
-            result["range_end"] = range_end
-            result["range_middle"] = range_middle
+            result["range_start"] = session_player["range_start"]
+            result["range_end"] = session_player["range_end"]
+            result["range_middle"] = session_player["range_middle"]
 
             self.session_events.append(SessionEvent(session_id=self.session_id, 
                                                     session_player_id=player_id,

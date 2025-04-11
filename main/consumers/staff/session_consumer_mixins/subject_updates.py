@@ -287,6 +287,7 @@ class SubjectUpdatesMixin():
             result["range_start"] = session_player["range_start"]
             result["range_end"] = session_player["range_end"]
             result["range_middle"] = session_player["range_middle"]
+            result["ready_to_go_pressed"] = ready_to_go_pressed
 
             self.session_events.append(SessionEvent(session_id=self.session_id, 
                                                     session_player_id=player_id,

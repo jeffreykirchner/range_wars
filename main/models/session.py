@@ -735,13 +735,15 @@ class Session(models.Model):
         '''
 
         if type == "chat":
-            return  data["text"]
+            return data["text"]
         elif type == "help_doc":
             return data
         elif type == "range":
             return f'{data["range_start"]} to {data["range_end"]}'
         elif type == "cents":
             return f'{data["amount"]} cent(s) to #{session_players[str(data["recipient"])]["player_number"]}'
+        elif type == "ready":
+            return "Ready to Start pressed."
 
         return ""
     

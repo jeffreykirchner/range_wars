@@ -689,7 +689,7 @@ class Session(models.Model):
 
             writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
-            writer.writerow(["Session ID", "Period", "Group", "Client #", "Label", "Action","Info (Plain)", "Info (JSON)", "Timestamp"])
+            writer.writerow(["Session ID", "Period","Period Block", "Treatment", "Group", "Client #", "Label", "Action","Info (Plain)", "Info (JSON)", "Timestamp"])
 
             # session_events =  main.models.SessionEvent.objects.filter(session__id=self.id).prefetch_related('period_number', 'time_remaining', 'type', 'data', 'timestamp')
             # session_events = session_events.select_related('session_player')
@@ -703,10 +703,20 @@ class Session(models.Model):
             for i in self.session_players.all().values('id','player_number','parameter_set_player__id_label'):
                 session_players[str(i['id'])] = i
 
+            parameter_set = self.parameter_set.json()
+
             for p in self.session_events.exclude(type="time").exclude(type="world_state").exclude(type='target_locations'):
+
+                session_period_id = world_state["session_periods_order"][p.period_number-1]
+
+                parameter_set_periodblock = parameter_set["parameter_set_periodblocks"][str(world_state["session_periods"][str(session_period_id)]["parameter_set_periodblock_id"])]
+                parameter_set_treatment = parameter_set["parameter_set_treatments"][str(parameter_set_periodblock["parameter_set_treatment"])]
+
                 writer.writerow([self.id,
                                 p.period_number, 
                                 p.group_number, 
+                                f'{parameter_set_periodblock["period_start"]} to {parameter_set_periodblock["period_end"]}',
+                                parameter_set_treatment["id_label_pst"],
                                 parameter_set_players[str(p.session_player_id)]["player_number"], 
                                 parameter_set_players[str(p.session_player_id)]["parameter_set_player__id_label"], 
                                 p.type, 
@@ -725,13 +735,15 @@ class Session(models.Model):
         '''
 
         if type == "chat":
-            return  data["text"]
+            return data["text"]
         elif type == "help_doc":
             return data
         elif type == "range":
             return f'{data["range_start"]} to {data["range_end"]}'
         elif type == "cents":
             return f'{data["amount"]} cent(s) to #{session_players[str(data["recipient"])]["player_number"]}'
+        elif type == "ready":
+            return "Ready to Start pressed."
 
         return ""
     

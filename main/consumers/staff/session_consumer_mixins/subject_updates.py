@@ -67,6 +67,7 @@ class SubjectUpdatesMixin():
                                                     session_player_id=result["player_id"],
                                                     type="chat",
                                                     group_number=session_player["group_number"],
+                                                    period_number=self.world_state_local["current_period"],
                                                     data=result))
             
             target_list = self.world_state_local["groups"][str(session_player["group_number"])]
@@ -274,6 +275,7 @@ class SubjectUpdatesMixin():
         
         if status == "success":
             
+            ready_to_go_pressed = True if not period_block_ws["session_players"][str(player_id)]["ready"] else False
             period_block_ws["session_players"][str(player_id)]["ready"] = True
             
             if treatment["enable_contest"]:
@@ -289,7 +291,7 @@ class SubjectUpdatesMixin():
             self.session_events.append(SessionEvent(session_id=self.session_id, 
                                                     session_player_id=player_id,
                                                     group_number=session_player["group_number"],
-                                                    type=event['type'],
+                                                    type=event['type'] if not ready_to_go_pressed else "ready",
                                                     period_number=self.world_state_local["current_period"],                                                   
                                                     data=result))
         

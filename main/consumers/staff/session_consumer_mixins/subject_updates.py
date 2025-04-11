@@ -67,6 +67,7 @@ class SubjectUpdatesMixin():
                                                     session_player_id=result["player_id"],
                                                     type="chat",
                                                     group_number=session_player["group_number"],
+                                                    period_number=self.world_state_local["current_period"],
                                                     data=result))
             
             target_list = self.world_state_local["groups"][str(session_player["group_number"])]

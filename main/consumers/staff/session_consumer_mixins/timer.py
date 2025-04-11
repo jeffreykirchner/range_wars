@@ -75,7 +75,7 @@ class TimerMixin():
         logger = logging.getLogger(__name__)
         #logger.info(f"continue_timer: start")
 
-        if not self.world_state_local["timer_running"]:
+        if not self.world_state_local["timer_running"] or not session.started:
             # logger.info(f"continue_timer timer off")
             await self.send_message(message_to_self=True, message_to_group=None,
                                     message_type="stop_timer_pulse", send_to_client=True, send_to_group=False)

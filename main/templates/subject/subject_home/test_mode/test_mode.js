@@ -177,9 +177,16 @@ test_mode_submit_range: function test_mode_submit_range()
 {
     if(app.working) return;
 
-    if(!app.show_contest_controls()) return;
+    if(app.show_contest_controls() && !app.show_ready_button())
+    {
+        app.send_range();
+        return;
+    }
 
-    app.send_range();
+    if(app.show_ready_button())
+    {
+        app.send_range();
+    }
 },
 
 /**

@@ -21,9 +21,17 @@ process_the_feed: function process_the_feed(message_type, message_data)
             html_text = "<i>" + message_data.text + "</i>";
             break;
         case "update_range":
-            let start_range = parseInt(message_data.range_start) + 1;
-            let end_range = parseInt(message_data.range_end) + 1;
-            html_text = "<span style='color:" + parameter_set_player.hex_color + "'>" + parameter_set_player.id_label + "</span> Range: " +  start_range + " to " + end_range;
+            if(message_data.ready_to_go_pressed)
+            {
+                html_text = "<span style='color:" + parameter_set_player.hex_color + "'>" + parameter_set_player.id_label + "</span> Ready to Start";
+            }
+            else
+            {
+                let start_range = parseInt(message_data.range_start) + 1;
+                let end_range = parseInt(message_data.range_end) + 1;
+                html_text = "<span style='color:" + parameter_set_player.hex_color + "'>" + parameter_set_player.id_label + "</span> Range: " +  start_range + " to " + end_range;
+            }
+            
             break;
     }
 

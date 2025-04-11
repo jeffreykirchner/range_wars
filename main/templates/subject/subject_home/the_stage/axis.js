@@ -54,6 +54,7 @@ setup_axis : function setup_axis(){
     // pixi_container_main.addChild(x_label);
 
     let y_label = new PIXI.Text({text:"Resource Value (¢)",style:axis_style});
+    y_label.anchor.set(0.5, 0);
     y_label.position.set(1, other_margin + axis_height/2);
     y_label.rotation = -Math.PI/2;
     pixi_container_main.addChild(y_label);

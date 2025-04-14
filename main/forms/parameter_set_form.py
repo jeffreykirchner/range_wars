@@ -49,7 +49,11 @@ class ParameterSetForm(forms.ModelForm):
                                             min_value=1,
                                             widget=forms.NumberInput(attrs={"v-model":"parameter_set.inheritance_window",
                                                                             "step":"1",
-                                                                            "min":"1"}))                                                        
+                                                                            "min":"1"}))         
+
+    show_waste = forms.ChoiceField(label='Show Waste',
+                                   choices=((1, 'Yes'), (0, 'No')),
+                                   widget=forms.Select(attrs={"v-model":"parameter_set.show_waste",}))
 
     test_mode = forms.ChoiceField(label='Test Mode',
                                   choices=((1, 'Yes'), (0, 'No')),
@@ -59,7 +63,7 @@ class ParameterSetForm(forms.ModelForm):
         model=ParameterSet
         fields =['show_instructions',
                  'survey_required', 'survey_link', 'prolific_mode', 'prolific_completion_link', 'reconnection_limit',
-                 'inheritance_window', 'test_mode']
+                 'inheritance_window', 'show_waste', 'test_mode']
 
     def clean_survey_link(self):
         

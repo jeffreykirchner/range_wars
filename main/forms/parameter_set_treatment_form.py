@@ -75,7 +75,7 @@ class ParameterSetTreatmentForm(forms.ModelForm):
                                     choices=((1, 'Yes'), (0, 'No')),
                                     widget=forms.Select(attrs={"v-model":"current_parameter_set_treatment.enable_chat",}))
     
-    enable_transfer_cents = forms.ChoiceField(label='Enable Profit Transfer',
+    enable_transfer_cents = forms.ChoiceField(label='Enable Money Transfer',
                                               choices=((1, 'Yes'), (0, 'No')),
                                               widget=forms.Select(attrs={"v-model":"current_parameter_set_treatment.enable_transfer_cents",}))
 

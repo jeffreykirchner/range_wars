@@ -374,12 +374,10 @@ class SubjectUpdatesMixin():
             text = f"<span style='color:{parameter_set_player_source['hex_color']}'>{parameter_set_player_source['id_label']}</span> \
                       transferred {amount} cent{'s' if amount>1 else ""} to \
                     <span style='color:{parameter_set_player_recipient['hex_color']}'>{parameter_set_player_recipient['id_label']}</span>."
-
-           
-            
+ 
             target_list = self.world_state_local["groups"][str(session_player_source["group_number"])]
 
-            # store into chat history
+            #store transfer into history
             chat = {"session_player": player_id,
                     "message": text,
                     "type": "cents"}
@@ -396,6 +394,13 @@ class SubjectUpdatesMixin():
                 pbd[str(recipient)] += amount
             else:
                 pbd[str(recipient)] = amount
+
+            #store cents into world state
+            session_player_ws = self.world_state_local["session_players"][str(player_id)]
+            if str(recipient) in session_player_ws["cents_sent"]:
+                session_player_ws["cents_sent"][str(recipient)] += amount
+            else:
+                session_player_ws["cents_sent"][str(recipient)] = amount
 
             await session.asave(update_fields=["period_block_data"])
         

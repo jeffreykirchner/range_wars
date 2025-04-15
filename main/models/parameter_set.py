@@ -31,6 +31,8 @@ class ParameterSet(models.Model):
 
     inheritance_window = models.IntegerField(verbose_name='Inheritance Window', default=10)                    #number of periods to average for inheritance
 
+    show_waste = models.BooleanField(default=False, verbose_name='Show Waste')                                #if true show waste on subject screen
+
     reconnection_limit = models.IntegerField(verbose_name='Limit Subject Screen Reconnection Trys', default=25)       #limit subject screen reconnection trys
 
     test_mode = models.BooleanField(default=False, verbose_name='Test Mode')                                #if true subject screens will do random auto testing
@@ -68,6 +70,7 @@ class ParameterSet(models.Model):
             self.prolific_completion_link = new_ps.get("prolific_completion_link", None)
 
             self.inheritance_window = new_ps.get("inheritance_window", 10)
+            self.show_waste = new_ps.get("show_waste", False)
 
             self.reconnection_limit = new_ps.get("reconnection_limit", None)
 
@@ -194,6 +197,7 @@ class ParameterSet(models.Model):
         self.json_for_session["prolific_completion_link"] = self.prolific_completion_link
 
         self.json_for_session["inheritance_window"] = self.inheritance_window
+        self.json_for_session["show_waste"] = 1 if self.show_waste else 0
         
         self.json_for_session["reconnection_limit"] = self.reconnection_limit
 

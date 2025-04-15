@@ -116,7 +116,7 @@ update_treatment : function update_treatment(){
 
             revenue_box.addChild(revenue_box_fill);
 
-            //draw cost line for local player
+            //draw cost box for local player
             if(app.is_subject && session_player_id == app.session_player.id)
             {
                 
@@ -149,9 +149,27 @@ update_treatment : function update_treatment(){
                                                          fill : 'black', 
                                                          align : 'center'}});
                     loss_text.x = box_width/2;
-                    loss_text.y = height_per_player-5;
+                    loss_text.y = loss_text.height;
                     loss_text.anchor.set(0.5,1);
                     revenue_box.addChild(loss_text);
+                }
+
+                // Calculate loss for this player in this box
+                if (group_members_in_box.length > 1 && app.session.parameter_set.show_waste) {
+                    let waste_y = app.value_to_y(session_player.cost * (group_members_in_box.length - 1) / group_members_in_box.length);
+                    // You can use 'waste' to display a pattern or overlay here
+                    // Example: draw a semi-transparent overlay to indicate waste
+                    let waste_box = new PIXI.Graphics();                    
+                    waste_box.rect(0, height_per_player - waste_y, box_width, waste_y);
+
+                    let texture_scale = box_width/app.pixi_textures['pattern_2_tex'].width;
+                    const matrix = new PIXI.Matrix().scale(texture_scale,texture_scale);
+
+                    waste_box.fill({texture: app.pixi_textures['pattern_2_tex'],
+                                    textureSpace: 'local',
+                                    matrix: matrix,
+                                    alpha: 1}); // Red overlay for waste
+                    revenue_box.addChild(waste_box);
                 }
 
                 // if(min_y != max_y)

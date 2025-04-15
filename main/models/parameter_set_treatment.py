@@ -35,7 +35,7 @@ class ParameterSetTreatment(models.Model):
 
     preserve_order = models.BooleanField(verbose_name='Preserve Order', default=False)                        #preserve order of players on battle space
     enable_chat = models.BooleanField( verbose_name='Enable Chat', default=True)                              #if true enable chat
-    enable_transfer_cents = models.BooleanField(verbose_name='Enable Profit Transfer', default=True)          #if true enable chat
+    enable_transfer_cents = models.BooleanField(verbose_name='Enable Money Transfer', default=True)          #if true enable chat
     enable_contest = models.BooleanField(verbose_name='Enable Contest', default=True)                         #if true enable contest
     enable_ready_button = models.BooleanField(verbose_name='Enable Ready Button', default=True)               #if true enable ready button
 

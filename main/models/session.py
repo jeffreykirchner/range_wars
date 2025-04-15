@@ -146,7 +146,7 @@ class Session(models.Model):
         setup summary data
         '''
 
-        session_players = self.session_players.values('id','parameter_set_player__id').all()
+        # session_players = self.session_players.values('id','parameter_set_player__id').all()
 
         summary_data = {}
                 
@@ -200,6 +200,7 @@ class Session(models.Model):
             v['total_loss'] = 0            #total loss
             v['group_number'] = 0          #current group number
             v['position'] = 0              #current position in group
+            v['cents_sent'] = {}           #cents sent to other players
             v['parameter_set_player_id'] = i['parameter_set_player__id']
             
             self.world_state["session_players"][str(i['id'])] = v
@@ -536,12 +537,15 @@ class Session(models.Model):
             parameter_set = self.parameter_set.json()
             world_state = self.world_state
            
-            top_row = ["Session ID", "Period", "Period Block", "Treatment", "Client #", "Group", "Position", "Label", 
+            top_row = ["Session ID", "Session Title", "Period", "Period Block", "Treatment", "Client #", "Group", "Position", "Label", 
                        "Range Start", "Range End", "Range Middle", 
                        "Total Cost", "Total Revenue", "Total Profit", "Total Loss"]
             
             for player_number, player_id in enumerate(world_state["session_players"]):               
                 top_row.append(f'Overlap #{player_number+1}')
+
+            for player_number, player_id in enumerate(self.world_state["session_players"]):
+                top_row.append(f'Cents Sent to #{player_number+1}')
             
             writer.writerow(top_row)
 
@@ -564,6 +568,7 @@ class Session(models.Model):
                     parameter_set_player_group = parameter_set_player["parameter_set_player_groups"][str(parameter_set_periodblock["id"])] 
 
                     temp_row = [self.id, 
+                                self.title,
                                 session_period.period_number, 
                                 f'{parameter_set_periodblock["period_start"]} to {parameter_set_periodblock["period_end"]}',
                                 parameter_set_treatment["id_label_pst"],
@@ -582,6 +587,15 @@ class Session(models.Model):
                     for player_number, player_id in enumerate(world_state["session_players"]):
                         if player_id in session_player["overlaps"]:
                             temp_row.append(session_player["overlaps"][player_id])
+                        else:
+                            temp_row.append("")
+
+                    for player_number, player_id in enumerate(world_state["session_players"]):
+                        if "cents_sent" in session_player:
+                            if player_id in session_player["cents_sent"]:
+                                temp_row.append(-session_player["cents_sent"][player_id])
+                            else:
+                                temp_row.append("")
                         else:
                             temp_row.append("")
                     
@@ -608,7 +622,7 @@ class Session(models.Model):
 
             writer = csv.writer(output, quoting=csv.QUOTE_NONNUMERIC)
 
-            top_row = ["Session ID", "Period Block", "Treatment", "Client #", "Group", "Position", "Label", 
+            top_row = ["Session ID", "Session Title", "Period Block", "Treatment", "Client #", "Group", "Position", "Label", 
                        "Chat Count", "Total Revenue", "Total Cost", "Total Profit", "Range Start Begin", "Range End Begin", "Range Start End", "Range End End"]
 
             for player_number, player_id in enumerate(self.world_state["session_players"]):
@@ -643,6 +657,7 @@ class Session(models.Model):
                     parameter_set_player_group = parameter_set_player["parameter_set_player_groups"][str(parameter_set_periodblock["id"])]
 
                     temp_row = [self.id,
+                                self.title,
                                 f'{parameter_set_periodblock["period_start"]} to {parameter_set_periodblock["period_end"]}',
                                 parameter_set_treatment["id_label_pst"],
                                 player_number+1,      

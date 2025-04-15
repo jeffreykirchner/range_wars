@@ -196,7 +196,12 @@ class TimerMixin():
                     await SessionPeriod.objects.filter(session=session, period_number=self.world_state_local["current_period"]) \
                                                .aupdate(summary_data=summary_data)
                     
+                    #clear cents sent from world state
+                    for player_id in self.world_state_local["session_players"]:
+                        player = self.world_state_local["session_players"][player_id]
+                        player["cents_sent"] = {}
 
+                    
             #session status
             result["value"] = "success"
             result["stop_timer"] = stop_timer

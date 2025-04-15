@@ -574,7 +574,7 @@ class Session(models.Model):
                                 parameter_set_treatment["id_label_pst"],
                                 player_number+1,      
                                 parameter_set_player_group["group_number"],
-                                parameter_set_player_group["position"],
+                                session_player["position"],
                                 parameter_set_player["id_label"],
                                 session_player["range_start"],
                                 session_player["range_end"],
@@ -635,8 +635,8 @@ class Session(models.Model):
 
             parameter_set = self.parameter_set.json()
 
-            for period_block_id in self.period_block_data:
-                period_block = self.period_block_data[period_block_id]
+            for period_block_id in parameter_set["parameter_set_periodblocks_order"]:
+                period_block = self.period_block_data[str(period_block_id)]
                 parameter_set_periodblock = parameter_set["parameter_set_periodblocks"][str(period_block_id)]
                 parameter_set_treatment = parameter_set["parameter_set_treatments"][str(parameter_set_periodblock["parameter_set_treatment"])]
 

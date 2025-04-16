@@ -198,6 +198,7 @@ class Session(models.Model):
             v['total_revenue'] = 0         #total revenue 
             v['total_profit'] = 0          #total profit
             v['total_loss'] = 0            #total loss
+            v['total_waste'] = 0           #total waste
             v['group_number'] = 0          #current group number
             v['position'] = 0              #current position in group
             v['cents_sent'] = {}           #cents sent to other players
@@ -387,6 +388,7 @@ class Session(models.Model):
         for i in world_state["session_players"]:
             world_state["session_players"][i]["revenues"] = {str(i): 0 for i in values}
             world_state["session_players"][i]["overlaps"] = {}
+            world_state["session_players"][i]["total_waste"] = Decimal(0)
 
         #update revenues for each group at each value
         for g in world_state["groups"]:
@@ -404,6 +406,7 @@ class Session(models.Model):
                 for p in players_in_range:
                     session_player = world_state["session_players"][str(p)]
                     session_player["revenues"][values[t]] = Decimal(1/len(players_in_range)) * box_value
+                    session_player["total_waste"] +=  Decimal(session_player["cost"]) * box_value * Decimal(len(players_in_range) - 1) / Decimal(len(players_in_range))
 
                     #store overlap totals
                     for o in players_in_range:
@@ -421,9 +424,12 @@ class Session(models.Model):
                 session_player = world_state["session_players"][i]
                 session_player["total_revenue"] = Decimal(0)
                 session_player["total_loss"] = Decimal(0)
+
                 session_player["total_cost"] = Decimal(session_player["range_end"] - session_player["range_start"] + 1) * Decimal(session_player["cost"]) * box_value
                 session_player["total_cost"] = round_half_away_from_zero(Decimal(session_player["total_cost"]), 3)
 
+                session_player["total_waste"] = round_half_away_from_zero(Decimal(session_player["total_waste"]), 3)
+                
                 for r in range(session_player["range_start"], session_player["range_end"]+1):
                     value = values[r]
                     revenue = session_player["revenues"][values[r]]
@@ -446,6 +452,7 @@ class Session(models.Model):
                 session_player["total_profit"] = 0
                 session_player["total_revenue"] = 0
                 session_player["total_cost"] = 0
+                session_player["total_waste"] = 0
         
         return world_state
 

@@ -138,8 +138,13 @@ update_treatment : function update_treatment(){
 
                     let cost_box2 = new PIXI.Graphics();
                     cost_box2.rect(0, cost_y2, box_width, cost_y1 - cost_y2);
-                    cost_box2.fill({alpha: 1,
-                                    texture: app.pixi_textures['pattern_1_tex']});
+
+                    let texture_scale =app.pixi_textures['pattern_1_tex'].width/box_width;
+                    const matrix = new PIXI.Matrix().scale(texture_scale,texture_scale).translate(0, cost_y2);
+
+                    cost_box2.fill({texture: app.pixi_textures['pattern_1_tex'],
+                                    matrix:matrix});
+                    
                     revenue_box.addChild(cost_box2);
 
                     //loss text
@@ -154,21 +159,21 @@ update_treatment : function update_treatment(){
                     revenue_box.addChild(loss_text);
                 }
 
-                // Calculate loss for this player in this box
+                // Calculate waste for this player in this box
                 if (group_members_in_box.length > 1 && app.session.parameter_set.show_waste) {
-                    let waste_y = app.value_to_y(session_player.cost * (group_members_in_box.length - 1) / group_members_in_box.length);
-                    // You can use 'waste' to display a pattern or overlay here
-                    // Example: draw a semi-transparent overlay to indicate waste
+                    // let waste_y = app.value_to_y(session_player.cost * (group_members_in_box.length - 1) / group_members_in_box.length);
+                    let waste_y = app.value_to_y(session_player.cost * (group_members_in_box.length - 1));
+                    // session_player.cost * (group_members_in_box.length - 1) / group_members_in_box.length
+
                     let waste_box = new PIXI.Graphics();                    
                     waste_box.rect(0, height_per_player - waste_y, box_width, waste_y);
 
                     let texture_scale = box_width/app.pixi_textures['pattern_2_tex'].width;
-                    const matrix = new PIXI.Matrix().scale(texture_scale,texture_scale);
+                    const matrix = new PIXI.Matrix().scale(texture_scale,texture_scale).translate(0, height_per_player - waste_y);
 
-                    waste_box.fill({texture: app.pixi_textures['pattern_2_tex'],
-                                    textureSpace: 'local',
-                                    matrix: matrix,
-                                    alpha: 1}); // Red overlay for waste
+                    waste_box.fill({texture: app.pixi_textures['pattern_2_tex'],                                    
+                                    matrix: matrix,});
+
                     revenue_box.addChild(waste_box);
                 }
 

@@ -17,6 +17,8 @@ setup_group_summary : function setup_group_summary(){
     let world_state = app.session.world_state;
     let current_group_memebers = world_state.groups[app.current_group];
 
+    pixi_profit_bars = {};
+
     //border
     let box = new PIXI.Graphics();
 
@@ -128,6 +130,8 @@ setup_group_summary : function setup_group_summary(){
         bar.fill({color: bar_color});
         bar.stroke({color: "lightgrey", width: 1});
 
+        pixi_profit_bars[player_id] = {x:center_x, y:start_y, width:bar_width, height:bar_height};
+
         //cost bar
         let bar_cost = new PIXI.Graphics();
         bar_width = (player.total_cost) * scaler;
@@ -141,6 +145,8 @@ setup_group_summary : function setup_group_summary(){
 
         bar_cost.fill({color: bar_color,alpha:0.5});
         bar_cost.stroke({color: "lightgrey", width: 1});
+
+        pixi_cost_bars[player_id] = {x:center_x-bar_width, y:start_y, width:bar_width, height:bar_height};
 
         pixi_group_summary.addChild(bar_cost);
         pixi_group_summary.addChild(bar);
@@ -176,6 +182,11 @@ setup_group_summary : function setup_group_summary(){
         waste_text.position.set(box.width/2, start_y);
         waste_text.anchor.set(0.5, 0);
         pixi_group_summary.addChild(waste_text);
+
+        pixi_waste_bar = {x:waste_text.x-waste_text.width/2, 
+                          y:waste_text.y, 
+                          width:waste_text.width, 
+                          height:waste_text.height};
     }
 
     pixi_group_summary.position.set(axis_width * 0.71 - pixi_group_summary.width/2, other_margin+6);

@@ -24,7 +24,8 @@ setup_treatment : function setup_treatment(){
     for(let i in values)
     {
         let box_json = {revenue_boxes: {},
-                        height: 0};
+                        height: 0,                        
+                        };
                         
         let box = new PIXI.Container();
 
@@ -69,6 +70,14 @@ update_treatment : function update_treatment(){
     let current_group_memebers = app.session.started ? world_state["groups"][app.current_group] : [];
     let session_players = world_state["session_players"];
 
+    //reset profit highlights
+    for(let p in current_group_memebers)
+    {
+        pixi_profit_hightlights[current_group_memebers[p]] = [];        
+        pixi_cost_hightlights[current_group_memebers[p]] = []; // reset cost highlights for current group members
+    }
+    pixi_waste_highlights = [];
+
     for(let i=0;i<pixi_boxes.length;i++)
     {   
         let value = values[i];
@@ -99,7 +108,7 @@ update_treatment : function update_treatment(){
         //destory old boxes
         for(let p in pixi_boxes[i].revenue_boxes)
         {
-            pixi_boxes[i].revenue_boxes[p].destroy();
+            pixi_boxes[i].revenue_boxes[p].destroy();           
         }
 
         for(let p in group_members_in_box)
@@ -116,97 +125,131 @@ update_treatment : function update_treatment(){
 
             revenue_box.addChild(revenue_box_fill);
 
-            //draw cost box for local player
+            //cost box
+            let cost_y = app.value_to_y(session_player.cost);
+            let cost_y1 = height_per_player-cost_y
+            let cost_height1 = cost_y;
+    
+            let cost_box = new PIXI.Graphics();  
+            cost_box.rect(0, cost_y1, box_width, cost_height1);
+            
+            // if(app.session.parameter_set.show_waste)
+            // {            
+            //     cost_box.fill({color: "white", alpha: 0.5});
+            //     revenue_box.addChild(cost_box);
+            // }
+            // else
+            // {
+                //fill with texture 2
+            let texture_scale = box_width / app.pixi_textures['pattern_2_tex'].width;
+            const matrix = new PIXI.Matrix().scale(texture_scale,texture_scale).translate(0, cost_y1);
+            cost_box.fill({texture: app.pixi_textures['pattern_2_tex'],
+                            matrix:matrix});
+            revenue_box.addChild(cost_box);
+            // }
+
+            //draw cost loss for local player
             if(app.is_subject && session_player_id == app.session_player.id)
-            {
-                
-                let cost_box = new PIXI.Graphics();
-                let cost_y = app.value_to_y(session_player.cost);
-
-                let cost_y1 = Math.max(0, height_per_player-cost_y);
-                let cost_height1 = Math.min(cost_y, height_per_player);
-
-                cost_box.rect(0, cost_y1, box_width, cost_height1);
-                cost_box.fill({color: "white", alpha: 0.5});
-                revenue_box.addChild(cost_box);
-                
+            {  
                 //loss
                 if(height_per_player-cost_y < 0)
                 {
                     //loss pattern fill
-                    let cost_y2 = height_per_player-cost_y;
+                    // let cost_y2 = height_per_player-cost_y;
 
-                    let cost_box2 = new PIXI.Graphics();
-                    cost_box2.rect(0, cost_y2, box_width, cost_y1 - cost_y2);
+                    // let cost_box2 = new PIXI.Graphics();
+                    // cost_box2.rect(0, cost_y2, box_width, cost_y1 - cost_y2);
 
-                    let texture_scale =app.pixi_textures['pattern_1_tex'].width/box_width;
-                    const matrix = new PIXI.Matrix().scale(texture_scale,texture_scale).translate(0, cost_y2);
+                    // let texture_scale = app.pixi_textures['pattern_1_tex'].width / box_width;
+                    // const matrix = new PIXI.Matrix().scale(texture_scale, texture_scale).translate(0, cost_y2);
 
-                    cost_box2.fill({texture: app.pixi_textures['pattern_1_tex'],
-                                    matrix:matrix});
+                    // cost_box2.fill({texture: app.pixi_textures['pattern_1_tex'],
+                    //                 matrix:matrix});
                     
-                    revenue_box.addChild(cost_box2);
+                    // revenue_box.addChild(cost_box2);
 
                     //loss text
                     let loss_text = new PIXI.Text({text:"!",
-                                                  style: {fontFamily : 'Arial', 
-                                                         fontSize: 18, 
-                                                         fill : 'black', 
-                                                         align : 'center'}});
+                                                   style: {fontFamily : 'Arial', 
+                                                           fontSize: 18, 
+                                                           fill : 'black', 
+                                                              fontWeight: 'bold',
+                                                           align : 'center'}});
                     loss_text.x = box_width/2;
-                    loss_text.y = loss_text.height;
-                    loss_text.anchor.set(0.5,1);
+                    loss_text.y = height_per_player;
+                    loss_text.anchor.set(0.5,0);
                     revenue_box.addChild(loss_text);
                 }
 
                 // Calculate waste for this player in this box
-                if (group_members_in_box.length > 1 && app.session.parameter_set.show_waste) {
-                    // let waste_y = app.value_to_y(session_player.cost * (group_members_in_box.length - 1) / group_members_in_box.length);
-                    let waste_y = app.value_to_y(session_player.cost * (group_members_in_box.length - 1));
-                    // session_player.cost * (group_members_in_box.length - 1) / group_members_in_box.length
+                // if (group_members_in_box.length > 1 && app.session.parameter_set.show_waste) {
+                //     // let waste_y = app.value_to_y(session_player.cost * (group_members_in_box.length - 1) / group_members_in_box.length);
+                //     let waste_y = app.value_to_y(session_player.cost * (group_members_in_box.length - 1));
+                //     // session_player.cost * (group_members_in_box.length - 1) / group_members_in_box.length
 
-                    let waste_box = new PIXI.Graphics();                    
-                    waste_box.rect(0, height_per_player - waste_y, box_width, waste_y);
+                //     let waste_box = new PIXI.Graphics();                    
+                //     waste_box.rect(0, height_per_player - waste_y, box_width, waste_y);
 
-                    let texture_scale = box_width/app.pixi_textures['pattern_2_tex'].width;
-                    const matrix = new PIXI.Matrix().scale(texture_scale,texture_scale).translate(0, height_per_player - waste_y);
+                //     let texture_scale = box_width/app.pixi_textures['pattern_2_tex'].width;
+                //     const matrix = new PIXI.Matrix().scale(texture_scale,texture_scale).translate(0, height_per_player - waste_y);
 
-                    waste_box.fill({texture: app.pixi_textures['pattern_2_tex'],                                    
-                                    matrix: matrix,});
+                //     waste_box.fill({texture: app.pixi_textures['pattern_2_tex'],                                    
+                //                     matrix: matrix,});
 
-                    revenue_box.addChild(waste_box);
-                }
-
-                // if(min_y != max_y)
-                // {
-                //     let cost_box2 = new PIXI.Graphics();
-                //     cost_box2.rect(0, height_per_player-max_y, box_width, 10);
-                //     cost_box2.fill({color: "grey", alpha: 0.5});
-                //     revenue_box.addChild(cost_box2);
+                //     revenue_box.addChild(waste_box);
                 // }
-                // let cost_box2 = new PIXI.Graphics();
-                // cost_box2.rect(0, height_per_player-cost_y, box_width, cost_y);
-                // cost_box2.fill({color: parameter_set_player.hex_color, alpha: 0.5});
-                // revenue_box.addChild(cost_box2);
+
                 revenue_box.zIndex = 998;
             }
 
             //add profit highlights            
-            let profit_box = new PIXI.Graphics();
-            let profit_y = app.value_to_y(session_player.profit);
-            profit_box.rect(revenue_box.x, revenue_box.y, revenue_box.width, revenue_box.height);
-            profit_box.stroke({color: "yellow",
-                              width: 3,
-                              lineJoin: "round",
-                              alignment: 0.5,
-                              cap: "round"});
-            revenue_box.addChild(profit_box);
+            if(revenue_box.y < cost_y1)
+            {
+                let profit_box_highlight = new PIXI.Graphics();
+                // let profit_y_highlight = app.value_to_y(session_player.profit);
+                profit_box_highlight.rect(revenue_box.x, revenue_box.y, revenue_box.width, cost_y1);
+                profit_box_highlight.stroke({color: "yellow",
+                                width: 3,
+                                lineJoin: "round",
+                                alignment: 1,
+                                cap: "round"});
+                profit_box_highlight.visible = false;
+                revenue_box.addChild(profit_box_highlight);
+                pixi_profit_hightlights[session_player_id].push(profit_box_highlight);
+            }
 
+            //add cost highlights
+            let cost_box_highlight = new PIXI.Graphics();
+            cost_box_highlight.rect(revenue_box.x, cost_y1, revenue_box.width, cost_height1);
+            cost_box_highlight.stroke({color: "yellow",
+                            width: 3,
+                            lineJoin: "round",
+                            alignment: 1,
+                            cap: "round"});
+            cost_box_highlight.visible = false;
+            revenue_box.addChild(cost_box_highlight);
+            pixi_cost_hightlights[session_player_id].push(cost_box_highlight);
+            
             revenue_box.x = 0;
             revenue_box.y = start_y;
 
             pixi_boxes[i].revenue_boxes[p] = revenue_box;
             box.addChild(revenue_box);
+
+            //add waste highlight
+            if(group_members_in_box.length > 1)
+            {
+                let waste_highlight = new PIXI.Graphics();
+                waste_highlight.rect(revenue_box.x, cost_y1, revenue_box.width, cost_height1 * (group_members_in_box.length - 1)/ group_members_in_box.length);
+                waste_highlight.stroke({color: "yellow",
+                                width: 3,
+                                lineJoin: "round",
+                                alignment: 1,
+                                cap: "round"});
+                waste_highlight.visible = false;
+                revenue_box.addChild(waste_highlight);
+                pixi_waste_highlights.push(waste_highlight);
+            }
 
             start_y -= height_per_player;
         }

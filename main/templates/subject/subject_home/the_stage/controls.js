@@ -124,6 +124,105 @@ is_over_right_handle: function is_over_right_handle(pt){
 },
 
 /**
+ * check if the pointer is over a profit bar
+ */
+is_over_profit_bar: function is_over_profit_bar(pt){
+    // show_profit_highlight = null;
+
+    //turn off highlights
+    for(let p in pixi_profit_hightlights)
+    {
+        for(let h in pixi_profit_hightlights[p])
+        {
+            let highlight = pixi_profit_hightlights[p][h];
+            highlight.visible = false;
+        }
+    }
+
+    for(let i in pixi_profit_bars)
+    {
+        let bar = pixi_profit_bars[i];
+        let x = bar.x + pixi_group_summary.x;
+        let y = bar.y + pixi_group_summary.y;
+
+        if(pt.x >= x && pt.x <= x + bar.width &&
+           pt.y >= y && pt.y <= y + bar.height)
+        {
+            for(let h in pixi_profit_hightlights[parseInt(i)])
+            {
+                let highlight = pixi_profit_hightlights[parseInt(i)][h];
+                highlight.visible = true;
+            }
+        }
+    }
+
+},
+
+/**
+ * check if the pointer is over a cost bar
+ */
+is_over_cost_bar: function is_over_cost_bar(pt){
+    // show_profit_highlight = null;
+
+    //turn off highlights
+    for(let p in pixi_cost_hightlights)
+    {
+        for(let h in pixi_cost_hightlights[p])
+        {
+            let highlight = pixi_cost_hightlights[p][h];
+            highlight.visible = false;
+        }
+    }
+
+    for(let i in pixi_cost_bars)
+    {
+        let bar = pixi_cost_bars[i];
+        let x = bar.x + pixi_group_summary.x;
+        let y = bar.y + pixi_group_summary.y;
+
+        if(pt.x >= x && pt.x <= x + bar.width &&
+           pt.y >= y && pt.y <= y + bar.height)
+        {
+            for(let h in pixi_cost_hightlights[parseInt(i)])
+            {
+                let highlight = pixi_cost_hightlights[parseInt(i)][h];
+                highlight.visible = true;
+            }
+        }
+    }
+
+},
+
+/**
+ * check if the pointer is over a waste bar
+ */
+is_over_waste_bar: function is_over_waste_bar(pt){
+    // show_profit_highlight = null;
+
+    //turn off highlights
+    for(let p in pixi_waste_highlights)
+    {
+        let highlight = pixi_waste_highlights[p];
+        highlight.visible = false;
+    }
+
+    let bar = pixi_waste_bar;
+    let x = bar.x + pixi_group_summary.x;
+    let y = bar.y + pixi_group_summary.y;
+
+    if(pt.x >= x && pt.x <= x + bar.width &&
+       pt.y >= y && pt.y <= y + bar.height)
+    {
+        for(let h in pixi_waste_highlights)
+        {
+            let highlight = pixi_waste_highlights[h];
+            highlight.visible = true;
+        }
+    }
+    
+},
+
+/**
  * upldate left handle position
  */
 update_left_handle_position : function update_left_handle_position(){
@@ -246,6 +345,12 @@ pixi_container_main_pointermove: function pixi_container_main_pointermove(event)
     {
         // let local_pos = event.data.getLocalPosition(event.currentTarget);
         app.pixi_right_handle_drag(event.data.getLocalPosition(event.currentTarget).x);
+    }
+    else
+    {
+        app.is_over_profit_bar(event.data.getLocalPosition(event.currentTarget));
+        app.is_over_cost_bar(event.data.getLocalPosition(event.currentTarget));
+        app.is_over_waste_bar(event.data.getLocalPosition(event.currentTarget));
     }
 },
 

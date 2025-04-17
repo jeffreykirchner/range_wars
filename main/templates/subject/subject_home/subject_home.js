@@ -490,6 +490,13 @@ let app = Vue.createApp({
             app.setup_group_summary();
             app.update_handle_visibility();
 
+            const mouse_position = pixi_app.renderer.events.pointer.global;
+            // console.log(mouse_position.x, mouse_position.y);
+            app.is_over_profit_bar(mouse_position);
+            app.is_over_cost_bar(mouse_position);
+            app.is_over_waste_bar(mouse_position);
+
+
             //collect names
             if(app.session.world_state.current_experiment_phase == 'Names')
             {

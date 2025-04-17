@@ -584,7 +584,7 @@ class Session(models.Model):
                                 session_player["position"],
                                 parameter_set_player["id_label"],
                                 session_player["range_start"],
-                                session_player["range_end"],
+                                session_player["range_end"]+1,
                                 session_player["range_middle"],
                                 session_player["total_cost"] if parameter_set_treatment["enable_contest"] else "",
                                 session_player["total_revenue"] if parameter_set_treatment["enable_contest"] else "",
@@ -676,9 +676,9 @@ class Session(models.Model):
                                 session_player["total_cost"],
                                 session_player["total_profit"],
                                 session_player_start["range_start"],
-                                session_player_start["range_end"],
+                                session_player_start["range_end"]+1,
                                 session_player_end["range_start"],
-                                session_player_end["range_end"],]
+                                session_player_end["range_end"]+1,]
                     
                     # add cents sent to other players in this period block
                     for player_number, pid in enumerate(self.world_state["session_players"]):
@@ -761,7 +761,7 @@ class Session(models.Model):
         elif type == "help_doc":
             return data
         elif type == "range":
-            return f'{data["range_start"]} to {data["range_end"]}'
+            return f'{data["range_start"]} to {data["range_end"]+1}'
         elif type == "cents":
             return f'{data["amount"]} cent(s) to #{session_players[str(data["recipient"])]["player_number"]}'
         elif type == "ready":

@@ -25,3 +25,13 @@ let control_style = {fontFamily : 'Arial', fontSize: 20, fill : "white", align :
 let origin_x = 0;
 let origin_y = 0;
 let box_width = 0;                  //width of a single box
+
+// let show_profit_highlight = null;  //show profit highlights for this player
+let pixi_profit_bars = {};         //profit bars
+let pixi_profit_hightlights = {};
+
+let pixi_cost_bars = {};           //cost bars
+let pixi_cost_hightlights = {};    //cost highlights
+
+let pixi_waste_bar = null;         //waste bar
+let pixi_waste_highlights = [];    //waste highlight

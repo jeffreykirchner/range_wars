@@ -17,9 +17,19 @@ setup_group_summary : function setup_group_summary(){
     let world_state = app.session.world_state;
     let current_group_memebers = world_state.groups[app.current_group];
 
+    pixi_profit_bars = {};
+
     //border
     let box = new PIXI.Graphics();
-    box.roundRect(0, 0, axis_width * 0.25, 50 + 40 * current_group_memebers.length, 10);
+
+    let rect_height = 50 + 40 * current_group_memebers.length;
+
+    if(app.session.parameter_set.show_waste)
+    {
+        rect_height += 30;
+    }   
+
+    box.roundRect(0, 0, axis_width * 0.25, rect_height, 10);
     box.stroke({color: "black", width: 1});
     pixi_group_summary.addChild(box);
 
@@ -33,6 +43,7 @@ setup_group_summary : function setup_group_summary(){
     //sub captions
     let text_style_sub = {fontSize: 15, fill : 0x000000, align : 'center'};
     let text_cost = new PIXI.Text({text:"⇐ Cost", style:text_style_sub});
+
     text_cost.pivot.set(text_cost.width, 0);
     text_cost.position.set(0, summary_label.y + summary_label.height + margin);
     pixi_group_summary.addChild(text_cost);
@@ -44,7 +55,13 @@ setup_group_summary : function setup_group_summary(){
 
     //bars   
     let start_y = small_margin + text_profit.y + text_profit.height;
-    let bar_height = (box.height-text_profit.height-text_profit.y-margin-small_margin-margin*(current_group_memebers.length-1)) / current_group_memebers.length;
+    let waste_margin = 0;
+    if(app.session.parameter_set.show_waste)
+    {
+        waste_margin = 30;
+    }
+
+    let bar_height = (box.height-text_profit.height-text_profit.y-margin-small_margin-margin*(current_group_memebers.length-1)-waste_margin) / current_group_memebers.length;
     let max_cost = 0;
     let max_profit = 0;
     let center_x = 0;
@@ -86,7 +103,7 @@ setup_group_summary : function setup_group_summary(){
     //center line
     let center_line = new PIXI.Graphics();
     center_line.moveTo(center_x, start_y+3);
-    center_line.lineTo(center_x, box.height-margin-6);
+    center_line.lineTo(center_x, box.height-margin-6-waste_margin);
     center_line.stroke({color: "black", width: 1});
     center_line.zIndex = 999;
 
@@ -113,6 +130,8 @@ setup_group_summary : function setup_group_summary(){
         bar.fill({color: bar_color});
         bar.stroke({color: "lightgrey", width: 1});
 
+        pixi_profit_bars[player_id] = {x:center_x, y:start_y, width:bar_width, height:bar_height};
+
         //cost bar
         let bar_cost = new PIXI.Graphics();
         bar_width = (player.total_cost) * scaler;
@@ -126,6 +145,8 @@ setup_group_summary : function setup_group_summary(){
 
         bar_cost.fill({color: bar_color,alpha:0.5});
         bar_cost.stroke({color: "lightgrey", width: 1});
+
+        pixi_cost_bars[player_id] = {x:center_x-bar_width, y:start_y, width:bar_width, height:bar_height};
 
         pixi_group_summary.addChild(bar_cost);
         pixi_group_summary.addChild(bar);
@@ -145,7 +166,30 @@ setup_group_summary : function setup_group_summary(){
         start_y += bar_height + margin;
     }
 
-    pixi_group_summary.position.set(axis_width * 0.68 - pixi_group_summary.width/2, other_margin+5);
+    //waste text
+    if(app.session.parameter_set.show_waste)
+    {
+        let total_waste = 0;
+        for(let i=current_group_memebers.length-1;i>=0;i--)
+        {
+            let player_id = current_group_memebers[i];
+            let player = world_state.session_players[player_id];
+            total_waste += parseFloat(player.total_waste);
+        }
+        let waste_text = new PIXI.Text({text:"Total Waste: " + total_waste.toFixed(3) + "¢", 
+                                        style:text_style_sub});
+       
+        waste_text.position.set(box.width/2, start_y);
+        waste_text.anchor.set(0.5, 0);
+        pixi_group_summary.addChild(waste_text);
+
+        pixi_waste_bar = {x:waste_text.x-waste_text.width/2, 
+                          y:waste_text.y, 
+                          width:waste_text.width, 
+                          height:waste_text.height};
+    }
+
+    pixi_group_summary.position.set(axis_width * 0.71 - pixi_group_summary.width/2, other_margin+6);
     
     pixi_container_main.addChild(pixi_group_summary);
 },

@@ -9,8 +9,9 @@ setup_pixi: function setup_pixi(){
     PIXI.Assets.add({alias:'dash_tex', src:'{% static "dash_1.png"%}'});
     PIXI.Assets.add({alias:'pattern_1_tex', src:'{% static "pattern1.png"%}'});
     PIXI.Assets.add({alias:'pattern_2_tex', src:'{% static "pattern2.png"%}'});
+    PIXI.Assets.add({alias:'question_mark_text', src:'{% static "question_mark.png"%}'});
     
-    const textures_promise = PIXI.Assets.load(['dash_tex', 'pattern_1_tex', 'pattern_2_tex']);
+    const textures_promise = PIXI.Assets.load(['dash_tex', 'pattern_1_tex', 'pattern_2_tex', 'question_mark_text']);
 
     textures_promise.then((textures) => {
         app.setup_pixi_sheets(textures);

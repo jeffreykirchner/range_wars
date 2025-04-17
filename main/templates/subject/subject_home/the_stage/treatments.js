@@ -191,6 +191,17 @@ update_treatment : function update_treatment(){
                 revenue_box.zIndex = 998;
             }
 
+            //add profit highlights            
+            let profit_box = new PIXI.Graphics();
+            let profit_y = app.value_to_y(session_player.profit);
+            profit_box.rect(revenue_box.x, revenue_box.y, revenue_box.width, revenue_box.height);
+            profit_box.stroke({color: "yellow",
+                              width: 3,
+                              lineJoin: "round",
+                              alignment: 0.5,
+                              cap: "round"});
+            revenue_box.addChild(profit_box);
+
             revenue_box.x = 0;
             revenue_box.y = start_y;
 

@@ -189,6 +189,17 @@ setup_group_summary : function setup_group_summary(){
                           height:waste_text.height};
     }
 
+    //help box button
+    let help_box_button = new PIXI.Sprite(PIXI.Assets.get('question_mark_text'));
+    help_box_button.eventMode = 'static'; // PixiJS v8: make sprite interactive/clickable
+    help_box_button.cursor = 'pointer';   // Show pointer cursor on hover
+    help_box_button.position.set(box.width-help_box_button.width - 7, 7);
+    help_box_button.on('pointerdown', () => {
+        app.send_load_help_doc_subject('Group Summary');
+    });
+
+    pixi_group_summary.addChild(help_box_button);
+
     pixi_group_summary.position.set(axis_width * 0.71 - pixi_group_summary.width/2, other_margin+6);
     
     pixi_container_main.addChild(pixi_group_summary);

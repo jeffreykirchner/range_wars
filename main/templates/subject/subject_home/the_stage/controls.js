@@ -55,7 +55,6 @@ setup_control_handles : function setup_control_handles(){
     pixi_left_handle.zIndex = 997;
 
     // pixi_left_handle.position.set(left_handle_x - pixi_left_handle.width, origin_y);
-
     pixi_container_main.addChild(pixi_left_handle);
     
     //right handle

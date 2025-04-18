@@ -24,7 +24,7 @@ class InstructionSetForm(forms.ModelForm):
                                                                         "v-model":"instruction_set.action_page_2",
                                                                        "placeholder" : "Page Number"}))
     
-    action_page_3 = forms.IntegerField(label='Required Action: 3', 
+    action_page_3 = forms.IntegerField(label='Required Action: Roll Overs', 
                                        widget=forms.NumberInput(attrs={"min":"1", 
                                                                        "v-model":"instruction_set.action_page_3",
                                                                        "placeholder" : "Page Number"}))

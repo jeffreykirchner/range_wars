@@ -152,6 +152,17 @@ is_over_profit_bar: function is_over_profit_bar(pt){
                 let highlight = pixi_profit_hightlights[parseInt(i)][h];
                 highlight.visible = true;
             }
+
+            //handle instructions action
+            if(app.session.world_state.current_experiment_phase == 'Instructions')
+            {               
+                if(app.session_player.current_instruction == app.instructions.action_page_3 &&
+                    app.session_player.current_instruction_complete < app.instructions.action_page_3)    
+                {
+                    app.session_player.current_instruction_complete=app.instructions.action_page_3;
+                    app.send_current_instruction_complete();
+                }
+            }
         }
     }
 
@@ -187,6 +198,17 @@ is_over_cost_bar: function is_over_cost_bar(pt){
                 let highlight = pixi_cost_hightlights[parseInt(i)][h];
                 highlight.visible = true;
             }
+
+            //handle instructions action
+            if(app.session.world_state.current_experiment_phase == 'Instructions')
+            {               
+                if(app.session_player.current_instruction == app.instructions.action_page_3 &&
+                    app.session_player.current_instruction_complete < app.instructions.action_page_3)    
+                {
+                    app.session_player.current_instruction_complete=app.instructions.action_page_3;
+                    app.send_current_instruction_complete();
+                }
+            }
         }
     }
 
@@ -217,6 +239,17 @@ is_over_waste_bar: function is_over_waste_bar(pt){
             let highlight = pixi_waste_highlights[h];
             highlight.visible = true;
         }
+
+        //handle instructions action
+        if(app.session.world_state.current_experiment_phase == 'Instructions')
+            {               
+                if(app.session_player.current_instruction == app.instructions.action_page_3 &&
+                    app.session_player.current_instruction_complete < app.instructions.action_page_3)    
+                {
+                    app.session_player.current_instruction_complete=app.instructions.action_page_3;
+                    app.send_current_instruction_complete();
+                }
+            }
     }
     
 },

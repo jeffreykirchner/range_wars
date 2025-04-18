@@ -390,6 +390,7 @@ get_subject_status_display: function get_subject_status_display(p)
     
     let session_player = app.session.session_players[p];
     let period_block = app.session.world_state.period_blocks[app.session.world_state.current_period_block];
+    let current_treatment = app.get_current_treatment();
 
     if(!app.session.started)
     {
@@ -404,8 +405,16 @@ get_subject_status_display: function get_subject_status_display(p)
     {
         return period_block.session_players[p].ready ? "Waiting" : "Starting";
     }
-    else
+    else if(current_treatment.enable_contest)
     {
         return "Ranging";
+    }
+    else if(current_treatment.enable_chat)
+    {
+        return "Chatting";
+    }
+    else
+    {
+        return "Break";
     }
 },

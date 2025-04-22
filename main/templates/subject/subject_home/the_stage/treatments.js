@@ -77,6 +77,7 @@ update_treatment : function update_treatment(){
         pixi_cost_hightlights[current_group_memebers[p]] = []; // reset cost highlights for current group members
     }
     pixi_waste_highlights = [];
+    pixi_loss_text = [];
 
     for(let i=0;i<pixi_boxes.length;i++)
     {   
@@ -179,6 +180,7 @@ update_treatment : function update_treatment(){
                     loss_text.y = height_per_player;
                     loss_text.anchor.set(0.5,0);
                     revenue_box.addChild(loss_text);
+                    pixi_loss_text.push(loss_text);
                 }
 
                 // Calculate waste for this player in this box

@@ -161,5 +161,22 @@ game_loop: function game_loop(delta)
             app.pixi_tick_tock.value = "tock";
         else
             app.pixi_tick_tock.value = "tick";
+
+        if(app.pixi_tick_tock.value == "tick")
+        {
+            //flash the loss text
+            for(let i=0;i<pixi_loss_text.length;i++)
+            {
+                pixi_loss_text[i].visible = true;
+            }
+        }
+        else
+        {
+            //hide the loss text
+            for(let i=0;i<pixi_loss_text.length;i++)
+            {
+                pixi_loss_text[i].visible = false;
+            }
+        }
     }
 },

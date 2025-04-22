@@ -35,3 +35,5 @@ let pixi_cost_hightlights = {};    //cost highlights
 
 let pixi_waste_bar = null;         //waste bar
 let pixi_waste_highlights = [];    //waste highlight
+
+let pixi_loss_text = [];         //loss text

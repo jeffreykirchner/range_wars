@@ -179,6 +179,14 @@ update_treatment : function update_treatment(){
                     loss_text.x = box_width/2;
                     loss_text.y = height_per_player;
                     loss_text.anchor.set(0.5,0);
+                    if(app.pixi_tick_tock.value == "tick")
+                    {
+                        loss_text.visible = true;
+                    }
+                    else
+                    {
+                        loss_text.visible = false;
+                    }
                     revenue_box.addChild(loss_text);
                     pixi_loss_text.push(loss_text);
                 }

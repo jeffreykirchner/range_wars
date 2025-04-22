@@ -227,6 +227,8 @@ is_over_waste_bar: function is_over_waste_bar(pt){
         highlight.visible = false;
     }
 
+    if(!app.session.parameter_set.show_waste) return;
+
     let bar = pixi_waste_bar;
     let x = bar.x + pixi_group_summary.x;
     let y = bar.y + pixi_group_summary.y;

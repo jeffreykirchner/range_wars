@@ -35,7 +35,7 @@ setup_group_summary : function setup_group_summary(){
 
     //caption
     let text_style = {fontSize: 15, fill : 0x000000, align : 'center', fontWeight: 'bold'};
-    let summary_label = new PIXI.Text({text:"Group Summary", style:text_style});
+    let summary_label = new PIXI.Text({text:"Summary", style:text_style});
     summary_label.pivot.set(summary_label.width/2, 0);
     summary_label.position.set(box.width/2, 2);
     pixi_group_summary.addChild(summary_label);

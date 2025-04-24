@@ -79,6 +79,9 @@ do_test_mode_instructions: function do_test_mode_instructions()
             case app.instructions.action_page_2:              
                 app.test_mode_submit_range();  
                 break;
+            case app.instructions.action_page_3:
+                app.test_mode_roll_over_profit_bar();
+                break;
         }   
     }
 
@@ -215,5 +218,24 @@ test_mode_send_cents: function test_mode_send_cents()
     app.send_cents_to = app.send_cents_to_group[app.random_number(0, app.send_cents_to_group.length - 1)].value;
 
     app.send_cents();
+},
+
+/**
+ * test mode roll over profit bar
+ */
+test_mode_roll_over_profit_bar: function test_mode_roll_over_profit_bar()
+{
+    if(app.working) return;
+
+    let group_number = app.session.world_state.session_players[app.session_player.id].group_number;
+
+    let player_index = app.random_number(0, app.session.world_state.groups[group_number].length - 1);
+    let player_id = app.session.world_state.groups[group_number][player_index];
+  
+    let bar = pixi_profit_bars[player_id];
+    let x = bar.x + pixi_group_summary.x;
+    let y = bar.y + pixi_group_summary.y;
+
+    app.is_over_profit_bar({x: x, y: y});
 },
 {%endif%}

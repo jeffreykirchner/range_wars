@@ -12,6 +12,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.core.exceptions import ObjectDoesNotExist
 
 from main.models import InstructionSet
+from main.globals import SummaryType
 
 import main
 
@@ -32,6 +33,7 @@ class ParameterSet(models.Model):
     inheritance_window = models.IntegerField(verbose_name='Inheritance Window', default=10)                    #number of periods to average for inheritance
 
     show_waste = models.BooleanField(default=False, verbose_name='Show Waste')                                #if true show waste on subject screen
+    summary_type = models.CharField(max_length=10, choices=SummaryType.choices, default=SummaryType.FULL, verbose_name='Summary Type') #summary type for the session
 
     reconnection_limit = models.IntegerField(verbose_name='Limit Subject Screen Reconnection Trys', default=25)       #limit subject screen reconnection trys
 
@@ -71,6 +73,7 @@ class ParameterSet(models.Model):
 
             self.inheritance_window = new_ps.get("inheritance_window", 10)
             self.show_waste = new_ps.get("show_waste", False)
+            self.summary_type = new_ps.get("summary_type", SummaryType.FULL)
 
             self.reconnection_limit = new_ps.get("reconnection_limit", None)
 
@@ -198,6 +201,7 @@ class ParameterSet(models.Model):
 
         self.json_for_session["inheritance_window"] = self.inheritance_window
         self.json_for_session["show_waste"] = 1 if self.show_waste else 0
+        self.json_for_session["summary_type"] = self.summary_type
         
         self.json_for_session["reconnection_limit"] = self.reconnection_limit
 

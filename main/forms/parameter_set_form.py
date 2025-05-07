@@ -5,6 +5,7 @@ Parameterset edit form
 from django import forms
 
 from main.models import ParameterSet
+from main.globals import SummaryType
 
 import  main
 
@@ -54,6 +55,10 @@ class ParameterSetForm(forms.ModelForm):
     show_waste = forms.ChoiceField(label='Show Waste',
                                    choices=((1, 'Yes'), (0, 'No')),
                                    widget=forms.Select(attrs={"v-model":"parameter_set.show_waste",}))
+    
+    summary_type = forms.ChoiceField(label='Summary Type',
+                                     choices = SummaryType.choices,
+                                     widget=forms.Select(attrs={"v-model":"parameter_set.summary_type",}))
 
     test_mode = forms.ChoiceField(label='Test Mode',
                                   choices=((1, 'Yes'), (0, 'No')),
@@ -63,7 +68,7 @@ class ParameterSetForm(forms.ModelForm):
         model=ParameterSet
         fields =['show_instructions',
                  'survey_required', 'survey_link', 'prolific_mode', 'prolific_completion_link', 'reconnection_limit',
-                 'inheritance_window', 'show_waste', 'test_mode']
+                 'inheritance_window', 'show_waste', 'summary_type', 'test_mode']
 
     def clean_survey_link(self):
         

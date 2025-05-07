@@ -23,3 +23,10 @@ class PeriodblockInheritance(models.TextChoices):
     PRESET = 'Preset', _('Preset')
     COPY =  'Copy', _('Copy')
     MIDPOINT = 'Midpoint', _('Midpoint')
+
+class SummaryType(models.TextChoices):
+    '''
+    summary types
+    '''
+    PARTIAL = 'Partial', _('Partial')
+    FULL = 'Full', _('Full')

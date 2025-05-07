@@ -8,5 +8,6 @@ from .send_email import send_mass_email_service
 
 from .sessions import ExperimentPhase
 from .sessions import PeriodblockInheritance
+from .sessions import SummaryType
 
 from .validate_input import is_positive_integer

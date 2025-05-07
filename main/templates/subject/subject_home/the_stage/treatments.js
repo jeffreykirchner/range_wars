@@ -258,7 +258,15 @@ update_treatment : function update_treatment(){
                                 cap: "round"});
                 waste_highlight.visible = false;
                 revenue_box.addChild(waste_highlight);
-                pixi_waste_highlights.push(waste_highlight);
+
+                if(app.session.parameter_set.summary_type == "Full")
+                {
+                    pixi_waste_highlights.push(waste_highlight);
+                }
+                else if(session_player_id == app.session_player.id)
+                {
+                    pixi_waste_highlights.push(waste_highlight);
+                }
             }
 
             start_y -= height_per_player;

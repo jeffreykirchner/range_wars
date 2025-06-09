@@ -53,9 +53,17 @@ class ParameterSetPeriodblock(models.Model):
         self.inheritance = new_ps.get("inheritance", PeriodblockInheritance.PRESET)
 
         help_doc_id = new_ps.get("help_doc", None)
+
         if help_doc_id:
             help_doc = main.models.HelpDocsSubject.objects.filter(id=help_doc_id).first()
-            self.help_doc = help_doc
+
+            if help_doc:
+               self.help_doc = help_doc
+            else:
+                #look up by title
+                parameter_set_player_first = self.parameter_set.parameter_set_players.first()
+                if parameter_set_player_first:
+                     self.help_doc = parameter_set_player_first.instruction_set.help_docs_subject.filter(title=new_ps.get("help_doc_title")).first()
         else:
             self.help_doc = None
        

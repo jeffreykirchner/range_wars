@@ -21,6 +21,7 @@ class ParameterSet(models.Model):
     parameter set
     '''       
     period_length = models.IntegerField(verbose_name='Period Length, Production', default=60)                 #period length in seconds
+    exchange_rate = models.DecimalField(verbose_name='Exchange Rate', default=1.0, max_digits=4, decimal_places=2)  #exchange rate for currency conversion in US cents
 
     show_instructions = models.BooleanField(default=True, verbose_name='Show Instructions')                   #if true show instructions
 
@@ -62,6 +63,7 @@ class ParameterSet(models.Model):
 
         try:
             self.period_length = new_ps.get("period_length")
+            self.exchange_rate = new_ps.get("exchange_rate", 1.0)
 
             self.show_instructions = True if new_ps.get("show_instructions") else False
 
@@ -190,6 +192,7 @@ class ParameterSet(models.Model):
         self.json_for_session["id"] = self.id
                 
         self.json_for_session["period_length"] = self.period_length
+        self.json_for_session["exchange_rate"] = float(self.exchange_rate)
 
         self.json_for_session["show_instructions"] = 1 if self.show_instructions else 0
 

@@ -53,7 +53,11 @@ setup_axis : function setup_axis(){
     // x_label.position.set(y_axis_margin + axis_width/2, app.canvas_height - 23);
     // pixi_container_main.addChild(x_label);
 
-    let y_label = new PIXI.Text({text:"Resource Value (¢)",style:axis_style});
+    let y_label_text = "Resource Value";
+    if(app.session.parameter_set.exchange_rate == 1)
+        y_label_text += " (¢)";
+
+    let y_label = new PIXI.Text({text:y_label_text,style:axis_style});
     y_label.anchor.set(0.5, 0);
     y_label.position.set(1, other_margin + axis_height/2);
     y_label.rotation = -Math.PI/2;

@@ -259,7 +259,7 @@ update_treatment : function update_treatment(){
                 waste_highlight.visible = false;
                 revenue_box.addChild(waste_highlight);
 
-                if(app.session.parameter_set.summary_type == "Full")
+                if(app.session.parameter_set.summary_type == "Full" || !app.is_subject)
                 {
                     pixi_waste_highlights.push(waste_highlight);
                 }

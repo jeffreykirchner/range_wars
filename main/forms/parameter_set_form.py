@@ -46,6 +46,12 @@ class ParameterSetForm(forms.ModelForm):
                                                                             "step":"1",
                                                                             "min":"1"}))     
 
+    exchange_rate = forms.DecimalField(label='Exchange Rate',
+                                      min_value=0.01,
+                                      widget=forms.NumberInput(attrs={"v-model":"parameter_set.exchange_rate",
+                                                                      "step":"1",
+                                                                      "min":"0.01"}))
+
     inheritance_window = forms.IntegerField(label='Inheritance Window',
                                             min_value=1,
                                             widget=forms.NumberInput(attrs={"v-model":"parameter_set.inheritance_window",
@@ -68,7 +74,7 @@ class ParameterSetForm(forms.ModelForm):
         model=ParameterSet
         fields =['show_instructions',
                  'survey_required', 'survey_link', 'prolific_mode', 'prolific_completion_link', 'reconnection_limit',
-                 'inheritance_window', 'show_waste', 'summary_type', 'test_mode']
+                 'exchange_rate', 'inheritance_window', 'show_waste', 'summary_type', 'test_mode']
 
     def clean_survey_link(self):
         

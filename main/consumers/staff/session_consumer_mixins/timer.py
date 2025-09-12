@@ -178,7 +178,7 @@ class TimerMixin():
                         player = self.world_state_local["session_players"][player_id]
 
                         if parameter_set_treatment["enable_contest"]:
-                            player["earnings"] = Decimal(player["earnings"]) + Decimal(player["total_profit"])
+                            player["earnings"] = Decimal(player["earnings"]) + Decimal(player["total_profit"] * Decimal(self.parameter_set_local["exchange_rate"]))
 
                         pbd = session.period_block_data[str(self.world_state_local["current_period_block"])]["session_players"][str(player_id)]
 

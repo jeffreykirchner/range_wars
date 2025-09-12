@@ -6,7 +6,7 @@ setup_group_summary : function setup_group_summary(){
 
     if(pixi_group_summary) pixi_group_summary.destroy();
 
-    if(app.session.parameter_set.summary_type == "Full")
+    if(app.session.parameter_set.summary_type == "Full" || !app.is_subject)
     {
         app.setup_group_summary_full();
     }
@@ -166,13 +166,20 @@ setup_group_summary_full : function setup_group_summary_full(){
         pixi_group_summary.addChild(bar);
 
         //text cost
-        let text_cost = new PIXI.Text({text:player.total_cost + "¢", style:text_style_sub});
+        let text_cost_text = player.total_cost;
+        if(app.session.parameter_set.exchange_rate == 1)
+            text_cost_text += " (¢)";
+
+        let text_cost = new PIXI.Text({text:text_cost_text, style:text_style_sub});
         text_cost.pivot.set(text_cost.width, text_cost.height/2);
         text_cost.position.set(center_x - small_margin, start_y+bar.height/2);
         pixi_group_summary.addChild(text_cost);
 
         //text profit
-        let text_profit = new PIXI.Text({text:player.total_profit + "¢", style:text_style_sub});
+        let text_profit_text = player.total_profit;
+        if(app.session.parameter_set.exchange_rate == 1)
+            text_profit_text += " (¢)";
+        let text_profit = new PIXI.Text({text:text_profit_text, style:text_style_sub});
         text_profit.pivot.set(0, text_profit.height/2);
         text_profit.position.set(center_x + small_margin, start_y+bar.height/2);
         pixi_group_summary.addChild(text_profit);
@@ -190,9 +197,11 @@ setup_group_summary_full : function setup_group_summary_full(){
             let player = world_state.session_players[player_id];
             total_waste += parseFloat(player.total_waste);
         }
-        let waste_text = new PIXI.Text({text:"Total Waste: " + total_waste.toFixed(3) + "¢", 
+        let waste_text = new PIXI.Text({text:"Total Waste: " + total_waste.toFixed(3), 
                                         style:text_style_sub});
-       
+        if(app.session.parameter_set.exchange_rate == 1)
+            waste_text.text += " (¢)";
+
         waste_text.position.set(box.width/2, start_y);
         waste_text.anchor.set(0.5, 0);
         pixi_group_summary.addChild(waste_text);
@@ -362,13 +371,21 @@ setup_group_summary_partial : function setup_group_summary_partial(){
     pixi_group_summary.addChild(bar);
 
     //text cost
-    let text_cost = new PIXI.Text({text:player.total_cost + "¢", style:text_style_sub});
+    let text_cost_text = player.total_cost;
+    if(app.session.parameter_set.exchange_rate == 1)
+        text_cost_text += " (¢)";
+
+    let text_cost = new PIXI.Text({text:text_cost_text, style:text_style_sub});
     text_cost.pivot.set(text_cost.width, text_cost.height/2);
     text_cost.position.set(center_x - small_margin, start_y+bar.height/2);
     pixi_group_summary.addChild(text_cost);
 
     //text profit
-    let text_profit = new PIXI.Text({text:player.total_profit + "¢", style:text_style_sub});
+    let text_profit_text = player.total_profit;
+    if(app.session.parameter_set.exchange_rate == 1)
+        text_profit_text += " (¢)";
+
+    let text_profit = new PIXI.Text({text:text_profit_text, style:text_style_sub});
     text_profit.pivot.set(0, text_profit.height/2);
     text_profit.position.set(center_x + small_margin, start_y+bar.height/2);
     pixi_group_summary.addChild(text_profit);
@@ -380,9 +397,11 @@ setup_group_summary_partial : function setup_group_summary_partial(){
     {
 
         let total_waste = parseFloat(player.total_waste);
-        
-        let waste_text = new PIXI.Text({text:"Your Waste: " + total_waste.toFixed(3) + "¢", 
+
+        let waste_text = new PIXI.Text({text:"Your Waste: " + total_waste.toFixed(3), 
                                         style:text_style_sub});
+        if(app.session.parameter_set.exchange_rate == 1)
+            waste_text.text += " (¢)";
        
         waste_text.position.set(box.width/2, start_y);
         waste_text.anchor.set(0.5, 0);

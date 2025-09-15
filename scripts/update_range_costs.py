@@ -1,4 +1,4 @@
-print("Update chat period")
+print("Update range and costs")
 
 from main.consumers.staff.session_parameters_consumer_mixins.parameter_set_treatments import take_update_parameter_set_treatment
 
@@ -19,6 +19,11 @@ range_width = input("Enter range width: ")
 range_height = input("Enter range height: ")
 cost = input("Enter cost line y: ")
 
+# session_ids = [2]
+# range_width = 6
+# range_height = 3
+# cost = 2.7
+
 parameter_sets = Session.objects.filter(id__in=session_ids).values_list('parameter_set', flat=True).distinct()
 
 #refesh all parameter sets json
@@ -26,12 +31,12 @@ for pst in ParameterSetTreatment.objects.filter(parameter_set__in=parameter_sets
     
     json_payload = {"id":pst.id,
                 "enable_chat":1 if pst.enable_chat else 0,
-                "range_width":range_width,
-                "scale_width":range_width,
-                "cost_percent":cost,
+                "range_width":str(range_width),
+                "scale_width":str(range_width),
+                "cost_percent":str(cost),
                 "id_label_pst":pst.id_label_pst,
-                "range_height":range_height,
-                "scale_height":range_height,
+                "range_height":str(range_height),
+                "scale_height":str(range_height),
                 "scale_height_ticks":pst.scale_height_ticks,
                 "values_count":pst.values_count,
                 "enable_contest":1 if pst.enable_contest else 0,
@@ -42,3 +47,4 @@ for pst in ParameterSetTreatment.objects.filter(parameter_set__in=parameter_sets
     async_to_sync(take_update_parameter_set_treatment)({"session_id": pst.parameter_set.session.id,
                                                         "parameterset_treatment_id": pst.id,
                                                         "form_data": json_payload})
+

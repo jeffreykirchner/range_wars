@@ -69,7 +69,7 @@ def take_update_parameter_set_treatment(data):
     update parameterset treatment
     '''   
     logger = logging.getLogger(__name__) 
-    # logger.info(f"Update parameterset treatment: {data}")
+    logger.info(f"Update parameterset treatment: {data}")
 
     session_id = data["session_id"]
     parameterset_treatment_id = data["parameterset_treatment_id"]
@@ -139,7 +139,8 @@ def take_update_parameter_set_treatment(data):
 
         return {"value" : "success"}                      
                                 
-    logger.warning("Invalid parameterset treatment form")
+    logger.warning(f"Invalid parameterset treatment form {form.errors.items()}")
+
     return {"value" : "fail", "errors" : dict(form.errors.items())}
 
 @sync_to_async

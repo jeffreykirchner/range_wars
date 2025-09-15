@@ -69,7 +69,7 @@ def take_update_parameter_set_treatment(data):
     update parameterset treatment
     '''   
     logger = logging.getLogger(__name__) 
-    # logger.info(f"Update parameterset treatment: {data}")
+    logger.info(f"Update parameterset treatment: {data}")
 
     session_id = data["session_id"]
     parameterset_treatment_id = data["parameterset_treatment_id"]
@@ -99,7 +99,6 @@ def take_update_parameter_set_treatment(data):
             start_value -= step_value
             values.append(str(round(start_value,4)))
         parameter_set_treatment.values = ','.join(values)
-        
 
         #calculate costs based on percent of total revenue
         box_value_w = Decimal(parameter_set_treatment.range_width) / Decimal(parameter_set_treatment.values_count)
@@ -140,7 +139,8 @@ def take_update_parameter_set_treatment(data):
 
         return {"value" : "success"}                      
                                 
-    logger.warning("Invalid parameterset treatment form")
+    logger.warning(f"Invalid parameterset treatment form {form.errors.items()}")
+
     return {"value" : "fail", "errors" : dict(form.errors.items())}
 
 @sync_to_async

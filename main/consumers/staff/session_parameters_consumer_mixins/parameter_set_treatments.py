@@ -99,7 +99,6 @@ def take_update_parameter_set_treatment(data):
             start_value -= step_value
             values.append(str(round(start_value,4)))
         parameter_set_treatment.values = ','.join(values)
-        
 
         #calculate costs based on percent of total revenue
         box_value_w = Decimal(parameter_set_treatment.range_width) / Decimal(parameter_set_treatment.values_count)

@@ -27,8 +27,8 @@ class ParameterSetTreatment(models.Model):
 
     scale_height_ticks = models.IntegerField(verbose_name='Scale Height Ticks', default=10)                              #range height ticks
 
-    costs = models.CharField(verbose_name='Costs', max_length=100, default="0,0,0,0")    #costs for each Vertex
-    cost_percent = models.DecimalField(verbose_name='Scale Width', default=0.1, max_digits=7, decimal_places=4) 
+    costs = models.CharField(verbose_name='Costs', max_length=100, default="0,0,0,0")                               #costs for each user
+    cost_percent = models.DecimalField(verbose_name='Cost Y Intercept', default=0.1, max_digits=7, decimal_places=4)     #y intercept of cost line 
 
     cost_area = models.DecimalField(verbose_name='Cost Area', default=0, max_digits=8, decimal_places=4)
     revenue_area = models.DecimalField(verbose_name='Revenue Area', default=0, max_digits=8, decimal_places=4)

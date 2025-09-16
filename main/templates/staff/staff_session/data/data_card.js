@@ -67,7 +67,7 @@ take_download_action_data: function take_download_action_data(message_data){
     let blob = new Blob(["\ufeff", message_data.result]);
     let url = URL.createObjectURL(blob);
     download_link.href = url;
-    download_link.download = "Range_Wars__Action_Data_Session_" + app.session.id +".csv";
+    download_link.download = "Range_Wars_Action_Data_Session_" + app.session.id +".csv";
 
     document.body.appendChild(download_link);
     download_link.click();

@@ -12,10 +12,12 @@ process_the_feed: function process_the_feed(message_type, message_data)
     let parameter_set_player = app.get_parameter_set_player_from_player_id(message_data.player_id);
     let session_player = app.session.world_state.session_players[message_data.player_id];
 
-    switch(message_type) {                
+    let player_label = "<span style='color:" + parameter_set_player.hex_color + "'>" + parameter_set_player.id_label + "</span>";
+
+    switch(message_type) {          
         
         case "update_chat":
-            html_text = "<span style='color:" + parameter_set_player.hex_color + "'>" + parameter_set_player.id_label + "</span>: " +  message_data.text;
+            html_text = player_label + ": " +  message_data.text;
             break;
         case "update_cents":
             html_text = "<i>" + message_data.text + "</i>";
@@ -23,13 +25,13 @@ process_the_feed: function process_the_feed(message_type, message_data)
         case "update_range":
             if(message_data.ready_to_go_pressed)
             {
-                html_text = "<span style='color:" + parameter_set_player.hex_color + "'>" + parameter_set_player.id_label + "</span> Ready to Start";
+                html_text = player_label + ": Ready to Start";
             }
             else
             {
                 let start_range = parseInt(message_data.range_start);
                 let end_range = parseInt(message_data.range_end) + 1;
-                html_text = "<span style='color:" + parameter_set_player.hex_color + "'>" + parameter_set_player.id_label + "</span> Range: " +  start_range + " to " + end_range;
+                html_text = player_label + " Range: " +  start_range + " to " + end_range;
             }
             
             break;

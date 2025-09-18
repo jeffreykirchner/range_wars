@@ -224,8 +224,11 @@ class TimerMixin():
                                                     type="time",
                                                     period_number=self.world_state_local["current_period"],
                                                     data=result))
-            
-            await SessionEvent.objects.abulk_create(self.session_events, ignore_conflicts=True)
+
+            try:
+                await SessionEvent.objects.abulk_create(self.session_events, ignore_conflicts=True)
+            except Exception as e:
+                logger.error(f"continue_timer: error storing session events {e}")
 
             self.session_events = []
 

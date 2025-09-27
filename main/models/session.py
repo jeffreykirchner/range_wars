@@ -580,7 +580,7 @@ class Session(models.Model):
                                 f'{parameter_set_periodblock["period_start"]} to {parameter_set_periodblock["period_end"]}',
                                 parameter_set_treatment["id_label_pst"],
                                 player_number+1,      
-                                parameter_set_player_group["group_number"],
+                                session_player["group_number"],
                                 session_player["position"],
                                 parameter_set_player["id_label"],
                                 session_player["range_start"],

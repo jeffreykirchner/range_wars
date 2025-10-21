@@ -3,6 +3,7 @@ send_chat: function send_chat(){
     if(app.working) return;
     if(app.chat_text.trim() == "") return;
     if(app.chat_text.trim().length > 100) return;
+    if(app.show_ready_button()) return;
 
    
     if(app.session.world_state.current_experiment_phase == 'Instructions')
